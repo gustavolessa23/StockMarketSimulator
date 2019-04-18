@@ -1,0 +1,14 @@
+2019-04-15 16:48:21.661  INFO 4334 --- [restartedMain] c.s.S.StockMarketSimulatorApplication    : Starting StockMarketSimulatorApplication on Gustavos-MacBook-Pro.local with PID 4334 (/Users/gustavolessa1/Downloads/StockMarketSimulator/target/classes started by gustavolessa1 in /Users/gustavolessa1/Downloads/StockMarketSimulator)
+2019-04-15 16:48:21.665  INFO 4334 --- [restartedMain] c.s.S.StockMarketSimulatorApplication    : No active profile set, falling back to default profiles: default
+2019-04-15 16:48:21.768  INFO 4334 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2019-04-15 16:48:22.659  INFO 4334 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-04-15 16:48:22.690  INFO 4334 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 21ms. Found 0 repository interfaces.
+2019-04-15 16:48:23.519  INFO 4334 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2019-04-15 16:48:24.442  INFO 4334 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2019-04-15 16:48:24.533  INFO 4334 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2019-04-15 16:48:24.625  INFO 4334 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.9.Final}
+2019-04-15 16:48:24.627  INFO 4334 --- [restartedMain] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2019-04-15 16:48:24.846  INFO 4334 --- [restartedMain] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2019-04-15 16:48:25.158  INFO 4334 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
