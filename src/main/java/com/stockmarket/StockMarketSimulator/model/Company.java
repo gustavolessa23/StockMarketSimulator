@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
 
@@ -17,10 +18,12 @@ public class Company {
 	private final int id;
 	private static int lastId = 0;
 	private String name;
-	private List<Share> shares;
 	private double sharePrice;
 	private double capital;
 	private int sharesSold;
+	
+	@Transient
+	private List<Share> shares;
 
 
 	private Company(CompanyBuilder builder) {
