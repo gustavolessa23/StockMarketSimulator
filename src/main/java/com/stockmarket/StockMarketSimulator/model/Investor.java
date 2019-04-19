@@ -4,6 +4,7 @@ package com.stockmarket.StockMarketSimulator.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity
 public class Investor {
@@ -14,6 +15,10 @@ public class Investor {
 	private static long lastId = 0;
 	private String name;
 	private double budget;
+	private int numberOfShares;
+	private int numberOfCompanies;
+	
+	@Transient
 	private Wallet wallet;
 
 
@@ -23,6 +28,8 @@ public class Investor {
 		this.name = builder.name;
 		this.budget = builder.budget;
 		this.wallet = builder.wallet;
+		this.numberOfCompanies = 0;
+		this.numberOfShares = 0;
 
 	}
 
@@ -65,6 +72,27 @@ public class Investor {
 	public void setWallet(Wallet wallet) {
 		this.wallet = wallet;
 	}
+	
+	
+
+
+	/**
+	 * @return the numberOfShares
+	 */
+	public int getNumberOfShares() {
+		numberOfShares = wallet.getAmountOfShares();
+		return numberOfShares;
+	}
+
+	/**
+	 * @return the numberOfCompanies
+	 */
+	public int getNumberOfCompanies() {
+		numberOfCompanies = wallet.getAmountOfCompanies();
+		return numberOfCompanies;
+	}
+
+
 
 
 	public static class InvestorBuilder{
