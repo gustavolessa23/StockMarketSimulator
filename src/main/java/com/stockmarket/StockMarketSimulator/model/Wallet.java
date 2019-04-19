@@ -5,11 +5,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.stockmarket.StockMarketSimulator.setup.SimStart;
+
 public class Wallet {
 	
 	private List<Share> shares; // holds all shares of a wallet
 	//private List<Integer> companies;// holds all companyIDs, related to the shares, for faster access.
 	private Map<Integer, Integer> companies; // maps companyID->amount of shares. 
+	
+	public void getWalletDetails() {
+		System.out.println("WALLET DETAILS: \t");
+		System.out.println("\tNumber of companies invested in: "+this.getAmountOfCompaniesInvestedIn()+" / "+SimStart.numberOfCompanies);
+		System.out.println("\tShares: ");
+		for(int i=0;i<this.getShares().size();i++) {
+			System.out.print("\tCompany ID: "+this.getShares().get(i).getCompanyId());
+			System.out.printf("\t\t$" + "%.2f",this.getShares().get(i).getPrice());
+			System.out.print("\t\t"+this.getShares().get(i).getDateSold());
+			System.out.println();
+		};
+	}
 	
 	public Wallet() {
 		this.shares = new ArrayList<>();
@@ -34,7 +48,7 @@ public class Wallet {
 	
 	// ----------- COMPANIES ---------------------
 	
-	public int addCompanyId(int companyId) {
+	private int addCompanyId(int companyId) {
 		return this.companies.merge(companyId, 1, Integer::sum);  // add
 	}
 	
@@ -48,7 +62,7 @@ public class Wallet {
 		return companyIds;
 	}
 	
-	public int getAmountOfCompanies() {
+	public int getAmountOfCompaniesInvestedIn() {
 		return this.companies.size();
 	}
 	

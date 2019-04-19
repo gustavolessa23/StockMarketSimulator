@@ -15,8 +15,6 @@ public class Investor {
 	private static long lastId = 0;
 	private String name;
 	private double budget;
-	private int numberOfShares;
-	private int numberOfCompanies;
 	
 	@Transient
 	private Wallet wallet;
@@ -28,9 +26,6 @@ public class Investor {
 		this.name = builder.name;
 		this.budget = builder.budget;
 		this.wallet = builder.wallet;
-		this.numberOfCompanies = 0;
-		this.numberOfShares = 0;
-
 	}
 
 	public long getId() {
@@ -73,27 +68,17 @@ public class Investor {
 		this.wallet = wallet;
 	}
 	
+	public void getInvestorDetails() {
+		System.out.println("INVESTOR ID: \t" + this.getId());
+		System.out.println("INVESTOR NAME: \t" + this.getName());
+		System.out.printf("BUDGET: \t" + "%.2f %n",this.getBudget());
+		this.getWallet().getWalletDetails();
+		System.out.println();
+	}
 	
-
-
-	/**
-	 * @return the numberOfShares
-	 */
-	public int getNumberOfShares() {
-		numberOfShares = wallet.getAmountOfShares();
-		return numberOfShares;
+	public void buyShare(double sharePrice) {
+		budget-=sharePrice; // decrement budget by share price
 	}
-
-	/**
-	 * @return the numberOfCompanies
-	 */
-	public int getNumberOfCompanies() {
-		numberOfCompanies = wallet.getAmountOfCompanies();
-		return numberOfCompanies;
-	}
-
-
-
 
 	public static class InvestorBuilder{
 		private String name;
@@ -129,7 +114,6 @@ public class Investor {
 			this.wallet = wallet;
 			return this;
 		}
-		
 		
 		public Investor build() {
 			return new Investor(this);

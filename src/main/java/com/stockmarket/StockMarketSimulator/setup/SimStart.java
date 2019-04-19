@@ -1,9 +1,9 @@
-package setup;
-
-import stockmarket.*;
+package com.stockmarket.StockMarketSimulator.setup;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import com.stockmarket.StockMarketSimulator.model.*;
 
 public class SimStart {
 	

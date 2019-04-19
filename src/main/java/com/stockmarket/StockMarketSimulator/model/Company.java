@@ -18,7 +18,6 @@ public class Company {
 	@GeneratedValue
 	private final int id;
 	private static int lastId = 0;
-	
 	private String name;
 	private double sharePrice;
 	private double capital;
@@ -26,7 +25,6 @@ public class Company {
 	
 	@Transient
 	private List<Share> shares;
-
 
 	private Company(CompanyBuilder builder) {
 		super();
@@ -41,7 +39,7 @@ public class Company {
 	}
 
 	private void ipo(int numberOfShares) {
-		List<Share> shares = new ArrayList<>(); // new list to hold the Share objects created
+		shares = new ArrayList<>(); // new list to hold the Share objects created
 		
 		for(int x = 0; x < numberOfShares; x++) 
 			shares.add(new Share(this.id, this.sharePrice)); // create the chosen number of shares
@@ -62,6 +60,10 @@ public class Company {
 	public List<Share> getShares() {
 		return shares;
 	}
+	
+	public int getNumberOfSharesAvailable() {
+		return shares.size();
+	}
 
 	public double getSharePrice() {
 		return sharePrice;
@@ -77,6 +79,15 @@ public class Company {
 
 	public int getSharesSold() {
 		return sharesSold;
+	}
+	
+	public void getCompanyDetails() {
+		System.out.println("COMAPNY ID: \t" + this.getId());
+		System.out.println("COMPANY NAME: \t" + this.getName());
+		System.out.println("SHARES: \t" + this.getNumberOfSharesAvailable());
+		System.out.printf("SHARE PRICEL: \t" + "%.2f %n", this.getSharePrice());
+		System.out.printf("CAPITAL: \t" + "%.2f %n", this.getCapital());
+		System.out.println();
 	}
 
 	public Share sellShare() {
@@ -100,8 +111,7 @@ public class Company {
 		private int shares;
 		private double sharePrice;
 		private double capital;
-		private int sharesSold;
-		
+		private int sharesSold;	
 		
 		public CompanyBuilder(String name) {
 			super();
