@@ -13,10 +13,12 @@ import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesExceptio
 
 @Entity
 public class Company {
+	
 	@Id
 	@GeneratedValue
 	private final int id;
 	private static int lastId = 0;
+	
 	private String name;
 	private double sharePrice;
 	private double capital;
