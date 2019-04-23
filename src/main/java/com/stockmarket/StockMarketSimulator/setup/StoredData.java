@@ -1,4 +1,4 @@
-package setup;
+package com.stockmarket.StockMarketSimulator.setup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,15 +6,15 @@ import java.util.Arrays;
 public class StoredData {
 	
 	public ArrayList<String> companyName = new ArrayList <>(Arrays.asList(
-			"Ralph Lauren Corporation", "Oracle Corporation","Kellogg Company","Kleenex","Apple Inc.","HSBC","Facebook, Inc.","Corona","IKEA","Intel Corporation","L'Oréal",
-			"Morgan Stanley","Pampers","Citigroup","H&M","Allianz","Amazon.com","Hewlett-Packard","Global Gillette","Jack Daniel's","Nescafé","Harley-Davidson Motor Company",
+			"Ralph Lauren Corporation", "Oracle Corporation","Kellogg Company","Kleenex","Apple Inc.","HSBC","Facebook, Inc.","Corona","IKEA","Intel Corporation","L'Orï¿½al",
+			"Morgan Stanley","Pampers","Citigroup","H&M","Allianz","Amazon.com","Hewlett-Packard","Global Gillette","Jack Daniel's","Nescafï¿½","Harley-Davidson Motor Company",
 			"Volkswagen Group","Heineken Brewery","Credit Suisse","NTT Data","Toyota Motor Corporation","Wells Fargo","Mitsubishi","Gucci","Johnson & Johnson",
-			"McDonald's","Wal-Mart","Audi","Moët et Chandon","Yahoo!","Pizza Hut","The Walt Disney Company","AT&T","KFC","Bank of America","Starbucks",
+			"McDonald's","Wal-Mart","Audi","Moï¿½t et Chandon","Yahoo!","Pizza Hut","The Walt Disney Company","AT&T","KFC","Bank of America","Starbucks",
 			"MasterCard","3M","Mercedes-Benz","Cisco Systems, Inc.","Xerox","Canon","BMW","Sony","Chase","MTV","Ferrari S.p.A.","Hyundai","BlackBerry",	"Samsung Group",
 			"Home Depot","Verizon Communications","Avon","Panasonic Corporation","United Parcel Service","Nissan Motor Co., Ltd.","Deere & Company",	"Siemens AG",
 			"Vodafone","Zara","Nintendo","PepsiCo",	"Coca-Cola","Smirnoff","Tiffany & Co.","Adidas","Prada","SAP","Burberry","Cartier SA","Porsche","Nokia",
 			"Shell Oil Company","Johnnie Walker","IBM","American Express","Microsoft","Caterpillar Inc.","General Electric","VISA","Nike, Inc.","Adobe Systems","Budweiser Stag Brewing Company","eBay",
-			"Sprite","Kia Motors","Honda Motor Company, Ltd","Tesco Corporation","Louis Vuitton","Google","Hermès","Beko","Gap Inc.","Ericsson"
+			"Sprite","Kia Motors","Honda Motor Company, Ltd","Tesco Corporation","Louis Vuitton","Google","Hermï¿½s","Beko","Gap Inc.","Ericsson"
 	));
 	
 	public ArrayList<String> investorName = new ArrayList<>(Arrays.asList(

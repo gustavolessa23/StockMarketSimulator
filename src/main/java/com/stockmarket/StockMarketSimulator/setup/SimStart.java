@@ -1,6 +1,9 @@
-package setup;
+package com.stockmarket.StockMarketSimulator.setup;
 
-import stockmarket.*;
+import com.stockmarket.StockMarketSimulator.*;
+import com.stockmarket.StockMarketSimulator.model.Company;
+import com.stockmarket.StockMarketSimulator.model.Investor;
+import com.stockmarket.StockMarketSimulator.model.Wallet;
 
 import java.util.ArrayList;
 import java.util.Random;
