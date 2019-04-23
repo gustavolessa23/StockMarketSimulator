@@ -1,6 +1,8 @@
 package com.stockmarket.StockMarketSimulator.model;
 
 
+import java.text.DecimalFormat;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,8 +13,8 @@ public class Investor {
 	
 	@Id
 	@GeneratedValue
-	private final long id;
-	private static long lastId = 0;
+	private final int id;
+	private static int lastId = 0;
 	private String name;
 	private double budget;
 	
@@ -28,7 +30,7 @@ public class Investor {
 		this.wallet = builder.wallet;
 	}
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -69,9 +71,12 @@ public class Investor {
 	}
 	
 	public void getInvestorDetails() {
+		DecimalFormat df = new DecimalFormat("#.00");
+		
+		System.out.println("----------INVESTOR----------");
 		System.out.println("INVESTOR ID: \t" + this.getId());
 		System.out.println("INVESTOR NAME: \t" + this.getName());
-		System.out.printf("BUDGET: \t" + "%.2f %n",this.getBudget());
+		System.out.println("BUDGET: " +  df.format(this.getBudget()));
 		this.getWallet().getWalletDetails();
 		System.out.println();
 	}
