@@ -3,11 +3,12 @@ package com.stockmarket.StockMarketSimulator.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+//import javax.persistence.Entity;
+//import javax.persistence.GeneratedValue;
+//import javax.persistence.Id;
+//import javax.persistence.Transient;
 
 import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
 
@@ -28,6 +29,7 @@ public class Company {
 	private List<Share> shares;
 
 
+	
 	private Company(CompanyBuilder builder) {
 		super();
 		this.id = ++lastId;
@@ -39,6 +41,7 @@ public class Company {
 		ipo(builder.shares); // Initial Public Offering -> to create the shares
 		
 	}
+	
 
 	private void ipo(int numberOfShares) {
 		List<Share> shares = new ArrayList<>(); // new list to hold the Share objects created
@@ -82,16 +85,18 @@ public class Company {
 	public Share sellShare() {
 		if (shares.isEmpty()) {
 			throw new CompanyOutOfSharesException("Company "+this.name+" has no shares left to sell."); // check if it's empty
+		}else {
+			sharesSold++; // increment sharesSold
+			
+			capital+=sharePrice; // increment capital by share price
+			
+			Share sold = shares.remove(0); // remove the first chair (ArrayList if not empty will always have item on index 0)
+			sold.setPrice(sharePrice); // set price accordingly to current share price
+			
+			return sold; // return share
 		}
 		
-		sharesSold++; // increment sharesSold
 		
-		capital+=sharePrice; // increment capital by share price
-		
-		Share sold = shares.remove(0); // remove the first chair (ArrayList if not empty will always have item on index 0)
-		sold.setPrice(sharePrice); // set price accordingly to current share price
-		
-		return sold; // return share
 	}
 
 	

@@ -33,6 +33,7 @@ public class Investor {
 
 	}
 
+	
 	public long getId() {
 		return id;
 	}
