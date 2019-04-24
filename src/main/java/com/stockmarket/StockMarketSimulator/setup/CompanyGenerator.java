@@ -12,7 +12,6 @@ public class CompanyGenerator {
 	public static ArrayList <Company> companyList = new ArrayList<>();
 	
 	StoredData sd = new StoredData(); //Object that holds random names and other data
-	TradingDay td = new TradingDay();
 	Random rG = new Random();
 	
 	/**
@@ -38,7 +37,7 @@ public class CompanyGenerator {
 					build(); //use company builder to assign values
 	
 			//randomCompany.getCompanyDetails(); //Prints out the companies details after being generated
-			companyList.add(randomCompany); 
+			companyList.add(randomCompany);
 		}
 	}
 	

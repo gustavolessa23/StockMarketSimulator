@@ -13,7 +13,6 @@ public class InvestorGenerator {
 	public static ArrayList <Investor> investorList = new ArrayList<>(); //Array lists for adding the newly generated objects to call them (testing)
 	
 	StoredData sd = new StoredData(); //Object that holds random names and other data
-	TradingDay td = new TradingDay();
 	Random rG = new Random();
 	
 	/**
