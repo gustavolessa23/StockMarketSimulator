@@ -1,22 +1,18 @@
 package com.stockmarket.StockMarketSimulator.services;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.repositories.CompanyRepository;
 
+@Service
 public class CompanyService {
 	
 	@Autowired
 	private CompanyRepository companyRepository;
-	
-	
-	
-	private List<Company> companies;
 	
 	/**
 	 * This method is responsible for getting a Company be its ID
@@ -29,15 +25,21 @@ public class CompanyService {
 	
 	
 	/**
+	 * 
+	 * @param company
+	 */
+	public void addCompany(Company company) {
+		company.getCompanyDetails();
+		companyRepository.save(company);
+	}
+	
+	
+	/**
 	 * Method to get and return all Companies in the Database
 	 * @return return a list of companies in the added in the data base.
 	 */
 	public List<Company> getAllCompanies(){
-		List<Company> companies = new ArrayList<>();
-		
-		companyRepository.findAll().forEach(companies::add);
-		
-		return companies;
+		return companyRepository.findAll();
 	}
 	
 	/**

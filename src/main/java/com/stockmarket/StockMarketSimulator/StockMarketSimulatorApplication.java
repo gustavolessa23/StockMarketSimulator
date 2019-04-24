@@ -1,5 +1,6 @@
 package com.stockmarket.StockMarketSimulator;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,6 +33,7 @@ public class StockMarketSimulatorApplication implements CommandLineRunner {
 		CompanyGenerator cGen = new CompanyGenerator(); 
 		InvestorGenerator iGen = new InvestorGenerator();	
 		TradingDay td = new TradingDay();
+		
 		
 		cGen.generateCompanies(); //generate companies
 		iGen.generateInvestors(); //generate investors
