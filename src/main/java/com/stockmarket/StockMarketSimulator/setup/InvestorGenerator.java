@@ -6,6 +6,8 @@ import java.util.Random;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
 import com.stockmarket.StockMarketSimulator.model.Wallet;
+import com.stockmarket.StockMarketSimulator.services.InvestorService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,9 @@ public class InvestorGenerator {
 	
 	public static int numberOfInvestors = 100; //Number of investors to generate	
 	public static ArrayList <Investor> investorList = new ArrayList<>(); //Array lists for adding the newly generated objects to call them (testing)
+	
+	@Autowired
+	InvestorService investorService;
 	
 	@Autowired
 	StoredData sd; //Object that holds random names and other data
@@ -39,7 +44,7 @@ public class InvestorGenerator {
 					setWallet(radnomWallet).build(); //use investor builder to assign values
 		
 			//randomInvestor.getInvestorDetails(); //Prints out the investor details (including wallet details) after being generated
-			
+			investorService.addInvestor(randomInvestor);
 			investorList.add(randomInvestor);
 		}	
 	};

@@ -12,7 +12,6 @@ import javax.persistence.Transient;
 public class Investor {
 	
 	@Id
-	@GeneratedValue
 	private final int id;
 	private static int lastId = 0;
 	private String name;
@@ -33,7 +32,7 @@ public class Investor {
 	
 	public Investor() {
 		super();
-		this.id = ++lastId;
+		this.id = 0;
 		this.name = "";
 		this.budget = 0;
 		this.wallet = null;
