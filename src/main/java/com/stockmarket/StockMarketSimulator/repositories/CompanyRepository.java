@@ -7,8 +7,8 @@ import com.stockmarket.StockMarketSimulator.model.Company;
 
 import java.util.List;
 
-public interface CompanyRepository extends JpaRepository<Company, Long> {
+public interface CompanyRepository extends JpaRepository<Company, Integer> {
 	
-	List<Company> findCompanyId(Long companyId);
+	List<Company> findCompanyId(Integer companyId);
 
 }

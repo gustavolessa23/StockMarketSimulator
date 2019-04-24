@@ -58,7 +58,7 @@ public class Wallet {
 	 * @param id 
 	 * @return the company ID which is a Long id.
 	 */
-	public Optional<Company> getCompany(Long id) {
+	public Optional<Company> getCompany(Integer id) {
 		return companyRepository.findById(id);
 	}
 	
@@ -90,7 +90,7 @@ public class Wallet {
 		List<Integer> remaining = new ArrayList<>();
 		
 		for (int x = 1; x <= numberOfCompanies; x++) {
-			if (!companyRepository.existsById((long) x)) remaining.add(x);
+			if (!companyRepository.existsById((int) x)) remaining.add(x);
 		}		
 		
 		return remaining;
