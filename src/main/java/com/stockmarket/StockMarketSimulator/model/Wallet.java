@@ -4,18 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
-import com.stockmarket.StockMarketSimulator.repositories.CompanyRepository;
-
-import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
 
 public class Wallet {
 	
 	private List<Share> shares; // holds all shares of a wallet
 	//private List<Integer> companies;// holds all companyIDs, related to the shares, for faster access.
 	private Map<Integer, Integer> companies; // maps companyID->amount of shares. 
-	private CompanyRepository companyRepository;
+	
 	
 	public void getWalletDetails() {
 		
