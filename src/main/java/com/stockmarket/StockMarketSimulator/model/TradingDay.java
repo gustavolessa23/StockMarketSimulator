@@ -13,7 +13,7 @@ public class TradingDay {
 	/*
 	 * the core functionality method
 	 */
-	public void trade(ArrayList<Company>compList, ArrayList<Investor>invList) {
+	public void trade(List<Company> companyList, ArrayList<Investor>invList) {
 		Random rG = new Random();
 
 		while(contiueSimulation()) {
@@ -25,7 +25,7 @@ public class TradingDay {
 				break;
 			}else {
 			
-				Company randomCompany = compList.get(rG.nextInt(CompanyGenerator.numberOfCompanies)); //chooses a random company
+				Company randomCompany = companyList.get(rG.nextInt(CompanyGenerator.numberOfCompanies)); //chooses a random company
 				Investor randomInvestor = invList.get(rG.nextInt(InvestorGenerator.numberOfInvestors)); //chooses a random investor
 				
 				double budget = randomInvestor.getBudget(); //get budget

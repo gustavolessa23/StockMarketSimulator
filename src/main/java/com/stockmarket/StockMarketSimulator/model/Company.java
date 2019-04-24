@@ -26,6 +26,8 @@ public class Company {
 	private double sharePrice;
 	private double capital;
 	private int sharesSold;
+	
+	@Transient
 	private boolean hasSoldShare;
 	
 	@Transient
