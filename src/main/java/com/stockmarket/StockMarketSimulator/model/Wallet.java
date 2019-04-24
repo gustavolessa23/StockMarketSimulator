@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import com.stockmarket.StockMarketSimulator.repositories.CompanyRepository;
 
 public class Wallet {
 	
 	private List<Share> shares; // holds all shares of a wallet
 	//private List<Integer> companies;// holds all companyIDs, related to the shares, for faster access.
 	private Map<Integer, Integer> companies; // maps companyID->amount of shares. 
+	private CompanyRepository companyRepository;
 	
 	public Wallet() {
 		this.shares = new ArrayList<>();
@@ -33,6 +37,7 @@ public class Wallet {
 	
 	
 	// ----------- COMPANIES ---------------------
+	
 	
 	public int addCompanyId(int companyId) {
 		return this.companies.merge(companyId, 1, Integer::sum);  // add
@@ -61,7 +66,6 @@ public class Wallet {
 		
 		return remaining;
 	}
-	
 	
 
 
