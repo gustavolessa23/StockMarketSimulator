@@ -27,7 +27,7 @@ public class InvestorGenerator {
 			
 			Wallet radnomWallet = new Wallet(); //create a new wallet for each investor
 			String randomName = sd.investorName.get(i); 
-			double randomBudget = 1000.00+(10000.00-1000.00)*rG.nextDouble(); //create a random number for a budget between 1000 and 10000
+			double randomBudget = 1000.00+(2000.00-1000.00)*rG.nextDouble(); //create a random number for a budget between 1000 and 10000
 
 			Investor randomInvestor = investorBuilder.
 					setName(randomName).

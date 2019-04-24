@@ -132,17 +132,17 @@ public class Company {
 		boolean tenSharesSold = getSharesSold()%10==0; //check if 10 shares were sold
 		
 		if(tenSharesSold) { 
-			setSharePrice(newPrice);
+			this.setSharePrice(newPrice);
 		}
 	}
 	
 	public void decreasePrice() {
 		double newPrice = getSharePrice()-((getSharePrice()*2)/100); //decrease price by 2%
 		
-		if(getSharePrice()>=0.00) {
-			setSharePrice(newPrice);
-		}else if(getSharePrice()<=0){
-			setSharePrice(0); //set price to 0 if it goes below zero !!!!!!!!NEED TO CHANGE THIS
+		if(this.getSharePrice()>=0.00) {
+			this.setSharePrice(newPrice);
+		}else if(this.getSharePrice()<=0){
+			this.setSharePrice(0); //set price to 0 if it goes below zero !!!!!!!!NEED TO CHANGE THIS
 		}
 		
 	}

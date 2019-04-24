@@ -17,6 +17,7 @@ public class Investor {
 	private static int lastId = 0;
 	private String name;
 	private double budget;
+	private int totalNumberOfSharesBought;
 	
 	@Transient
 	private Wallet wallet;
@@ -76,13 +77,23 @@ public class Investor {
 		System.out.println("----------INVESTOR----------");
 		System.out.println("INVESTOR ID: \t" + this.getId());
 		System.out.println("INVESTOR NAME: \t" + this.getName());
-		System.out.println("BUDGET: " +  df.format(this.getBudget()));
+		System.out.println("BUDGET: $ " +  df.format(this.getBudget()));
+		System.out.println("SHARES BOUGHT: " +  this.getTotalNumberOfSharesBought());
 		this.getWallet().getWalletDetails();
 		System.out.println();
 	}
 	
 	public void buyShare(double sharePrice) {
 		budget-=sharePrice; // decrement budget by share price
+		totalNumberOfSharesBought +=1;
+	}
+
+	public int getTotalNumberOfSharesBought() {
+		return totalNumberOfSharesBought;
+	}
+
+	public void setTotalNumberOfSharesBought(int totalNumberOfSharesBought) {
+		this.totalNumberOfSharesBought = totalNumberOfSharesBought;
 	}
 
 	public static class InvestorBuilder{

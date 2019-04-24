@@ -1,6 +1,5 @@
 package com.stockmarket.StockMarketSimulator.model;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,12 +17,12 @@ public class Wallet {
 		
 		System.out.println("WALLET DETAILS: \t");
 		System.out.println("\tNumber of companies invested in: "+this.getAmountOfCompaniesInvestedIn());
-		System.out.println("\tShares: ");
+		//System.out.println("\tShares: ");
 		//for(int i=0;i<this.getShares().size();i++) {
 			//System.out.print("\t"+(i+1)+" Company ID: "+this.getShares().get(i).getCompanyId());
 			//System.out.printf("\t" + "\t$ %.2f",this.getShares().get(i).getPrice());
 			//System.out.print("\t\t"+this.getShares().get(i).getDateSold());
-			System.out.println();
+			//System.out.println();
 		//};
 	}
 	
