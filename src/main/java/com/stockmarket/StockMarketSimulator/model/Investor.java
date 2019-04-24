@@ -30,7 +30,7 @@ public class Investor {
 		this.wallet = builder.wallet;
 	}
 	
-	public Investor() {
+	private Investor() {
 		super();
 		this.id = 0;
 		this.name = "";

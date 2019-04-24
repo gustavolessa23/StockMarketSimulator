@@ -54,7 +54,7 @@ public class CompanyGenerator {
 	
 			companyService.addCompany(randomCompany);
 			//randomCompany.getCompanyDetails(); //Prints out the companies details after being generated
-			// companyList.add(randomCompany); 
+			companyList.add(randomCompany); 
 		}
 		
 		//companyList = companyService.getAllCompanies();

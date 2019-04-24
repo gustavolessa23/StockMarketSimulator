@@ -44,12 +44,16 @@ public class Company {
 		this.capital = builder.capital;
 		this.sharesSold = builder.sharesSold;
 		this.hasSoldShare = builder.hasSoldShare;
+		this.shares = new ArrayList<>(); 
 		
-		ipo(builder.shares); // Initial Public Offering -> to create the shares
+		
+		for(int x = 0; x < builder.shares; x++) 
+			shares.add(new Share(this.id, this.sharePrice)); 
+		//ipo(builder.shares); // Initial Public Offering -> to create the shares
 		
 	}
 	
-	public Company() {
+	private Company() {
 		super();
 		this.id = 0;
 		this.name = "";
@@ -57,11 +61,15 @@ public class Company {
 		this.capital = 0;
 		this.sharesSold = 0;
 		this.hasSoldShare = false;
+		this.shares = new ArrayList<>();
+		
+		ipo(this.getShares().size()); // Initial Public Offering -> to create the shares
+
 	}
 	
 
 	private void ipo(int numberOfShares) {
-		shares = new ArrayList<>(); // new list to hold the Share objects created
+	//	shares = new ArrayList<>(); // new list to hold the Share objects created
 		
 		for(int x = 0; x < numberOfShares; x++) 
 			shares.add(new Share(this.id, this.sharePrice)); // create the chosen number of shares
