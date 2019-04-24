@@ -4,11 +4,12 @@ package com.stockmarket.StockMarketSimulator.model;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+//import javax.persistence.Entity;
+//import javax.persistence.GeneratedValue;
+//import javax.persistence.Id;
+//import javax.persistence.Transient;
 
 import com.stockmarket.StockMarketSimulator.StockMarketSimulatorApplication;
 import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
@@ -42,6 +43,7 @@ public class Company {
 		ipo(builder.shares); // Initial Public Offering -> to create the shares
 		
 	}
+	
 
 	private void ipo(int numberOfShares) {
 		shares = new ArrayList<>(); // new list to hold the Share objects created
@@ -112,6 +114,7 @@ public class Company {
 		if (shares.isEmpty()) {
 			throw new CompanyOutOfSharesException("Company "+this.name+" has no shares left to sell."); // check if it's empty
 		}else {
+
 			
 			sharesSold++; // increment sharesSold
 			capital+=sharePrice; // increment capital by share price
@@ -130,7 +133,7 @@ public class Company {
 	public void increasePrice() {
 		double newPrice = getSharePrice()+((getSharePrice()*2/100)); //increase price by 2%
 		boolean tenSharesSold = getSharesSold()%10==0; //check if 10 shares were sold
-		
+
 		if(tenSharesSold) { 
 			this.setSharePrice(newPrice);
 		}
@@ -144,7 +147,6 @@ public class Company {
 		}else if(this.getSharePrice()<=0){
 			this.setSharePrice(0); //set price to 0 if it goes below zero !!!!!!!!NEED TO CHANGE THIS
 		}
-		
 	}
 
 	
