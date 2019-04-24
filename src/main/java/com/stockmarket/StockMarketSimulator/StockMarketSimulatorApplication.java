@@ -4,20 +4,28 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.stockmarket.StockMarketSimulator.setup.SimStart;
+import com.stockmarket.StockMarketSimulator.model.Company;
+import com.stockmarket.StockMarketSimulator.model.Investor;
+import com.stockmarket.StockMarketSimulator.model.TradingDay;
+import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
+import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
 
 @SpringBootApplication
 public class StockMarketSimulatorApplication implements CommandLineRunner {
-
+			
 	public static void main(String[] args) {
 		//SpringApplication app = new SpringApplication(StockMarketSimulatorApplication.class);
 		//app.run(args);
 		
-		SimStart sim = new SimStart();
+		CompanyGenerator cGen = new CompanyGenerator(); 
+		InvestorGenerator iGen = new InvestorGenerator();	
+		TradingDay td = new TradingDay();
 		
-		sim.generateCompanies();
-		sim.generateInvestors();
-		
+		cGen.generateCompanies(); //generate companies
+		iGen.generateInvestors(); //generate investors
+
+		td.trade(CompanyGenerator.companyList, InvestorGenerator.investorList); //run the trade
+				
 	}
 	
     //access command line arguments
