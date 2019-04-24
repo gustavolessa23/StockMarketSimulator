@@ -1,19 +1,31 @@
 package com.stockmarket.StockMarketSimulator.setup;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.stockmarket.StockMarketSimulator.model.Company;
-import com.stockmarket.StockMarketSimulator.model.TradingDay;
+import com.stockmarket.StockMarketSimulator.services.CompanyService;
 
 public class CompanyGenerator {
 
 	public static int numberOfCompanies = 100; //Number of companies to generate
-	public static ArrayList <Company> companyList = new ArrayList<>();
+	public static List <Company> companyList;
 	
+	@Autowired
+	private CompanyService companyService;
+	
+
 	StoredData sd = new StoredData(); //Object that holds random names and other data
 	Random rG = new Random();
 	
+	
+	public CompanyGenerator() {
+		companyList = new ArrayList<>();
+	}
+
 	/**
 	 * Generates companies with random values and adds them to the companyList
 	 */
@@ -36,9 +48,14 @@ public class CompanyGenerator {
 					setHasSoldShare(false).
 					build(); //use company builder to assign values
 	
-			//randomCompany.getCompanyDetails(); //Prints out the companies details after being generated
-			companyList.add(randomCompany);
+			randomCompany.getCompanyDetails(); //Prints out the companies details after being generated
+			companyService.addCompany(randomCompany);
+			
+			//companyList.add(randomCompany); 
+
 		}
+		
+		//companyList = companyService.getAllCompanies();
 	}
 	
 }
