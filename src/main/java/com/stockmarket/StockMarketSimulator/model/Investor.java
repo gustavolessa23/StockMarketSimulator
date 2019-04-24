@@ -1,6 +1,8 @@
 package com.stockmarket.StockMarketSimulator.model;
 
 
+import java.text.DecimalFormat;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,12 +13,11 @@ public class Investor {
 	
 	@Id
 	@GeneratedValue
-	private final long id;
-	private static long lastId = 0;
+	private final int id;
+	private static int lastId = 0;
 	private String name;
 	private double budget;
-	private int numberOfShares;
-	private int numberOfCompanies;
+	private int totalNumberOfSharesBought;
 	
 	@Transient
 	private Wallet wallet;
@@ -28,13 +29,9 @@ public class Investor {
 		this.name = builder.name;
 		this.budget = builder.budget;
 		this.wallet = builder.wallet;
-		this.numberOfCompanies = 0;
-		this.numberOfShares = 0;
-
 	}
 
-	
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -74,27 +71,30 @@ public class Investor {
 		this.wallet = wallet;
 	}
 	
+	public void getInvestorDetails() {
+		DecimalFormat df = new DecimalFormat("#.00");
+		
+		System.out.println("----------INVESTOR----------");
+		System.out.println("INVESTOR ID: \t" + this.getId());
+		System.out.println("INVESTOR NAME: \t" + this.getName());
+		System.out.println("BUDGET: $ " +  df.format(this.getBudget()));
+		System.out.println("SHARES BOUGHT: " +  this.getTotalNumberOfSharesBought());
+		this.getWallet().getWalletDetails();
+		System.out.println();
+	}
 	
-
-
-	/**
-	 * @return the numberOfShares
-	 */
-	public int getNumberOfShares() {
-		numberOfShares = wallet.getAmountOfShares();
-		return numberOfShares;
+	public void buyShare(double sharePrice) {
+		budget-=sharePrice; // decrement budget by share price
+		totalNumberOfSharesBought +=1;
 	}
 
-	/**
-	 * @return the numberOfCompanies
-	 */
-	public int getNumberOfCompanies() {
-		numberOfCompanies = wallet.getAmountOfCompanies();
-		return numberOfCompanies;
+	public int getTotalNumberOfSharesBought() {
+		return totalNumberOfSharesBought;
 	}
 
-
-
+	public void setTotalNumberOfSharesBought(int totalNumberOfSharesBought) {
+		this.totalNumberOfSharesBought = totalNumberOfSharesBought;
+	}
 
 	public static class InvestorBuilder{
 		private String name;
@@ -130,7 +130,6 @@ public class Investor {
 			this.wallet = wallet;
 			return this;
 		}
-		
 		
 		public Investor build() {
 			return new Investor(this);
