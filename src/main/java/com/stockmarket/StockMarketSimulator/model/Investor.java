@@ -30,6 +30,14 @@ public class Investor {
 		this.budget = builder.budget;
 		this.wallet = builder.wallet;
 	}
+	
+	public Investor() {
+		super();
+		this.id = ++lastId;
+		this.name = "";
+		this.budget = 0;
+		this.wallet = null;
+	}
 
 	public int getId() {
 		return id;

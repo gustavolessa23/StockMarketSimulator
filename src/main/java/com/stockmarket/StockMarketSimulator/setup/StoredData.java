@@ -3,6 +3,9 @@ package com.stockmarket.StockMarketSimulator.setup;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class StoredData {
 	
 	public ArrayList<String> companyName = new ArrayList <>(Arrays.asList(

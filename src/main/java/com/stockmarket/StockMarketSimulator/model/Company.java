@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
+import org.springframework.stereotype.Component;
+
 //import javax.persistence.Entity;
 //import javax.persistence.GeneratedValue;
 //import javax.persistence.Id;
@@ -18,8 +20,9 @@ import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
 @Entity
 public class Company {
 	
+//	@Id
+//	@GeneratedValue
 	@Id
-	@GeneratedValue
 	private final int id;
 	private static int lastId = 0;
 	private String name;
@@ -44,6 +47,16 @@ public class Company {
 		
 		ipo(builder.shares); // Initial Public Offering -> to create the shares
 		
+	}
+	
+	public Company() {
+		super();
+		this.id = 0;
+		this.name = "";
+		this.sharePrice = 0;
+		this.capital = 0;
+		this.sharesSold = 0;
+		this.hasSoldShare = false;
 	}
 	
 
@@ -150,7 +163,6 @@ public class Company {
 		}
 	}
 
-	
 	public static class CompanyBuilder{
 		private String name;
 		private int shares;

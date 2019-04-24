@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.stereotype.Component;
+
 import com.stockmarket.StockMarketSimulator.StockMarketSimulatorApplication;
 import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
 import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
 
+@Component
 public class TradingDay {
 	
 	/*

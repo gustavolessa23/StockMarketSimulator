@@ -6,14 +6,18 @@ import java.util.Random;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
 import com.stockmarket.StockMarketSimulator.model.Wallet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class InvestorGenerator {
 	
 	public static int numberOfInvestors = 100; //Number of investors to generate	
 	public static ArrayList <Investor> investorList = new ArrayList<>(); //Array lists for adding the newly generated objects to call them (testing)
 	
-	StoredData sd = new StoredData(); //Object that holds random names and other data
-	TradingDay td = new TradingDay();
+	@Autowired
+	StoredData sd; //Object that holds random names and other data
+	
 	Random rG = new Random();
 	
 	/**

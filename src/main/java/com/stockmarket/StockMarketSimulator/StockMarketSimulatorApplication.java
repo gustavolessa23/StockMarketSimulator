@@ -15,6 +15,16 @@ import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
 @SpringBootApplication
 @EnableJpaAuditing
 public class StockMarketSimulatorApplication implements CommandLineRunner {
+	
+	@Autowired
+	CompanyGenerator cGen; 
+	
+	@Autowired
+	InvestorGenerator iGen;	
+	
+	@Autowired
+	TradingDay td;
+	
 			
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(StockMarketSimulatorApplication.class);
@@ -29,11 +39,6 @@ public class StockMarketSimulatorApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 	
         System.out.println("Application starting....");
-        
-		CompanyGenerator cGen = new CompanyGenerator(); 
-		InvestorGenerator iGen = new InvestorGenerator();	
-		TradingDay td = new TradingDay();
-		
 		
 		cGen.generateCompanies(); //generate companies
 		iGen.generateInvestors(); //generate investors
