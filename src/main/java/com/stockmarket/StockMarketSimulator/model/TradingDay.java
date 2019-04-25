@@ -66,14 +66,14 @@ public class TradingDay {
 				checkSharesAmount(randomCompany); //checks the shares after the trade if the company should be removed from the simulation or not
 				checkBudgetAmount(randomInvestor); //checks the budget after the trade if the investor should be removed from the simulation or not
 			
+				
 				randomCompany.getCompanyDetails();
 				randomInvestor.getInvestorDetails();
 				//System.out.println(companyInWallet);
 			 
 			}
 		}
-			
-			
+		
 	}
 	
 	public void tradeShare (Company company, Investor investor) {
