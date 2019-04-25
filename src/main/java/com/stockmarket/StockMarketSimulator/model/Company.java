@@ -1,22 +1,28 @@
 package com.stockmarket.StockMarketSimulator.model;
 
-import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+
+import org.springframework.stereotype.Component;
 
 //import javax.persistence.Entity;
 //import javax.persistence.GeneratedValue;
 //import javax.persistence.Id;
 //import javax.persistence.Transient;
 
+import com.stockmarket.StockMarketSimulator.StockMarketSimulatorApplication;
+import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
+import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
 
 @Entity
 public class Company {
 	
+//	@Id
+//	@GeneratedValue
 	@Id
-	@GeneratedValue
 	private final int id;
 	private static int lastId = 0;
 	private String name;
@@ -30,7 +36,7 @@ public class Company {
 	@Transient
 	private List<Share> shares;
 
-	public Company(CompanyBuilder builder) {
+	private Company(CompanyBuilder builder) {
 		super();
 		this.id = ++lastId;
 		this.name = builder.name;
@@ -38,14 +44,32 @@ public class Company {
 		this.capital = builder.capital;
 		this.sharesSold = builder.sharesSold;
 		this.hasSoldShare = builder.hasSoldShare;
+		this.shares = new ArrayList<>(); 
 		
-		ipo(builder.shares); // Initial Public Offering -> to create the shares
 		
+		for(int x = 0; x < builder.shares; x++) 
+			shares.add(new Share(this.id, this.sharePrice)); 
+		//ipo(builder.shares); // Initial Public Offering -> to create the shares
+		
+	}
+	
+	private Company() {
+		super();
+		this.id = 0;
+		this.name = "";
+		this.sharePrice = 0;
+		this.capital = 0;
+		this.sharesSold = 0;
+		this.hasSoldShare = false;
+		this.shares = new ArrayList<>();
+		
+		ipo(this.getShares().size()); // Initial Public Offering -> to create the shares
+
 	}
 	
 
 	private void ipo(int numberOfShares) {
-		shares = new ArrayList<>(); // new list to hold the Share objects created
+	//	shares = new ArrayList<>(); // new list to hold the Share objects created
 		
 		for(int x = 0; x < numberOfShares; x++) 
 			shares.add(new Share(this.id, this.sharePrice)); // create the chosen number of shares
@@ -147,7 +171,6 @@ public class Company {
 		}
 	}
 
-	
 	public static class CompanyBuilder{
 		private String name;
 		private int shares;

@@ -4,36 +4,59 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.stereotype.Component;
+
 import com.stockmarket.StockMarketSimulator.StockMarketSimulatorApplication;
+import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
+import com.stockmarket.StockMarketSimulator.services.CompanyService;
+import com.stockmarket.StockMarketSimulator.services.InvestorService;
 import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
 import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 
+
+@Component
 public class TradingDay {
+	
+	@Autowired
+	CompanyService companyService;
+	
+	@Autowired
+	InvestorService investorService;
+	
+	public void trade() {
+		//System.out.println("RANDOM COMPANY: "+companyService.getAllCompanies().get(2).getShares().size());
+		trade(companyService.getAllCompanies(), investorService.getAllInvestors());
+	}
 	
 	/*
 	 * the core functionality method
 	 */
-	public void trade(List<Company> companyList, ArrayList<Investor>invList) {
+	public void trade(List<Company> companyList, List<Investor>invList) {
 		Random rG = new Random();
 
 		while(contiueSimulation()) {
 
-			if(CompanyGenerator.companyList.isEmpty() || InvestorGenerator.investorList.isEmpty()) {
+			if(companyList.isEmpty() || invList.isEmpty()) {
 				System.out.println("Simulation ended");
-				System.out.println("INVESTORS: "+InvestorGenerator.investorList.size());
-				System.out.println("COMPANIES: "+CompanyGenerator.companyList.size());
+				System.out.println("INVESTORS: "+invList.size());
+				System.out.println("COMPANIES: "+companyList.size());
 				break;
 			}else {
 			
-				Company randomCompany = companyList.get(rG.nextInt(CompanyGenerator.numberOfCompanies)); //chooses a random company
-				Investor randomInvestor = invList.get(rG.nextInt(InvestorGenerator.numberOfInvestors)); //chooses a random investor
+				Company randomCompany = companyList.get(rG.nextInt(companyList.size())); //chooses a random company
+				Investor randomInvestor = invList.get(rG.nextInt(invList.size())); //chooses a random investor
 				
 				double budget = randomInvestor.getBudget(); //get budget
 				double sharePrice = randomCompany.getSharePrice(); //get share price
+				
+				randomCompany.getCompanyDetails();
+				randomInvestor.getInvestorDetails();
 	
 				List<Integer> companyInWallet = randomInvestor.getWallet().getRemainingCompaniesIds(CompanyGenerator.numberOfCompanies);
+				// || !companyInWallet.contains(randomCompany.getId())
 				
-				if(budget>=sharePrice|| !companyInWallet.contains(randomCompany.getId())) { //if budget is higher than share price (&& investor has not invested in company)
+				if(budget>=sharePrice || !companyInWallet.contains(randomCompany.getId())) { //if budget is higher than share price (&& investor has not invested in company)
 					tradeShare(randomCompany, randomInvestor); // trades the shares between the company and investor if condition is true
 						
 				}else if(budget<=sharePrice ){ //else if not enough in the budget (|| OTHER CONDITION)
@@ -45,7 +68,7 @@ public class TradingDay {
 			
 				randomCompany.getCompanyDetails();
 				randomInvestor.getInvestorDetails();
-				System.out.println(companyInWallet);
+				//System.out.println(companyInWallet);
 			 
 			}
 		}
@@ -54,16 +77,22 @@ public class TradingDay {
 	}
 	
 	public void tradeShare (Company company, Investor investor) {
-		Share soldShare = company.sellShare(); //returns a share that is sold from company (updates share lists)
-		
-		investor.buyShare(soldShare.getPrice()); //buy share for the share price (update budget)
-		investor.getWallet().addShare(soldShare); //add sold share to wallet (update wallet)
-		
-		Transaction transaction = new Transaction(company,investor); //creates a transaction between the company and investor
+		try {
+			System.out.println("COMPANY SHAREEEES:"+company.getNumberOfSharesAvailable());
+			Share soldShare = company.sellShare(); //returns a share that is sold from company (updates share lists)
+			
+			investor.buyShare(soldShare.getPrice()); //buy share for the share price (update budget)
+			investor.getWallet().addShare(soldShare); //add sold share to wallet (update wallet)
+			
+			Transaction transaction = new Transaction(company,investor); //creates a transaction between the company and investor
 
-		transaction.getTransactionDetails(); //displays the transactions
-		
-		afterTenTransactions(transaction); //a check for every 10 transactions in the simulation
+			transaction.getTransactionDetails(); //displays the transactions
+			
+			afterTenTransactions(transaction); //a check for every 10 transactions in the simulation
+		} catch (CompanyOutOfSharesException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 	

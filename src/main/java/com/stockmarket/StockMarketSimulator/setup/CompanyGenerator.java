@@ -5,10 +5,13 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.stockmarket.StockMarketSimulator.model.Company;
+import com.stockmarket.StockMarketSimulator.model.TradingDay;
 import com.stockmarket.StockMarketSimulator.services.CompanyService;
 
+@Component
 public class CompanyGenerator {
 
 	public static int numberOfCompanies = 100; //Number of companies to generate
@@ -17,8 +20,9 @@ public class CompanyGenerator {
 	@Autowired
 	private CompanyService companyService;
 	
-
-	StoredData sd = new StoredData(); //Object that holds random names and other data
+	@Autowired
+	StoredData sd; //Object that holds random names and other data
+	
 	Random rG = new Random();
 	
 	
@@ -48,11 +52,9 @@ public class CompanyGenerator {
 					setHasSoldShare(false).
 					build(); //use company builder to assign values
 	
-			randomCompany.getCompanyDetails(); //Prints out the companies details after being generated
 			companyService.addCompany(randomCompany);
-			
-			//companyList.add(randomCompany); 
-
+			//randomCompany.getCompanyDetails(); //Prints out the companies details after being generated
+			companyList.add(randomCompany); 
 		}
 		
 		//companyList = companyService.getAllCompanies();
