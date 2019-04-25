@@ -94,6 +94,11 @@ public class Investor {
 		budget-=sharePrice; // decrement budget by share price
 		totalNumberOfSharesBought +=1;
 	}
+	
+
+	public void incrementSharesBought() {
+		this.totalNumberOfSharesBought++;
+	}
 
 	public int getTotalNumberOfSharesBought() {
 		return totalNumberOfSharesBought;
@@ -145,5 +150,7 @@ public class Investor {
 		
 		
 	}
+
+
 	
 }

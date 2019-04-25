@@ -170,6 +170,14 @@ public class Company {
 			this.setSharePrice(0); //set price to 0 if it goes below zero !!!!!!!!NEED TO CHANGE THIS
 		}
 	}
+	
+	public void incrementSharesSold() {
+		this.sharesSold++;
+	}
+	
+	public void incrementCapitalBySharePrice() {
+		this.capital = this.capital+this.sharePrice;
+	}
 
 	public static class CompanyBuilder{
 		private String name;
@@ -182,6 +190,10 @@ public class Company {
 		public CompanyBuilder(String name) {
 			super();
 			this.name = name;
+			this.sharePrice = 0;
+			this.capital = 0;
+			this.sharesSold = 0;
+			this.hasSoldShare = false;
 		}
 
 

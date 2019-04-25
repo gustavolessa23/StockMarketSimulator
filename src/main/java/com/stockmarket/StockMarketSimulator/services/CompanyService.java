@@ -1,12 +1,20 @@
 package com.stockmarket.StockMarketSimulator.services;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
 import com.stockmarket.StockMarketSimulator.model.Company;
+import com.stockmarket.StockMarketSimulator.model.Data;
+import com.stockmarket.StockMarketSimulator.model.Investor;
+import com.stockmarket.StockMarketSimulator.model.Share;
 import com.stockmarket.StockMarketSimulator.repositories.CompanyRepository;
+import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
+import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
 
 @Service
 public class CompanyService {
@@ -14,13 +22,74 @@ public class CompanyService {
 	@Autowired
 	private CompanyRepository companyRepository;
 	
+	@Autowired
+	private CompanyGenerator companyGenerator; 
+	
+	@Autowired
+	private Data data; 
+	
+	/**
+	 * This method populates the company list by calling the generator and setting the list.
+	 */
+	public void populateCompanies() {
+		data.setCompanies(companyGenerator.generateCompanies());
+		
+		Map<Integer, Company> companyMap = new HashMap<>();
+		data.getCompanies().forEach(company ->
+			companyMap.put(company.getId(), company)
+				);
+		data.setCompaniesMap(companyMap);
+	}
+
+	public Share sellShare(Company company) {
+		if (company.getShares().isEmpty()) {
+			throw new CompanyOutOfSharesException("Company "+company.getName()+" has no shares left to sell."); // check if it's empty
+		}else {
+			company.incrementSharesSold(); // increment sharesSold
+			
+			company.incrementCapitalBySharePrice(); // increment capital by share price
+	
+			Share sold = company.getShares().remove(0); // remove the first share (ArrayList if not empty will always have item on index 0)
+			
+			sold.setPrice(company.getSharePrice()); // set price accordingly to current share price
+			
+			company.setHasSoldShare(true);
+			
+			if(company.getSharesSold()%10 == 0) {
+				company.increasePrice();
+			}
+			return sold; // return share
+		}
+
+	}
+	
+	public Company getCheapestAvailableShare() {
+		Company company = null;
+		for(int x = 0; x < data.getCompanies().size(); x++) {
+			Company current = data.getCompanies().get(x);
+			
+			if(company == null && current.getShares().size() > 0) {
+				company = current;
+			}
+			if(company != null && current.getSharePrice() > company.getSharePrice() && !current.getShares().isEmpty()) {
+				company = current;
+			}
+		}
+		return company;
+	}
+	
+	
 	/**
 	 * This method is responsible for getting a Company be its ID
 	 * @param id 
 	 * @return the company ID which is a Long id.
 	 */
-	public Company getCompany(Integer id) {
+	public Company getCompanyFromDb(Integer id) {
 		return companyRepository.getOne(id);
+	}
+	
+	public Company getCompanyFromId(int id) {
+		return data.getCompaniesMap().get(id);
 	}
 	
 	
