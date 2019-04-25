@@ -47,7 +47,8 @@ public class CompanyService {
 		}else {
 			company.incrementSharesSold(); // increment sharesSold
 			
-			company.incrementCapitalBySharePrice(); // increment capital by share price
+			company.incrementCapitalBySharePrice(); 
+			//System.out.println("Capital now: "+company.getCapital());// increment capital by share price
 	
 			Share sold = company.getShares().remove(0); // remove the first share (ArrayList if not empty will always have item on index 0)
 			
@@ -58,6 +59,8 @@ public class CompanyService {
 			if(company.getSharesSold()%10 == 0) {
 				company.increasePrice();
 			}
+			
+			//company.getCompanyDetails();
 			return sold; // return share
 		}
 
@@ -107,8 +110,16 @@ public class CompanyService {
 	 * Method to get and return all Companies in the Database
 	 * @return return a list of companies in the added in the data base.
 	 */
-	public List<Company> getAllCompanies(){
+	public List<Company> getAllCompaniesFromDb(){
 		return companyRepository.findAll();
+	}
+	
+	/**
+	 * Method to get and return all Companies in the Database
+	 * @return return a list of companies in the added in the data base.
+	 */
+	public List<Company> getAllCompanies(){
+		return data.getCompanies();
 	}
 	
 	/**

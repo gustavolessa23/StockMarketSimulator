@@ -36,6 +36,7 @@ public class Simulation {
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 		
+		
 		System.out.println("\n\n----------REPORT----------");
 		System.out.println("\nCOMPANIES:");
 		System.out.println("Highest capital:");

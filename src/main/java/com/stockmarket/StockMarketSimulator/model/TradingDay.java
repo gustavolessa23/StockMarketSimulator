@@ -61,7 +61,8 @@ public class TradingDay {
 
 
 		}
-
+//		data.setCompanies(companyList);
+//		data.setInvestors(invList);
 		System.out.println("Simulation ended");
 		System.out.println("INVESTORS: "+invList.size());
 		System.out.println("COMPANIES: "+companyList.size());
@@ -122,7 +123,7 @@ public class TradingDay {
 	public List<Investor> getHighestNumberOfShares(){
 		List<Investor> investors = new ArrayList<>();
 		
-		investors.add(investorService.getInvestorById(0));
+		investors.add(investorService.getAllInvestors().get(0));
 		
 		for (int x = 1; x<investorService.getAllInvestors().size(); x++) {
 			Investor current = investorService.getAllInvestors().get(x);
@@ -140,7 +141,7 @@ public class TradingDay {
 	public List<Investor> getLowestNumberOfShares(){
 		List<Investor> investors = new ArrayList<>();
 		
-		investors.add(investorService.getInvestorById(0));
+		investors.add(investorService.getAllInvestors().get(0));
 		
 		for (int x = 1; x<investorService.getAllInvestors().size(); x++) {
 			Investor current = investorService.getAllInvestors().get(x);

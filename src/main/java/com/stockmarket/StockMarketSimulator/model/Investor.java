@@ -90,10 +90,10 @@ public class Investor {
 		System.out.println();
 	}
 	
-	public void buyShare(double sharePrice) {
-		budget-=sharePrice; // decrement budget by share price
-		totalNumberOfSharesBought +=1;
-	}
+//	public void buyShare(double sharePrice) {
+//		budget-=sharePrice; // decrement budget by share price
+//		totalNumberOfSharesBought +=1;
+//	}
 	
 
 	public void incrementSharesBought() {

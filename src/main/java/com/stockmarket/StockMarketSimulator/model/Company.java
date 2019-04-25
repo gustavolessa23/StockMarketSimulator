@@ -133,24 +133,24 @@ public class Company {
 		System.out.println();
 	}
 
-	public Share sellShare() {
-		if (shares.isEmpty()) {
-			throw new CompanyOutOfSharesException("Company "+this.name+" has no shares left to sell."); // check if it's empty
-		}else {
-	
-			sharesSold++; // increment sharesSold
-			capital+=sharePrice; // increment capital by share price
-	
-			Share sold = shares.remove(0); // remove the first share (ArrayList if not empty will always have item on index 0)
-			
-			sold.setPrice(sharePrice); // set price accordingly to current share price
-			
-			increasePrice(); //increased price after every 10 shares sold
-			this.setHasSoldShare(true);
-			return sold; // return share
-		}
-
-	}
+//	public Share sellShare() {
+//		if (shares.isEmpty()) {
+//			throw new CompanyOutOfSharesException("Company "+this.name+" has no shares left to sell."); // check if it's empty
+//		}else {
+//	
+//			sharesSold++; // increment sharesSold
+//			capital+=sharePrice; // increment capital by share price
+//	
+//			Share sold = shares.remove(0); // remove the first share (ArrayList if not empty will always have item on index 0)
+//			
+//			sold.setPrice(sharePrice); // set price accordingly to current share price
+//			
+//			increasePrice(); //increased price after every 10 shares sold
+//			this.setHasSoldShare(true);
+//			return sold; // return share
+//		}
+//
+//	}
 	
 	public void increasePrice() {
 		double newPrice = getSharePrice()+((getSharePrice()*2/100)); //increase price by 2%
@@ -176,7 +176,9 @@ public class Company {
 	}
 	
 	public void incrementCapitalBySharePrice() {
+		System.out.println("Current capital: "+this.capital);
 		this.capital = this.capital+this.sharePrice;
+		System.out.println("New capital: "+this.capital);
 	}
 
 	public static class CompanyBuilder{

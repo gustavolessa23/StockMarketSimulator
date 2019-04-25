@@ -10,31 +10,34 @@ import com.stockmarket.StockMarketSimulator.exception.InvestorOutOfFundsExceptio
 import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
+import com.stockmarket.StockMarketSimulator.model.Share;
 import com.stockmarket.StockMarketSimulator.model.Transaction;
 
 @Component
 public class TransactionService {
-	
+
 	@Autowired 
 	Data data;
-	
+
 	@Autowired 
 	InvestorService investorService;
-	
+
 	@Autowired 
 	CompanyService companyService;
-	
-	
+
+
 	public void executeTransaction(Company company, Investor investor) throws InvestorOutOfFundsException, CompanyOutOfSharesException{
 		if(investor.getBudget()<company.getSharePrice()) {
 			throw new InvestorOutOfFundsException("Investor "+investor.getId()+", budget: "+investor.getBudget()+" cannot afford Company "+company.getId()+" share, priced "+company.getSharePrice());
 		} else if (company.getNumberOfSharesAvailable() == 0){
 			throw new CompanyOutOfSharesException("Company "+company.getId()+" has no more shares to sell!");
 		} else {
-			investorService.buyShare(investor, company.sellShare());	
+			Share share = companyService.sellShare(company);
+			//System.out.println("Share price: "+share.getPrice());
+			investorService.buyShare(investor, share);	
 			Transaction transaction = new Transaction(company, investor);
 			data.getTransactions().add(transaction);
-			
+
 			afterTenTransactionsVerification(transaction);
 		}
 	}
@@ -46,13 +49,15 @@ public class TransactionService {
 			try {
 				executeTransaction(randomCompany, investor);
 				return true;
-			}catch(InvestorOutOfFundsException | CompanyOutOfSharesException c) {
-				System.out.println("Trying another company.");
+			}catch(InvestorOutOfFundsException i){
+				System.out.println(i.getMessage());
+			}catch( CompanyOutOfSharesException c) {
+				System.out.println(c.getMessage());
 			}	
 		}
 		return false;
 	}
-	
+
 	public void afterTenTransactionsVerification(Transaction transaction) {
 		if(transaction.getTransactionId()%10==0) { //checks after every 10 transactions
 			System.out.println("Decrease in price for: ");
