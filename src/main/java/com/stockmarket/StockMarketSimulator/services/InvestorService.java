@@ -27,4 +27,6 @@ public class InvestorService {
 	public List<Investor> getAllInvestors(){
 		return investorRepository.findAll();
 	}
+
 }
+

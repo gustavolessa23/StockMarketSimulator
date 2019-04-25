@@ -55,4 +55,6 @@ public class InvestorGenerator {
 		}	
 		//investorList = investorService.getAllInvestors();
 	}
+
 }
+
