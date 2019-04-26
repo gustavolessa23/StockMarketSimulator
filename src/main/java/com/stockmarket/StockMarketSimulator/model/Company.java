@@ -6,16 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
-import org.springframework.stereotype.Component;
-
 //import javax.persistence.Entity;
 //import javax.persistence.GeneratedValue;
 //import javax.persistence.Id;
 //import javax.persistence.Transient;
 
-import com.stockmarket.StockMarketSimulator.StockMarketSimulatorApplication;
-import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
-import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
 
 @Entity
 public class Company {
@@ -29,6 +24,9 @@ public class Company {
 	private double sharePrice;
 	private double capital;
 	private int sharesSold;
+	private int initialShares;
+	private double initialCapital;
+	private double initialSharePrice;
 	
 	@Transient
 	private boolean hasSoldShare;
@@ -44,6 +42,9 @@ public class Company {
 		this.capital = builder.capital;
 		this.sharesSold = builder.sharesSold;
 		this.hasSoldShare = builder.hasSoldShare;
+		this.initialCapital = builder.initialCapital;
+		this.initialSharePrice = builder.initialSharePrice;
+		this.initialShares = builder.initialShares;
 		this.shares = new ArrayList<>(); 
 		
 		
@@ -61,6 +62,9 @@ public class Company {
 		this.capital = 0;
 		this.sharesSold = 0;
 		this.hasSoldShare = false;
+		this.initialCapital = 0;
+		this.initialSharePrice = 0;
+		this.initialShares = 0;
 		this.shares = new ArrayList<>();
 		
 		ipo(this.getShares().size()); // Initial Public Offering -> to create the shares
@@ -73,6 +77,29 @@ public class Company {
 		
 		for(int x = 0; x < numberOfShares; x++) 
 			shares.add(new Share(this.id, this.sharePrice)); // create the chosen number of shares
+	}
+	
+	
+
+	/**
+	 * @return the initialShares
+	 */
+	public int getInitialShares() {
+		return initialShares;
+	}
+
+	/**
+	 * @return the initialCapital
+	 */
+	public double getInitialCapital() {
+		return initialCapital;
+	}
+
+	/**
+	 * @return the initialSharePrice
+	 */
+	public double getInitialSharePrice() {
+		return initialSharePrice;
 	}
 
 	public int getId() {
@@ -149,6 +176,9 @@ public class Company {
 		private double capital;
 		private int sharesSold;
 		private boolean hasSoldShare;
+		private int initialShares;
+		private double initialCapital;
+		private double initialSharePrice;
 		
 		public CompanyBuilder(String name) {
 			super();
@@ -157,6 +187,9 @@ public class Company {
 			this.capital = 0;
 			this.sharesSold = 0;
 			this.hasSoldShare = false;
+			this.initialCapital = 0;
+			this.initialSharePrice = 0;
+			this.initialShares = 0;
 		}
 
 
@@ -173,6 +206,7 @@ public class Company {
 		 * @param shares the shares to set
 		 */
 		public CompanyBuilder setShares(int shares) {
+			this.initialShares = shares;
 			this.shares = shares;
 			return this;
 		}
@@ -182,6 +216,7 @@ public class Company {
 		 * @param sharePrice the sharePrice to set
 		 */
 		public CompanyBuilder setSharePrice(double sharePrice) {
+			this.initialSharePrice = sharePrice;
 			this.sharePrice = sharePrice;
 			return this;
 		}
@@ -191,6 +226,7 @@ public class Company {
 		 * @param capital the capital to set
 		 */
 		public CompanyBuilder setCapital(double capital) {
+			this.initialCapital = capital;
 			this.capital = capital;
 			return this;
 		}
@@ -212,6 +248,20 @@ public class Company {
 			return this;
 		}
 		
+		public CompanyBuilder setInitialCapital(double initialCapital) {
+			this.initialCapital = initialCapital;
+			return this;
+		}
+		
+		public CompanyBuilder setInitialInitialSharePrice(double initialSharePrice) {
+			this.initialSharePrice = initialSharePrice;
+			return this;
+		}
+		
+		public CompanyBuilder setInitialShares(int initialShares) {
+			this.initialShares = initialShares;
+			return this;
+		}
 		
 		public Company build() {
 			return new Company(this);

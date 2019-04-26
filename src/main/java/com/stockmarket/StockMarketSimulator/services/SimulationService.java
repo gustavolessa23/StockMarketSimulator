@@ -34,17 +34,24 @@ public class SimulationService {
 
 	
 	public void start() {
+		
+		companyService.clearCompanyTable();
+		investorService.clearInvestorTable();
 	
 		companyService.populateCompanies();
 		investorService.populateInvestors();
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 		
+		companyService.updateCompanies();
+		investorService.updateInvestors();
+		
 		view.displayLogo();
 		menuService.start();
 		
 		
 	}
+
 	
 	public String highestCapital() {
 		StringBuilder sb = new StringBuilder();

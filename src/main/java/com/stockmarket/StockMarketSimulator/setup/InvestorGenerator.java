@@ -6,10 +6,6 @@ import java.util.Random;
 
 import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
-import com.stockmarket.StockMarketSimulator.model.TradingDay;
-import com.stockmarket.StockMarketSimulator.model.Wallet;
-import com.stockmarket.StockMarketSimulator.services.InvestorService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,14 +35,12 @@ public class InvestorGenerator {
 
 		for(int i=0;i<numberOfInvestors;i++) {
 
-			Wallet emptyWallet = new Wallet(); //create a new wallet for each investor
 			String randomName = sd.investorName.get((i+randomShift)%numberOfInvestors); 
 			double randomBudget = data.round(minBudget+(maxBudget-minBudget)*rG.nextDouble(),2); //create a random number for a budget between 1000 and 10000
 
 			Investor randomInvestor = investorBuilder
 					.setName(randomName)
 					.setBudget(randomBudget)
-					.setWallet(emptyWallet)
 					.build(); //use investor builder to assign values
 
 			//randomInvestor.getInvestorDetails(); //Prints out the investor details (including wallet details) after being generated
