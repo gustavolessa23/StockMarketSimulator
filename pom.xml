@@ -45,6 +45,13 @@
 			<version>1.18.6</version>
 		<scope>provided</scope>
 	</dependency>
+	<dependency>
+	    <groupId>com.itextpdf</groupId>
+	    <artifactId>itext7-core</artifactId>
+	    <version>7.1.5</version>
+	    <type>pom</type>
+	</dependency>
+
 	</dependencies>
 
 	<build>

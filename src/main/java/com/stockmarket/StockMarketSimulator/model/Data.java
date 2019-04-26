@@ -1,5 +1,7 @@
 package com.stockmarket.StockMarketSimulator.model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,14 @@ public class Data {
 		this.transactions = new ArrayList<>();
 		this.companiesMap = new HashMap<>();
 		this.investorsMap = new HashMap<>();
+	}
+	
+	public double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 	
 

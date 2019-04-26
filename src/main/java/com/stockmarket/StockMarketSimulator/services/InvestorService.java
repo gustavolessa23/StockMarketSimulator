@@ -35,7 +35,9 @@ public class InvestorService {
 	 * Method to populate the investor list using generator.
 	 */
 	public void populateInvestors() {
-		data.setInvestors(investorGenerator.generateInvestors());
+		List<Investor> investors = investorGenerator.generateInvestors();
+		data.setInvestors(investors);
+		investorRepository.saveAll(investors);
 	}
 
 	public Investor getRandomInvestor() {

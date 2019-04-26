@@ -20,9 +20,9 @@ public class InvestorGenerator {
 	public static double maxBudget = 10000.00;
 
 	@Autowired
-	StoredData sd; //Object that holds random names and other data
+	private StoredData sd; //Object that holds random names and other data
 
-	Random rG = new Random();
+	private Random rG = new Random();
 
 	/**
 	 * Generates investors with random values and adds them to the investorList

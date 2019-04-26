@@ -1,9 +1,10 @@
 package com.stockmarket.StockMarketSimulator.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
 import com.stockmarket.StockMarketSimulator.exception.InvestorOutOfFundsException;
@@ -13,7 +14,7 @@ import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.Share;
 import com.stockmarket.StockMarketSimulator.model.Transaction;
 
-@Component
+@Service
 public class TransactionService {
 
 	@Autowired 
@@ -60,17 +61,25 @@ public class TransactionService {
 
 	public void afterTenTransactionsVerification(Transaction transaction) {
 		if(transaction.getTransactionId()%10==0) { //checks after every 10 transactions
-			System.out.println("Decrease in price for: ");
+			
+			List<Company> companies = new ArrayList<>();
 			for(int i = 0;i<data.getCompanies().size();i++) {
 				Company company = data.getCompanies().get(i);
 				if(company.getHasSoldShare()==false && !company.getShares().isEmpty()){ //check if company has sold share AND still has shares to sell
-					company.decreasePrice(); //decrease the price if company has not sold share
-					System.out.print("\t"+company.getId()+": "+company.getName()+" \t");
-					System.out.printf("\tPrice: " + "\t$ %.2f %n", company.getSharePrice());
+					companyService.decreasePrice(company); //decrease the price if company has not sold share
+					companies.add(company);
 				}
 				company.setHasSoldShare(false); //set all the companies soldShare state back to false
 			}
-			System.out.println();
+			
+			if(!companies.isEmpty()) {
+				System.out.println("Decrease in price for "+companies.size()+" companies:");
+//				for(Company c : companies) {
+//					System.out.print("\t"+c.getId()+": "+c.getName()+" \t");
+//					System.out.printf("\tPrice: " + String.format("%.2f", c.getSharePrice())+"\n");
+//				}
+				
+			}
 		}
 	}
 

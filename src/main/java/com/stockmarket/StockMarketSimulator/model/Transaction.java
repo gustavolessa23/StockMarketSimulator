@@ -48,39 +48,4 @@ public class Transaction {
 		return sb.toString();
 	}
 
-//	public int getTransactionId() {
-//		return transactionId;
-//	}
-//	
-//	/**
-//	 * @return the companyId
-//	 */
-//	public Company getCompany() {
-//		return company;
-//	}	
-//
-//	/**
-//	 * @return the investorId
-//	 */
-//	public Investor getInvestor() {
-//		return investor;
-//	}
-//	
-//	/**
-//	 * @return the date
-//	 */
-//	public Date getDate() {
-//		return date;
-//	}
-//	
-//	/**
-//	 * @param date the date to set
-//	 */
-//	public void setDate(Date date) {
-//		this.date = date;
-//	}
-//	
-	
-	
-
 }

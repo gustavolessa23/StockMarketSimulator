@@ -1,5 +1,7 @@
 package com.stockmarket.StockMarketSimulator.services;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +34,17 @@ public class CompanyService {
 	 * This method populates the company list by calling the generator and setting the list.
 	 */
 	public void populateCompanies() {
-		data.setCompanies(companyGenerator.generateCompanies());
+		List<Company> companies = companyGenerator.generateCompanies();
+		
+		data.setCompanies(companies);
 		
 		Map<Integer, Company> companyMap = new HashMap<>();
 		data.getCompanies().forEach(company ->
 			companyMap.put(company.getId(), company)
 				);
 		data.setCompaniesMap(companyMap);
+		
+		companyRepository.saveAll(companies);
 	}
 
 	public Share sellShare(Company company) {
@@ -57,7 +63,7 @@ public class CompanyService {
 			company.setHasSoldShare(true);
 			
 			if(company.getSharesSold()%10 == 0) {
-				company.increasePrice();
+				increasePrice(company);
 			}
 			
 			//company.getCompanyDetails();
@@ -101,7 +107,9 @@ public class CompanyService {
 	 * @param company
 	 */
 	public void addCompany(Company company) {
-		company.getCompanyDetails();
+		//company.getCompanyDetails();
+		data.getCompanies().add(company);
+		data.getCompaniesMap().put(company.getId(), company);
 		companyRepository.save(company);
 	}
 	
@@ -136,6 +144,24 @@ public class CompanyService {
 	 */
 	public void deleteCompany(Company id) {
 		companyRepository.delete(id);
+	}
+	
+	
+	public void increasePrice(Company c) {
+		boolean tenSharesSold = c.getSharesSold()%10==0; //check if 10 shares were sold
+		
+		if(tenSharesSold) { 
+			double newPrice = c.getSharePrice()*2; //increase price by 200%
+			c.setSharePrice(newPrice);
+		}
+	}
+	
+	public void decreasePrice(Company c) {	
+		double sharePriceRounded = data.round(c.getSharePrice(), 2);
+		if(sharePriceRounded>0.00) {
+			double newPrice = c.getSharePrice()*0.98; //decrease price by 2%
+			c.setSharePrice(newPrice);
+		}
 	}
 	
 

@@ -59,8 +59,6 @@ public class TradingDay {
 			}
 		}
 		System.out.println("Simulation ended");
-		System.out.println("INVESTORS: "+invList.size());
-		System.out.println("COMPANIES: "+companyList.size());
 	}
 
 
