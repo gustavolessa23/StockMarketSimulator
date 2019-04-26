@@ -5,6 +5,12 @@ target/
 # Java class files
 *.class
 
+# Document files
+*.pdf
+*.docx
+*.txt
+*.xlsx
+
 # generated files
 bin/
 gen/
