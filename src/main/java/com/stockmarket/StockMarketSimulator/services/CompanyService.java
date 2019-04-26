@@ -34,7 +34,6 @@ public class CompanyService {
 	 * This method populates the company list by calling the generator and setting the list.
 	 */
 	public void populateCompanies() {
-
 		List<Company> companies = companyGenerator.generateCompanies();
 		
 		data.setCompanies(companies);

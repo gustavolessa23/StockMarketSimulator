@@ -69,7 +69,6 @@ public class InvestorService {
 		return investorRepository.findAll();
 	}
 
-<<<<<<< HEAD
 	// ----------- SHARES ---------------------
 
 //	/**
@@ -192,11 +191,6 @@ public class InvestorService {
 		return investor;
 	}
 	
-	
-=======
->>>>>>> branch 'erics_playground' of https://github.com/gustavolessa23/StockMarketSimulator.git
-}
-<<<<<<< HEAD
-=======
 
->>>>>>> branch 'erics_playground' of https://github.com/gustavolessa23/StockMarketSimulator.git
+}
+

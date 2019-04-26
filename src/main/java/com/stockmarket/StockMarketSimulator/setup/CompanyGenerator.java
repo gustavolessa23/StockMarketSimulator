@@ -15,11 +15,7 @@ import com.stockmarket.StockMarketSimulator.services.CompanyService;
 @Component
 public class CompanyGenerator {
 
-<<<<<<< HEAD
-	public static int numberOfCompanies = 10; //Number of companies to generate
-=======
 	public static int numberOfCompanies = 100; //Number of companies to generate
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
 	public static int minNumberOfShares = 500;
 	public static int maxNumberOfShares = 1000;
 	public static double minSharePrice = 10.00;
@@ -29,17 +25,11 @@ public class CompanyGenerator {
 	private CompanyService companyService;
 
 	@Autowired
-<<<<<<< HEAD
-	StoredData sd; //Object that holds random names and other data
-
-	Random rG = new Random();
-=======
 	private StoredData sd; //Object that holds random names and other data
 
 	private @Autowired Data data;
 	
 	private Random rG = new Random();
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
 
 
 
@@ -58,11 +48,7 @@ public class CompanyGenerator {
 
 			String randomName = sd.companyName.get((i+randomShift)%numberOfCompanies); //get a name from the StoredData.java file
 			int randomShares = minNumberOfShares+rG.nextInt(maxNumberOfShares-minNumberOfShares); //create a random number for a share between 500 and 1000
-<<<<<<< HEAD
-			double randomPrice = minSharePrice+(maxSharePrice-minSharePrice)*rG.nextDouble(); //create a random number for a share price between 10.00 and 100.00
-=======
 			double randomPrice = data.round(minSharePrice+(maxSharePrice-minSharePrice)*rG.nextDouble(),2); //create a random number for a share price between 10.00 and 100.00
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
 
 			Company randomCompany = companyBuilder.
 					setName(randomName).
@@ -70,11 +56,7 @@ public class CompanyGenerator {
 					setSharePrice(randomPrice).
 					build(); //use company builder to assign values
 
-<<<<<<< HEAD
-			companyService.addCompany(randomCompany);
-=======
 			
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
 			//randomCompany.getCompanyDetails(); //Prints out the companies details after being generated
 			companies.add(randomCompany); 
 		}
@@ -82,8 +64,4 @@ public class CompanyGenerator {
 		return companies;
 	}
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
