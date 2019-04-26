@@ -15,49 +15,50 @@ import com.stockmarket.StockMarketSimulator.services.CompanyService;
 public class CompanyGenerator {
 
 	public static int numberOfCompanies = 100; //Number of companies to generate
-	public static List <Company> companyList;
-	
+	public static int minNumberOfShares = 500;
+	public static int maxNumberOfShares = 1000;
+	public static double minSharePrice = 10.00;
+	public static double maxSharePrice = 100.00;
+
 	@Autowired
 	private CompanyService companyService;
-	
+
 	@Autowired
 	StoredData sd; //Object that holds random names and other data
-	
+
 	Random rG = new Random();
-	
-	
-	public CompanyGenerator() {
-		companyList = new ArrayList<>();
-	}
+
+
 
 	/**
 	 * Generates companies with random values and adds them to the companyList
 	 */
-	public void generateCompanies() {
+	public List<Company> generateCompanies() {
 		
-	Company.CompanyBuilder companyBuilder = new Company.CompanyBuilder(""); //Create a builder for companies
-				
+		List<Company> companies = new ArrayList<>();
+
+		Company.CompanyBuilder companyBuilder = new Company.CompanyBuilder(""); //Create a builder for companies
+
+		int randomShift = rG.nextInt(numberOfCompanies); // to randomize the starting point of the companies names on the names list.
+
 		for(int i=0;i<numberOfCompanies;i++) {
-			
-			String randomName = sd.companyName.get(i); //get a name from the StoredData.java file
-			int randomShares = 500+rG.nextInt(500); //create a random number for a share between 500 and 1000
-			double randomPrice = 10.00+(100.00-10.00)*rG.nextDouble(); //create a random number for a share price between 10.00 and 100.00
+
+			String randomName = sd.companyName.get((i+randomShift)%numberOfCompanies); //get a name from the StoredData.java file
+			int randomShares = minNumberOfShares+rG.nextInt(maxNumberOfShares-minNumberOfShares); //create a random number for a share between 500 and 1000
+			double randomPrice = minSharePrice+(maxSharePrice-minSharePrice)*rG.nextDouble(); //create a random number for a share price between 10.00 and 100.00
 
 			Company randomCompany = companyBuilder.
 					setName(randomName).
 					setShares(randomShares).
 					setSharePrice(randomPrice).
-					setCapital(0.00).
-					setSharesSold(0).
-					setHasSoldShare(false).
 					build(); //use company builder to assign values
-	
+
 			companyService.addCompany(randomCompany);
 			//randomCompany.getCompanyDetails(); //Prints out the companies details after being generated
-			companyList.add(randomCompany); 
+			companies.add(randomCompany); 
 		}
-		
-		//companyList = companyService.getAllCompanies();
+
+		return companies;
 	}
-	
+
 }
