@@ -160,8 +160,8 @@ public class CompanyService {
 	public void decreasePrice(Company c) {	
 		double sharePriceRounded = data.round(c.getSharePrice(), 2);
 		if(sharePriceRounded>0.00) {
-			double newPrice = data.round((c.getSharePrice()*0.98),2); //decrease price by 2%
-			c.setSharePrice(newPrice);
+			double newPrice = (c.getSharePrice()*0.98); //decrease price by 2%
+			c.setSharePrice(data.round((newPrice),2));
 		}
 	}
 	

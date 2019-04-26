@@ -31,6 +31,9 @@ public class SimulationService {
 	
 	@Autowired
 	private View view;
+	
+	@Autowired
+	private ReportService reportService;
 
 	
 	public void start() {
@@ -42,9 +45,10 @@ public class SimulationService {
 		investorService.populateInvestors();
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
-		
+
 		companyService.updateCompanies();
 		investorService.updateInvestors();
+		reportService.saveReport();
 		
 		view.displayLogo();
 		menuService.start();
