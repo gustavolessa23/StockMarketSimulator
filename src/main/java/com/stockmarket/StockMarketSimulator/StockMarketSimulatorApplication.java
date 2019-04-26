@@ -6,6 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import com.stockmarket.StockMarketSimulator.model.Company;
+import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
 import com.stockmarket.StockMarketSimulator.services.SimulationService;
 import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
@@ -18,11 +20,9 @@ public class StockMarketSimulatorApplication implements CommandLineRunner {
 	@Autowired
 	SimulationService simulation;
 			
-
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(StockMarketSimulatorApplication.class);
 		app.run(args);				
-
 	}
 	
     //access command line arguments

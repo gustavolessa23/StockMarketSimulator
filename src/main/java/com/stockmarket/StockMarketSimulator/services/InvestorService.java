@@ -69,6 +69,7 @@ public class InvestorService {
 		return investorRepository.findAll();
 	}
 
+<<<<<<< HEAD
 	// ----------- SHARES ---------------------
 
 //	/**
@@ -102,7 +103,7 @@ public class InvestorService {
 
 
 	public void buyShare(Investor investor, Share share) {
-		investor.setBudget(investor.getBudget()-share.getPrice());// decrement budget by share price
+		investor.setBudget(data.round(investor.getBudget()-share.getPrice(),2));// decrement budget by share price
 		investor.getWallet().getShares().add(share);
 		addCompanyId(investor, share.getCompanyId());
 		investor.incrementSharesBought();;		
@@ -192,4 +193,10 @@ public class InvestorService {
 	}
 	
 	
+=======
+>>>>>>> branch 'erics_playground' of https://github.com/gustavolessa23/StockMarketSimulator.git
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> branch 'erics_playground' of https://github.com/gustavolessa23/StockMarketSimulator.git

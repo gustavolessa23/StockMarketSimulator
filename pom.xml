@@ -45,6 +45,8 @@
 			<version>1.18.6</version>
 		<scope>provided</scope>
 	</dependency>
+<<<<<<< HEAD
+=======
 	<dependency>
 	    <groupId>com.itextpdf</groupId>
 	    <artifactId>itext7-core</artifactId>
@@ -52,6 +54,7 @@
 	    <type>pom</type>
 	</dependency>
 
+>>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
 	</dependencies>
 
 	<build>

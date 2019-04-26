@@ -29,7 +29,7 @@ public class Transaction {
 	public void getTransactionDetails() {
 		System.out.println("----------TRANSATION----------");
 		System.out.println("TRANSACTION ID: \t" + this.getTransactionId());
-		System.out.println("COMPANY: \t" + this.getCompany().getId()+": "+this.getCompany().getName()+" ("+this.getCompany().getShares().size()+")");
+		System.out.println("COMPANY: \t" + this.getCompany().getId()+": "+this.getCompany().getName()+" ("+this.getCompany().getShares().size()+") --- $ "+this.getCompany().getCapital());
 		System.out.println("INVESTOR: \t" + this.getInvestor().getId()+": "+this.getInvestor().getName() +" ($"+this.getInvestor().getBudget()+")");
 		System.out.printf("TRADED AT: " + "\t$ %.2f %n",this.getCompany().getSharePrice());
 

@@ -1,6 +1,6 @@
 package com.stockmarket.StockMarketSimulator.model;
 
-import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 //import javax.persistence.Id;
 //import javax.persistence.Transient;
 
+import com.stockmarket.StockMarketSimulator.StockMarketSimulatorApplication;
+import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
+import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
 
 @Entity
 public class Company {
@@ -33,7 +36,7 @@ public class Company {
 	@Transient
 	private List<Share> shares;
 
-	public Company(CompanyBuilder builder) {
+	private Company(CompanyBuilder builder) {
 		super();
 		this.id = ++lastId;
 		this.name = builder.name;

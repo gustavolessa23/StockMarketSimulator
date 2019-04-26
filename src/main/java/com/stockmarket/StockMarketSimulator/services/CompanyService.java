@@ -34,6 +34,7 @@ public class CompanyService {
 	 * This method populates the company list by calling the generator and setting the list.
 	 */
 	public void populateCompanies() {
+
 		List<Company> companies = companyGenerator.generateCompanies();
 		
 		data.setCompanies(companies);
@@ -151,7 +152,7 @@ public class CompanyService {
 		boolean tenSharesSold = c.getSharesSold()%10==0; //check if 10 shares were sold
 		
 		if(tenSharesSold) { 
-			double newPrice = c.getSharePrice()*2; //increase price by 200%
+			double newPrice = data.round((c.getSharePrice()*2),2); //increase price by 200%
 			c.setSharePrice(newPrice);
 		}
 	}
@@ -159,7 +160,7 @@ public class CompanyService {
 	public void decreasePrice(Company c) {	
 		double sharePriceRounded = data.round(c.getSharePrice(), 2);
 		if(sharePriceRounded>0.00) {
-			double newPrice = c.getSharePrice()*0.98; //decrease price by 2%
+			double newPrice = data.round((c.getSharePrice()*0.98),2); //decrease price by 2%
 			c.setSharePrice(newPrice);
 		}
 	}
