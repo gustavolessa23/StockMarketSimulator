@@ -1,7 +1,5 @@
 package com.stockmarket.StockMarketSimulator.services;
 
-import java.io.FileOutputStream;
-
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -10,7 +8,6 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 @Component
 public class PdfGenerator {

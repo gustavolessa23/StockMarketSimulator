@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.model.Data;
-import com.stockmarket.StockMarketSimulator.model.TradingDay;
-import com.stockmarket.StockMarketSimulator.services.CompanyService;
 
 @Component
 public class CompanyGenerator {
@@ -20,9 +18,6 @@ public class CompanyGenerator {
 	public static int maxNumberOfShares = 1000;
 	public static double minSharePrice = 10.00;
 	public static double maxSharePrice = 100.00;
-
-	@Autowired
-	private CompanyService companyService;
 
 	@Autowired
 	private StoredData sd; //Object that holds random names and other data

@@ -31,20 +31,31 @@ public class SimulationService {
 	
 	@Autowired
 	private View view;
+	
+	@Autowired
+	private ReportService reportService;
 
 	
 	public void start() {
+		
+		companyService.clearCompanyTable();
+		investorService.clearInvestorTable();
 	
 		companyService.populateCompanies();
 		investorService.populateInvestors();
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
+
+		companyService.updateCompanies();
+		investorService.updateInvestors();
+		reportService.saveReport();
 		
 		view.displayLogo();
 		menuService.start();
 		
 		
 	}
+
 	
 	public String highestCapital() {
 		StringBuilder sb = new StringBuilder();
