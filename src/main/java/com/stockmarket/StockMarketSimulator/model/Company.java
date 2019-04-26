@@ -133,24 +133,24 @@ public class Company {
 		System.out.println();
 	}
 
-	public Share sellShare() {
-		if (shares.isEmpty()) {
-			throw new CompanyOutOfSharesException("Company "+this.name+" has no shares left to sell."); // check if it's empty
-		}else {
-	
-			sharesSold++; // increment sharesSold
-			capital+=sharePrice; // increment capital by share price
-	
-			Share sold = shares.remove(0); // remove the first share (ArrayList if not empty will always have item on index 0)
-			
-			sold.setPrice(sharePrice); // set price accordingly to current share price
-			
-			increasePrice(); //increased price after every 10 shares sold
-			this.setHasSoldShare(true);
-			return sold; // return share
-		}
-
-	}
+//	public Share sellShare() {
+//		if (shares.isEmpty()) {
+//			throw new CompanyOutOfSharesException("Company "+this.name+" has no shares left to sell."); // check if it's empty
+//		}else {
+//	
+//			sharesSold++; // increment sharesSold
+//			capital+=sharePrice; // increment capital by share price
+//	
+//			Share sold = shares.remove(0); // remove the first share (ArrayList if not empty will always have item on index 0)
+//			
+//			sold.setPrice(sharePrice); // set price accordingly to current share price
+//			
+//			increasePrice(); //increased price after every 10 shares sold
+//			this.setHasSoldShare(true);
+//			return sold; // return share
+//		}
+//
+//	}
 	
 	public void increasePrice() {
 		double newPrice = getSharePrice()+((getSharePrice()*2/100)); //increase price by 2%
@@ -170,6 +170,16 @@ public class Company {
 			this.setSharePrice(0); //set price to 0 if it goes below zero !!!!!!!!NEED TO CHANGE THIS
 		}
 	}
+	
+	public void incrementSharesSold() {
+		this.sharesSold++;
+	}
+	
+	public void incrementCapitalBySharePrice() {
+		System.out.println("Current capital: "+this.capital);
+		this.capital = this.capital+this.sharePrice;
+		System.out.println("New capital: "+this.capital);
+	}
 
 	public static class CompanyBuilder{
 		private String name;
@@ -182,6 +192,10 @@ public class Company {
 		public CompanyBuilder(String name) {
 			super();
 			this.name = name;
+			this.sharePrice = 0;
+			this.capital = 0;
+			this.sharesSold = 0;
+			this.hasSoldShare = false;
 		}
 
 
