@@ -2,10 +2,14 @@ package com.stockmarket.StockMarketSimulator.setup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class StoredData {
 	
-	public ArrayList<String> companyName = new ArrayList <>(Arrays.asList(
+	public List<String> companyName = new ArrayList <>(Arrays.asList(
 			"Ralph Lauren Corporation", "Oracle Corporation","Kellogg Company","Kleenex","Apple Inc.","HSBC","Facebook, Inc.","Corona","IKEA","Intel Corporation","L'Or�al",
 			"Morgan Stanley","Pampers","Citigroup","H&M","Allianz","Amazon.com","Hewlett-Packard","Global Gillette","Jack Daniel's","Nescaf�","Harley-Davidson Motor Company",
 			"Volkswagen Group","Heineken Brewery","Credit Suisse","NTT Data","Toyota Motor Corporation","Wells Fargo","Mitsubishi","Gucci","Johnson & Johnson",
@@ -17,7 +21,7 @@ public class StoredData {
 			"Sprite","Kia Motors","Honda Motor Company, Ltd","Tesco Corporation","Louis Vuitton","Google","Herm�s","Beko","Gap Inc.","Ericsson"
 	));
 	
-	public ArrayList<String> investorName = new ArrayList<>(Arrays.asList(
+	public List<String> investorName = new ArrayList<>(Arrays.asList(
 			"Meadow Lynn","Mekhi Ashley","Mohammed Sellers","Troy Huang","Renee Middleton","Will Rowe","Yurem Merritt","Hugh Romero","Kristian Newman",
 			"Jerry Galvan","Eileen Hines","Paige Dorsey","Deven Mcguire","Simeon Nicholson","Karen Long","Liana Frank","Brooklyn Miranda","Halle Boone","Jayson Flynn",
 			"Sabrina Waters","Brynlee Ibarra","Karina Walsh","Braylen Andrade","Alivia Erickson","Jarrett Ward","Kaley Bradley","Anastasia Cochran","Mckinley Freeman",

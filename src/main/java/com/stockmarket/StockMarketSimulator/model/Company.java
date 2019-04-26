@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
+import org.springframework.stereotype.Component;
+
 //import javax.persistence.Entity;
 //import javax.persistence.GeneratedValue;
 //import javax.persistence.Id;
@@ -15,8 +17,9 @@ import javax.persistence.*;
 @Entity
 public class Company {
 	
+//	@Id
+//	@GeneratedValue
 	@Id
-	@GeneratedValue
 	private final int id;
 	private static int lastId = 0;
 	private String name;
@@ -38,14 +41,32 @@ public class Company {
 		this.capital = builder.capital;
 		this.sharesSold = builder.sharesSold;
 		this.hasSoldShare = builder.hasSoldShare;
+		this.shares = new ArrayList<>(); 
 		
-		ipo(builder.shares); // Initial Public Offering -> to create the shares
 		
+		for(int x = 0; x < builder.shares; x++) 
+			shares.add(new Share(this.id, this.sharePrice)); 
+		//ipo(builder.shares); // Initial Public Offering -> to create the shares
+		
+	}
+	
+	private Company() {
+		super();
+		this.id = 0;
+		this.name = "";
+		this.sharePrice = 0;
+		this.capital = 0;
+		this.sharesSold = 0;
+		this.hasSoldShare = false;
+		this.shares = new ArrayList<>();
+		
+		ipo(this.getShares().size()); // Initial Public Offering -> to create the shares
+
 	}
 	
 
 	private void ipo(int numberOfShares) {
-		shares = new ArrayList<>(); // new list to hold the Share objects created
+	//	shares = new ArrayList<>(); // new list to hold the Share objects created
 		
 		for(int x = 0; x < numberOfShares; x++) 
 			shares.add(new Share(this.id, this.sharePrice)); // create the chosen number of shares
@@ -109,45 +130,15 @@ public class Company {
 		System.out.println();
 	}
 
-	public Share sellShare() {
-		if (shares.isEmpty()) {
-			throw new CompanyOutOfSharesException("Company "+this.name+" has no shares left to sell."); // check if it's empty
-		}else {
 	
-			sharesSold++; // increment sharesSold
-			capital+=sharePrice; // increment capital by share price
-	
-			Share sold = shares.remove(0); // remove the first share (ArrayList if not empty will always have item on index 0)
-			
-			sold.setPrice(sharePrice); // set price accordingly to current share price
-			
-			increasePrice(); //increased price after every 10 shares sold
-			this.setHasSoldShare(true);
-			return sold; // return share
-		}
-
+	public void incrementSharesSold() {
+		this.sharesSold++;
 	}
 	
-	public void increasePrice() {
-		double newPrice = getSharePrice()+((getSharePrice()*2/100)); //increase price by 2%
-		boolean tenSharesSold = getSharesSold()%10==0; //check if 10 shares were sold
-		
-		if(tenSharesSold) { 
-			this.setSharePrice(newPrice);
-		}
-	}
-	
-	public void decreasePrice() {
-		double newPrice = getSharePrice()-((getSharePrice()*2)/100); //decrease price by 2%
-		
-		if(this.getSharePrice()>=0.00) {
-			this.setSharePrice(newPrice);
-		}else if(this.getSharePrice()<=0){
-			this.setSharePrice(0); //set price to 0 if it goes below zero !!!!!!!!NEED TO CHANGE THIS
-		}
+	public void incrementCapitalBySharePrice() {
+		this.capital = this.capital+this.sharePrice;
 	}
 
-	
 	public static class CompanyBuilder{
 		private String name;
 		private int shares;
@@ -159,6 +150,10 @@ public class Company {
 		public CompanyBuilder(String name) {
 			super();
 			this.name = name;
+			this.sharePrice = 0;
+			this.capital = 0;
+			this.sharesSold = 0;
+			this.hasSoldShare = false;
 		}
 
 
