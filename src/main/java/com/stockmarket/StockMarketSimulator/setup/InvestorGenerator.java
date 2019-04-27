@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
 import com.stockmarket.StockMarketSimulator.model.Wallet;
@@ -20,9 +21,10 @@ public class InvestorGenerator {
 	public static double maxBudget = 10000.00;
 
 	@Autowired
-	StoredData sd; //Object that holds random names and other data
+	private StoredData sd; //Object that holds random names and other data
 
-	Random rG = new Random();
+	private @Autowired Data data;
+	private Random rG = new Random();
 
 	/**
 	 * Generates investors with random values and adds them to the investorList
@@ -39,7 +41,7 @@ public class InvestorGenerator {
 
 			Wallet emptyWallet = new Wallet(); //create a new wallet for each investor
 			String randomName = sd.investorName.get((i+randomShift)%numberOfInvestors); 
-			double randomBudget = minBudget+(maxBudget-minBudget)*rG.nextDouble(); //create a random number for a budget between 1000 and 10000
+			double randomBudget = data.round(minBudget+(maxBudget-minBudget)*rG.nextDouble(),2); //create a random number for a budget between 1000 and 10000
 
 			Investor randomInvestor = investorBuilder
 					.setName(randomName)

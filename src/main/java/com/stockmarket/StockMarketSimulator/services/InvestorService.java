@@ -35,7 +35,9 @@ public class InvestorService {
 	 * Method to populate the investor list using generator.
 	 */
 	public void populateInvestors() {
-		data.setInvestors(investorGenerator.generateInvestors());
+		List<Investor> investors = investorGenerator.generateInvestors();
+		data.setInvestors(investors);
+		investorRepository.saveAll(investors);
 	}
 
 	public Investor getRandomInvestor() {
@@ -69,16 +71,16 @@ public class InvestorService {
 
 	// ----------- SHARES ---------------------
 
-	/**
-	 * Method to add a share to an investor's wallet.
-	 * @param investor
-	 * @param share
-	 * @return
-	 */
-	public boolean addShare(Investor investor, Share share) {
-		addCompanyId(investor, share.getCompanyId());
-		return investor.getWallet().getShares().add(share);
-	}
+//	/**
+//	 * Method to add a share to an investor's wallet.
+//	 * @param investor
+//	 * @param share
+//	 * @return
+//	 */
+//	public boolean addShare(Investor investor, Share share) {
+//		addCompanyId(investor, share.getCompanyId());
+//		return investor.getWallet().getShares().add(share);
+//	}
 
 	/**
 	 * Method to get the list of shares an investor has.
@@ -100,7 +102,9 @@ public class InvestorService {
 
 
 	public void buyShare(Investor investor, Share share) {
-		investor.setBudget(investor.getBudget()-share.getPrice());// decrement budget by share price
+		investor.setBudget(data.round(investor.getBudget()-share.getPrice(),2));// decrement budget by share price
+		investor.getWallet().getShares().add(share);
+		addCompanyId(investor, share.getCompanyId());
 		investor.incrementSharesBought();;		
 	}
 	// ----------- COMPANIES ---------------------
@@ -112,9 +116,9 @@ public class InvestorService {
 	 * @param companyId
 	 * @return
 	 */
-	private void addCompanyId(Investor investor, int companyId) {
-		investor.getWallet().getCompaniesShares().put(companyId, 1); 
-		//return investor.getWallet().getCompaniesShares().merge(companyId, 1, Integer::sum);  // add
+	private int addCompanyId(Investor investor, int companyId) {
+		
+		return investor.getWallet().getCompaniesShares().merge(companyId, 1, Integer::sum);  // add
 	}
 
 	/**

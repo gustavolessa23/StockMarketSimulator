@@ -48,6 +48,7 @@ public class Transaction {
 		return sb.toString();
 	}
 
+
 	public int getTransactionId() {
 		return transactionId;
 	}
@@ -79,8 +80,4 @@ public class Transaction {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-	
-	
-
 }

@@ -34,7 +34,6 @@ public class TradingDay {
 	@Autowired
 	private Data data; 
 
-
 	public void trade() {
 		trade(data.getCompanies(), data.getInvestors());
 	}
@@ -58,19 +57,12 @@ public class TradingDay {
 				companyIds = investorService.getCompaniesIds(randomInvestor);
 				transactionDone = transactionService.tryTransaction(randomInvestor, companyIds);
 			}
-
-
 		}
-
 		System.out.println("Simulation ended");
-		System.out.println("INVESTORS: "+invList.size());
-		System.out.println("COMPANIES: "+companyList.size());
-
 	}
 
 
 	public boolean simulationCanContinue() {
-		
 		Investor highestBudget = investorService.getHighestBudget();
 		Company cheapestShare = companyService.getCheapestAvailableShare();
 		
@@ -79,7 +71,6 @@ public class TradingDay {
 		if(cheapestShare.getSharePrice() > highestBudget.getBudget()) return false;
 		
 		return true;
-
 	}
 //				List<Integer> companyInWallet = randomInvestor.getWallet().getRemainingCompaniesIds(CompanyGenerator.numberOfCompanies);
 //				// || !companyInWallet.contains(randomCompany.getId())
@@ -112,7 +103,6 @@ public class TradingDay {
 				companies.add(current);
 			}
 		}
-
 		return companies;
 	}
 	
@@ -138,7 +128,7 @@ public class TradingDay {
 	public List<Investor> getHighestNumberOfShares(){
 		List<Investor> investors = new ArrayList<>();
 		
-		investors.add(investorService.getInvestorById(0));
+		investors.add(investorService.getAllInvestors().get(0));
 		
 		for (int x = 1; x<investorService.getAllInvestors().size(); x++) {
 			Investor current = investorService.getAllInvestors().get(x);
@@ -148,15 +138,14 @@ public class TradingDay {
 			} else if (current.getTotalNumberOfSharesBought()==investors.get(0).getTotalNumberOfSharesBought()) {
 				investors.add(current);
 			}
-		}
-		
+    }
 		return investors;
 	}
 
 	public List<Investor> getLowestNumberOfShares(){
 		List<Investor> investors = new ArrayList<>();
 		
-		investors.add(investorService.getInvestorById(0));
+		investors.add(investorService.getAllInvestors().get(0));
 		
 		for (int x = 1; x<investorService.getAllInvestors().size(); x++) {
 			Investor current = investorService.getAllInvestors().get(x);
@@ -167,7 +156,6 @@ public class TradingDay {
 				investors.add(current);
 			}
 		}
-		
 		return investors;
 	}
 	
@@ -185,7 +173,6 @@ public class TradingDay {
 				investors.add(current);
 			}
 		}
-		
 		return investors;
 	}
 	
@@ -203,67 +190,11 @@ public class TradingDay {
 				investors.add(current);
 			}
 		}
-		
 		return investors;
 	}
 	
 	public long getTotalNumberOfTransactions() {
 		return data.getTransactions().size();
 	}
-
-//	public void tradeShare (Company company, Investor investor) {
-//		try {
-//			System.out.println("COMPANY SHAREEEES:"+company.getNumberOfSharesAvailable());
-//			Share soldShare = company.sellShare(); //returns a share that is sold from company (updates share lists)
-//
-//			investor.buyShare(soldShare.getPrice()); //buy share for the share price (update budget)
-//			investor.getWallet().addShare(soldShare); //add sold share to wallet (update wallet)
-//
-//			Transaction transaction = new Transaction(company,investor); //creates a transaction between the company and investor
-//
-//			transaction.getTransactionDetails(); //displays the transactions
-//
-//			afterTenTransactions(transaction); //a check for every 10 transactions in the simulation
-//		} catch (CompanyOutOfSharesException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//	}
-
-//	public void afterTenTransactions(Transaction transaction) {
-//		if(transaction.getTransactionId()%10==0) { //checks after every 10 transactions
-//			System.out.println("Decrease in price for: ");
-//			for(int i = 0;i<CompanyGenerator.numberOfCompanies;i++) {
-//				Company company = CompanyGenerator.companyList.get(i);
-//				if(company.getHasSoldShare()==false){ //check if company has sold share or not
-//					company.decreasePrice(); //decrease the price if company has not sold share
-//					System.out.print("\t"+company.getId()+": "+company.getName()+" \t");
-//					System.out.printf("\tPrice: " + "\t$ %.2f %n", company.getSharePrice());
-//				}
-//				company.setHasSoldShare(false); //set all the companies soldShare state back to false
-//			}
-//			System.out.println();
-//		}
-//	}
-
-//	public void checkSharesAmount(Company company) {
-//		if(company.getShares().isEmpty()) { //checks if there are no shares
-//			CompanyGenerator.companyList.remove(company); //the company is removed from the simulation
-//			CompanyGenerator.numberOfCompanies = CompanyGenerator.numberOfCompanies-1; //update value so that trade will continue with the amount of companies in the list
-//			System.out.printf("Company removed --- "+company.getId()+": "+company.getName()+ "\t$ %.2f %n",company.getCapital());
-//			System.out.println();
-//		}
-//	}
-//
-//	//checks the budget of an investor...if there are no more funds, the investor is removed from the simulation
-//	public void checkBudgetAmount(Investor investor) {
-//		if(investor.getBudget()<=0) { //this needs to change!!!!!!!!!!!!!!!!!!!!!
-//			InvestorGenerator.investorList.remove(investor);
-//			InvestorGenerator.numberOfInvestors = InvestorGenerator.numberOfInvestors-1; //update value so that trade will continue with the amount of investors in the list
-//			System.out.println("Investor removed: "+investor.getId()+" "+investor.getName()+" "+investor.getBudget()+"\n");
-//		}
-//	}
-
 
 }

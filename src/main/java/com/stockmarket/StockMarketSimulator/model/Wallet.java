@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Wallet {
 	
-	@Getter
+	@Getter @Setter
 	private List<Share> shares; // holds all shares of a wallet
 	
-	@Getter
+	@Getter @Setter
 	private Map<Integer, Integer> companiesShares; // maps companyID->amount of shares. 
 	
 	
@@ -20,13 +21,13 @@ public class Wallet {
 		
 		System.out.println("WALLET DETAILS: \t");
 		//System.out.println("\tNumber of companiesShares invested in: "+this.getAmountOfCompaniesInvestedIn());
-		//System.out.println("\tShares: ");
-		//for(int i=0;i<this.getShares().size();i++) {
-			//System.out.print("\t"+(i+1)+" Company ID: "+this.getShares().get(i).getCompanyId());
-			//System.out.printf("\t" + "\t$ %.2f",this.getShares().get(i).getPrice());
-			//System.out.print("\t\t"+this.getShares().get(i).getDateSold());
-			//System.out.println();
-		//};
+		System.out.println("\tShares: ");
+		for(int i=0;i<this.getShares().size();i++) {
+			System.out.print("\t"+(i+1)+" Company ID: "+this.getShares().get(i).getCompanyId());
+			System.out.printf("\t" + "\t$ %.2f",this.getShares().get(i).getPrice());
+			System.out.print("\t\t"+this.getShares().get(i).getDateSold());
+			System.out.println();
+		};
 	}
 	
 	public Wallet() {

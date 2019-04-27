@@ -5,6 +5,12 @@ target/
 # Java class files
 *.class
 
+# Document files
+*.pdf
+*.docx
+*.txt
+*.xlsx
+
 # generated files
 bin/
 gen/
@@ -22,4 +28,7 @@ Thumbs.db
 .classpath
 .project
 .settings/
+<<<<<<< HEAD
 /.gradle/
+=======
+>>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.stockmarket.StockMarketSimulator.model.Company;
+import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
 import com.stockmarket.StockMarketSimulator.services.CompanyService;
 
@@ -24,9 +25,11 @@ public class CompanyGenerator {
 	private CompanyService companyService;
 
 	@Autowired
-	StoredData sd; //Object that holds random names and other data
+	private StoredData sd; //Object that holds random names and other data
 
-	Random rG = new Random();
+	private @Autowired Data data;
+	
+	private Random rG = new Random();
 
 
 
@@ -45,7 +48,7 @@ public class CompanyGenerator {
 
 			String randomName = sd.companyName.get((i+randomShift)%numberOfCompanies); //get a name from the StoredData.java file
 			int randomShares = minNumberOfShares+rG.nextInt(maxNumberOfShares-minNumberOfShares); //create a random number for a share between 500 and 1000
-			double randomPrice = minSharePrice+(maxSharePrice-minSharePrice)*rG.nextDouble(); //create a random number for a share price between 10.00 and 100.00
+			double randomPrice = data.round(minSharePrice+(maxSharePrice-minSharePrice)*rG.nextDouble(),2); //create a random number for a share price between 10.00 and 100.00
 
 			Company randomCompany = companyBuilder.
 					setName(randomName).
@@ -53,7 +56,7 @@ public class CompanyGenerator {
 					setSharePrice(randomPrice).
 					build(); //use company builder to assign values
 
-			companyService.addCompany(randomCompany);
+			
 			//randomCompany.getCompanyDetails(); //Prints out the companies details after being generated
 			companies.add(randomCompany); 
 		}
