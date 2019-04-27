@@ -4,7 +4,6 @@ package com.stockmarket.StockMarketSimulator.model;
 import java.text.DecimalFormat;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
@@ -16,7 +15,9 @@ public class Investor {
 	private static int lastId = 0;
 	private String name;
 	private double budget;
+	private double initialBudget;
 	private int totalNumberOfSharesBought;
+	private int numberOfCompaniesInvestedIn;
 	
 	@Transient
 	private Wallet wallet;
@@ -28,6 +29,9 @@ public class Investor {
 		this.name = builder.name;
 		this.budget = builder.budget;
 		this.wallet = builder.wallet;
+		this.totalNumberOfSharesBought = builder.totalNumberOfSharesBought;
+		this.initialBudget = builder.initialBudget;
+		this.numberOfCompaniesInvestedIn = builder.numberOfCompaniesInvestedIn;
 	}
 	
 	private Investor() {
@@ -36,6 +40,35 @@ public class Investor {
 		this.name = "";
 		this.budget = 0;
 		this.wallet = null;
+		this.totalNumberOfSharesBought = 0;
+		this.initialBudget = 0;
+		this.numberOfCompaniesInvestedIn = 0;
+	}
+
+	
+	
+	
+	/**
+	 * @return the initialBudget
+	 */
+	public double getInitialBudget() {
+		return initialBudget;
+	}
+	
+	
+
+	/**
+	 * @param numberOfCompaniesInvestedIn the numberOfCompaniesInvestedIn to set
+	 */
+	public void setNumberOfCompaniesInvestedIn(int numberOfCompaniesInvestedIn) {
+		this.numberOfCompaniesInvestedIn = numberOfCompaniesInvestedIn;
+	}
+
+	/**
+	 * @return the numberOfCompaniesInvestedIn
+	 */
+	public int getNumberOfCompaniesInvestedIn() {
+		return numberOfCompaniesInvestedIn;
 	}
 
 	public int getId() {
@@ -112,11 +145,18 @@ public class Investor {
 		private String name;
 		private double budget;
 		private Wallet wallet;
+		private int totalNumberOfSharesBought;
+		private double initialBudget;
+		private int numberOfCompaniesInvestedIn;
 
 		
 		public InvestorBuilder(String name) {
 			super();
 			this.name = name;
+			this.totalNumberOfSharesBought = 0;
+			this.initialBudget = 0;
+			this.numberOfCompaniesInvestedIn = 0;
+			this.wallet = new Wallet();
 		}
 
 		/**
@@ -131,6 +171,7 @@ public class Investor {
 		 * @param shares the shares to set
 		 */
 		public InvestorBuilder setBudget(double budget) {
+			this.initialBudget = budget;
 			this.budget = budget;
 			return this;
 		}
@@ -140,6 +181,21 @@ public class Investor {
 		 */
 		public InvestorBuilder setWallet(Wallet wallet) {
 			this.wallet = wallet;
+			return this;
+		}
+		
+		public InvestorBuilder setTotalNumberOfSharesBought(int totalNumberOfSharesBought) {
+			this.totalNumberOfSharesBought = totalNumberOfSharesBought;
+			return this;
+		}
+		
+		public InvestorBuilder setInitialBudget(double initialBudget) {
+			this.initialBudget = initialBudget;
+			return this;
+		}
+		
+		public InvestorBuilder setNumberOfCompaniesInvestedIn(int numberOfCompaniesInvestedIn) {
+			this.numberOfCompaniesInvestedIn = numberOfCompaniesInvestedIn;
 			return this;
 		}
 		

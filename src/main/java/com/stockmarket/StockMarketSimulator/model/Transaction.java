@@ -23,6 +23,9 @@ public class Transaction {
 	
 	private Transaction() {
 		this.transactionId = -1;
+		this.company = null;
+		this.investor = null;
+		this.date = null;
 	}
 	
 	

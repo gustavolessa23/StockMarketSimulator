@@ -18,13 +18,13 @@ import com.stockmarket.StockMarketSimulator.model.Transaction;
 public class TransactionService {
 
 	@Autowired 
-	Data data;
+	private Data data;
 
 	@Autowired 
-	InvestorService investorService;
+	private InvestorService investorService;
 
 	@Autowired 
-	CompanyService companyService;
+	private CompanyService companyService;
 
 
 	public void executeTransaction(Company company, Investor investor) throws InvestorOutOfFundsException, CompanyOutOfSharesException{
