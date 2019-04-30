@@ -154,14 +154,14 @@ public class SimulationService {
 	
 	
 	public void generatePdfReport(String path) {
-		reportService.generatePdfReport(fullReport());
+		reportService.generatePdfReport(fullReport(), path);
 	}
 	
 	public void generateDocxReport(String path) {
-		reportService.generateDocxReport(fullReport());
+		reportService.generateDocxReport(fullReport(), path);
 	}
 	
 	public void generateTxtReport(String path) {
-		reportService.generateTxtReport(fullReport());
+		reportService.generateTxtReport(fullReport(), path);
 	}
 }

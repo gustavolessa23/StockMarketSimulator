@@ -37,8 +37,8 @@ public class ReportService {
 		
 	}
 	
-	public void generatePdfReport(String content) {
-		ReportFile file = ReportFactory.create(ReportType.PDF, "report.pdf", content);
+	public void generatePdfReport(String content, String path) {
+		ReportFile file = ReportFactory.create(ReportType.PDF, path+"1.pdf", content);
 		try {
 			file.generate();
 		} catch (IOException e) {
@@ -48,8 +48,8 @@ public class ReportService {
 		
 	}
 	
-	public void generateDocxReport(String content) {
-		ReportFile file = ReportFactory.create(ReportType.DOCX, "report.docx", content);
+	public void generateDocxReport(String content, String path) {
+		ReportFile file = ReportFactory.create(ReportType.DOCX, path+"1.docx", content);
 		try {
 			file.generate();
 		} catch (IOException e) {
@@ -57,8 +57,8 @@ public class ReportService {
 		}
 	}
 	
-	public void generateTxtReport(String content) {
-		ReportFile file = ReportFactory.create(ReportType.TXT, "report.txt", content);
+	public void generateTxtReport(String content, String path) {
+		ReportFile file = ReportFactory.create(ReportType.TXT, path+"1.txt", content);
 		try {
 			file.generate();
 		} catch (IOException e) {

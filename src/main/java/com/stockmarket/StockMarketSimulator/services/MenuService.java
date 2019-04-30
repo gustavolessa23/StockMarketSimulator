@@ -94,9 +94,11 @@ public class MenuService {
 			case 9:
 				String report = simulation.fullReport();
 				view.display(report);
-				simulation.generatePdfReport(report);
-				simulation.generateDocxReport(report);
-				simulation.generateTxtReport(report);
+				
+				String path = "";// get this path from JFileChooser
+				simulation.generatePdfReport((path.isEmpty() ? "report" : path));
+				simulation.generateDocxReport((path.isEmpty() ? "report" : path));
+				simulation.generateTxtReport((path.isEmpty() ? "report" : path));
 				
 				break;
 			case 10:

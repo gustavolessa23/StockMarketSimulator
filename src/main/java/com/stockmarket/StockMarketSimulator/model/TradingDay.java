@@ -65,23 +65,8 @@ public class TradingDay {
 		
 		return true;
 	}
-//				List<Integer> companyInWallet = randomInvestor.getWallet().getRemainingCompaniesIds(CompanyGenerator.numberOfCompanies);
-//				// || !companyInWallet.contains(randomCompany.getId())
-//				
-//				if(budget>=sharePrice || !companyInWallet.contains(randomCompany.getId())) { //if budget is higher than share price (&& investor has not invested in company)
-//					tradeShare(randomCompany, randomInvestor); // trades the shares between the company and investor if condition is true
-//						
-//				}else if(budget<=sharePrice ){ //else if not enough in the budget (|| OTHER CONDITION)
-//					randomInvestor = invList.get(rG.nextInt(InvestorGenerator.numberOfInvestors)); //find a different investor
-//				}
-//				
-//				checkSharesAmount(randomCompany); //checks the shares after the trade if the company should be removed from the simulation or not
-//				checkBudgetAmount(randomInvestor); //checks the budget after the trade if the investor should be removed from the simulation or not
-//			
-//				
-//				randomCompany.getCompanyDetails();
-//				randomInvestor.getInvestorDetails();
-//				//System.out.println(companyInWallet)
+
+	
 	public List<Company> getHighestCapital(){
 		List<Company> companies = new ArrayList<>();
 		
