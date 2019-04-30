@@ -28,3 +28,7 @@ Thumbs.db
 .classpath
 .project
 .settings/
+<<<<<<< HEAD
+/.gradle/
+=======
+>>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git

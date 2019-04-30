@@ -44,7 +44,7 @@ public class CompanyService {
 		companyRepository.saveAll(companies);
 	}
 
-	public Share sellShare(Company company) {
+	public synchronized Share sellShare(Company company) {
 		if (company.getShares().isEmpty()) {
 			throw new CompanyOutOfSharesException("Company "+company.getName()+" has no shares left to sell."); // check if it's empty
 		}else {
@@ -88,11 +88,12 @@ public class CompanyService {
 	/**
 	 * This method is responsible for getting a Company be its ID
 	 * @param id 
-	 * @return the company ID which is a Long id.
+	 * @return the company ID which is an int id.
 	 */
 	public Company getCompanyFromDb(Integer id) {
 		return companyRepository.getOne(id);
 	}
+	
 	
 	public Company getCompanyFromId(int id) {
 		return data.getCompaniesMap().get(id);

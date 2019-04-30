@@ -1,5 +1,7 @@
 package com.stockmarket.StockMarketSimulator;
 
+import javax.swing.JFrame;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,13 +14,23 @@ import com.stockmarket.StockMarketSimulator.model.TradingDay;
 import com.stockmarket.StockMarketSimulator.services.SimulationService;
 import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
 import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
+import com.stockmarket.StockMarketSimulator.view.Report;
 
 @SpringBootApplication
 @EnableJpaAuditing
-public class StockMarketSimulatorApplication implements CommandLineRunner {
+public class StockMarketSimulatorApplication extends JFrame implements CommandLineRunner {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Autowired
 	SimulationService simulation;
+	
+	@Autowired
+	Report report;
+	
 			
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(StockMarketSimulatorApplication.class);
@@ -31,6 +43,9 @@ public class StockMarketSimulatorApplication implements CommandLineRunner {
 	
         System.out.println("Application starting....");
 		simulation.start();
+		
+		report.start();
+		
 
     }
 
