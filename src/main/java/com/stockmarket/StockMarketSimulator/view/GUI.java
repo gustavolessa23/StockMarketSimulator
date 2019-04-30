@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.stockmarket.StockMarketSimulator.model.Data;
+import com.stockmarket.StockMarketSimulator.services.CompanyService;
+import com.stockmarket.StockMarketSimulator.services.InvestorService;
 import com.stockmarket.StockMarketSimulator.services.SimulationService;
 
 
@@ -30,7 +32,7 @@ public class GUI extends JFrame implements ActionListener{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTable table;
+	
 	private JTextArea text;
 	private JButton companiesHighestCapital;
 	private JButton companiesLowestCapital;
@@ -43,16 +45,22 @@ public class GUI extends JFrame implements ActionListener{
 	private JButton fullReport;
 	static JProgressBar progressBar;
 	
+	private JPanel mainPanel;
 	private JPanel panel1;
-	private JPanel panel;
+	private JPanel panel2;
+	private JPanel panel3;
 	private JPanel panel4;
+
+	
 	
 	@Autowired 
 	private SimulationService simulation;
 	
 	@Autowired
-	private Data data;
-
+	private InvestorService investorService;
+	
+	@Autowired
+	private CompanyService companyService;
 	
 	public GUI() {
 		
@@ -63,31 +71,34 @@ public class GUI extends JFrame implements ActionListener{
 		setLocationRelativeTo(null);
 		this.setLayout(null);
 		
+		mainPanel = new JPanel();
+		mainPanel.validate();
+		mainPanel.setBounds(3, 2, 611, 455);
+		
+		this.add(mainPanel);
 		
 		panel1 = new JPanel();
 		panel1.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
 		panel1.validate();
-		panel1.setBounds(5, 5, 610, 460);
-		this.add(panel1);
+//		panel1.setVisible(true);
+		panel1.setBounds(5, 5, 550, 450);
+		mainPanel.add(panel1);
 		
-		text = new JTextArea(25, 30);
+		text = new JTextArea(24, 30);
 		JScrollPane scrollPane = new JScrollPane(text);
 		panel1.add(scrollPane);
 		
-		fullReport = new JButton("Full report");
-		fullReport.setActionCommand("fullReport");
-		fullReport.addActionListener(this);
-		panel1.add(fullReport);
 		
 		progressBar = new JProgressBar();
 		progressBar.setValue(0);
 		progressBar.setStringPainted(true);
 		panel1.add(progressBar);
 
-		JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel2.setBorder(BorderFactory.createTitledBorder("Companies"));
 		panel2.validate();
-		panel2.setBounds(630, 9, 300, 150);
+		panel2.setVisible(true);
+		panel2.setBounds(630, 5, 300, 150);
 		this.add(panel2);
 		
 		companiesHighestCapital = new JButton("Companies Highest Capital");
@@ -106,10 +117,11 @@ public class GUI extends JFrame implements ActionListener{
 		button.addActionListener(this);
 		panel2.add(button);
 		
-		JPanel panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		
+		panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel3.setBorder(BorderFactory.createTitledBorder("Investors"));
 		panel3.validate();
-		panel3.setBounds(630, 160, 350, 250);
+		panel3.setBounds(630, 150, 350, 210);
 		this.add(panel3);
 		
 		
@@ -139,15 +151,30 @@ public class GUI extends JFrame implements ActionListener{
 		getAllInvestors.setActionCommand("investors");
 		panel3.add(getAllInvestors);
 		
+		panel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panel4.setBorder(BorderFactory.createTitledBorder("Simulation"));
+		panel4.validate();
+		panel4.setBounds(630, 364, 350, 100);
+		this.add(panel4);
+		
+		fullReport = new JButton("Full report");
+		fullReport.setActionCommand("fullReport");
+		fullReport.addActionListener(this);
+		panel4.add(fullReport);
+		
 		totalNumberOfTransactions = new JButton("Total number of transactions");
 		totalNumberOfTransactions.setActionCommand("totalNumberOfTransactions");
 		totalNumberOfTransactions.addActionListener(this);
-		panel3.add(totalNumberOfTransactions);
+		panel4.add(totalNumberOfTransactions);
+		
+		
+		
+		
 	
 		validate();
 		repaint();
 		this.setVisible (true);
-		fill();
+		//fill();
 		
 		
 	}
@@ -155,16 +182,15 @@ public class GUI extends JFrame implements ActionListener{
 	/**
 	 * This method is responsible to return all the companies and all the details into a JTable
 	 */
-	public void getCompanies() {
+	public JPanel getCompanies() {
 
-		panel = new JPanel();
+		JPanel panel =new JPanel();
 		panel.setBorder(BorderFactory.createTitledBorder("Companies"));	
-		panel.setBounds(5, 5, 550, 490);
+		panel.setBounds(5, 5, 550, 450);
 		panel.validate();
-		panel.setVisible(true);
 		panel.repaint();
-		this.add(panel);
-		
+		panel.setVisible(true);
+	
 		DefaultTableModel model = new DefaultTableModel();
 
 		model.addColumn("id");
@@ -176,7 +202,7 @@ public class GUI extends JFrame implements ActionListener{
 		model.addColumn("initial_share_price");
 		model.addColumn("initial_shares");
 		
-		table = new JTable(model);
+		JTable table = new JTable(model);
 		table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.getColumnModel().getColumn(2).setPreferredWidth(95);
@@ -184,64 +210,67 @@ public class GUI extends JFrame implements ActionListener{
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel.add(scrollPane);
 		
-		for(int i = 0; i < data.getCompanies().size(); i++) {
+		for(int i = 0; i < companyService.getAllCompanies().size(); i++) {
 			
 			((DefaultTableModel)table.getModel()).addRow(new Object[] {
 					
-					data.getCompanies().get(i).getId(),
-					data.getCompanies().get(i).getCapital(),
-					data.getCompanies().get(i).getName(),
-					data.getCompanies().get(i).getSharePrice(),
-					data.getCompanies().get(i).getSharesSold(),
-					data.getCompanies().get(i).getInitialCapital(),
-					data.getCompanies().get(i).getInitialSharePrice(),
-					data.getCompanies().get(i).getInitialShares()
+					companyService.getAllCompanies().get(i).getId(),
+					companyService.getAllCompanies().get(i).getCapital(),
+					companyService.getAllCompanies().get(i).getName(),
+					companyService.getAllCompanies().get(i).getSharePrice(),
+					companyService.getAllCompanies().get(i).getSharesSold(),
+					companyService.getAllCompanies().get(i).getInitialCapital(),
+					companyService.getAllCompanies().get(i).getInitialSharePrice(),
+					companyService.getAllCompanies().get(i).getInitialShares()
 			});
 			
 		}
+		
+		return panel;
 
 	}
 	
-	public void getInvestors() {
+	public JPanel getInvestors() {
 		
-		panel4 = new JPanel();
+		JPanel panel4 = new JPanel();
 		panel4.setBorder(BorderFactory.createTitledBorder("Investors"));	
-		panel4.setBounds(5, 5, 550, 490);
+		panel4.setBounds(5, 5, 550, 450);
 		panel4.validate();
 		panel4.setVisible(true);
 		panel4.repaint();
-		this.add(panel4);
 		
-		DefaultTableModel model = new DefaultTableModel();
+		DefaultTableModel model1 = new DefaultTableModel();
 
-		model.addColumn("id");
-		model.addColumn("budget");
-		model.addColumn("initial_budget");
-		model.addColumn("name");
-		model.addColumn("number_of_companies_invested_in");
-		model.addColumn("total_number_of_shares_bought");
+		model1.addColumn("id");
+		model1.addColumn("budget");
+		model1.addColumn("initial_budget");
+		model1.addColumn("name");
+		model1.addColumn("number_of_companies_invested_in");
+		model1.addColumn("total_number_of_shares_bought");
 		
-		JTable table = new JTable(model);
+		JTable table1 = new JTable(model1);
 		
-		table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.getColumnModel().getColumn(2).setPreferredWidth(95);
-		table.setPreferredScrollableViewportSize(new Dimension(500, 350));
-		JScrollPane scrollPane = new JScrollPane(table);
+		table1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+		table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table1.getColumnModel().getColumn(2).setPreferredWidth(95);
+		table1.setPreferredScrollableViewportSize(new Dimension(500, 350));
+		JScrollPane scrollPane = new JScrollPane(table1);
 		panel4.add(scrollPane);
 		
-		for(int i = 0; i < data.getInvestors().size(); i++) {
+		for(int i = 0; i < investorService.getAllInvestors().size(); i++) {
 			
-			((DefaultTableModel)table.getModel()).addRow(new Object[] {
+			((DefaultTableModel)table1.getModel()).addRow(new Object[] {
 					
-					data.getInvestors().get(i).getId(),
-					data.getInvestors().get(i).getBudget(),
-					data.getInvestors().get(i).getInitialBudget(),
-					data.getInvestors().get(i).getName(),
-					data.getInvestors().get(i).getNumberOfCompaniesInvestedIn(),
-					data.getInvestors().get(i).getTotalNumberOfSharesBought()
+					investorService.getAllInvestors().get(i).getId(),
+					investorService.getAllInvestors().get(i).getBudget(),
+					investorService.getAllInvestors().get(i).getInitialBudget(),
+					investorService.getAllInvestors().get(i).getName(),
+					investorService.getAllInvestors().get(i).getNumberOfCompaniesInvestedIn(),
+					investorService.getAllInvestors().get(i).getTotalNumberOfSharesBought()
 			});
 		}
+		
+		return panel4;
 		
 	}
 	public void start() {
@@ -281,60 +310,105 @@ public class GUI extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("companiesHighestCapital")){
+			mainPanel.removeAll();
+			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			panel.setVisible(false);
-			panel4.setVisible(false);
+			getCompanies().setVisible(false);
 		text.setText(simulation.highestCapital());
 			
 		}else if(e.getActionCommand().equals("companiesLowestCapital")) {
+			mainPanel.removeAll();
+			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			panel.setVisible(false);
-			panel4.setVisible(false);
+			getCompanies().setVisible(false);
 			text.setText(simulation.lowestCapital());
 			
 		}else if(e.getActionCommand().equals("investorsWithTheHighestNumberOfShares")) {
-			panel.setVisible(false);
+			mainPanel.removeAll();
+			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			panel4.setVisible(false);
+			getCompanies().setVisible(false);
 			text.setText(simulation.highestNumberOfShares());
 			
 		}else if(e.getActionCommand().equals("investorsThatHaveInvestedInTheMostCompanies")) {
-			panel.setVisible(false);
+			mainPanel.removeAll();
+			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			panel4.setVisible(false);
+			getCompanies().setVisible(false);
 			text.setText(simulation.highestNumberOfCompanies());
 			
 		}else if(e.getActionCommand().equals("investorsWithTheLowestNumberOfShares")) {
-			panel.setVisible(false);
+			mainPanel.removeAll();
+			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			panel4.setVisible(false);
+			getCompanies().setVisible(false);
 			text.setText(simulation.lowestNumberOfShares());
 			
 		}else if(e.getActionCommand().equals("investorsLeastNumberOfCompanies")) {
-			panel.setVisible(false);
+			mainPanel.removeAll();
+			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			panel4.setVisible(false);
+			getCompanies().setVisible(false);
 			text.setText(simulation.lowestNumberOfCompanies());
 			
 		}else if(e.getActionCommand().equals("totalNumberOfTransactions")) {
-			panel.setVisible(false);
+			mainPanel.removeAll();
+			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			panel4.setVisible(false);
+			getCompanies().setVisible(false);
+	
 			text.setText(simulation.totalTransactions());
 			
 		}else if(e.getActionCommand().equals("fullReport")) {
-			panel.setVisible(false);
+			mainPanel.removeAll();
+			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			panel4.setVisible(false);
+			getCompanies().setVisible(false);
+	
 			text.setText(simulation.fullReport());
 			
 		}else if(e.getActionCommand().equals("companies")) {
+			
+			mainPanel.removeAll();
+			
+			JPanel companies = getCompanies();
+			companies.validate();
+			companies.setVisible(true);
+			companies.repaint();
+			mainPanel.add(companies);
+			
+//			mainPanel.remove(getInvestors());
+			//mainPanel.add(getCompanies());
+			//getCompanies().setVisible(true);
+			
+			//getInvestors().setVisible(false);
 			panel1.setVisible(false);
-			panel4.setVisible(false);
-			getCompanies();
+			
+			this.revalidate();
+			this.repaint();
+			
+			
 		}else if(e.getActionCommand().equals("investors")){
+			
+			mainPanel.removeAll();
+			
+			JPanel investors = getInvestors();
+			investors.validate();
+			investors.setVisible(true);
+			investors.repaint();
+			mainPanel.add(investors);
+			
+			//mainPanel.remove(getCompanies());
+			//mainPanel.add(getInvestors());
+	
+			//getInvestors().setVisible(true);
+			getCompanies().setVisible(false);
 			panel1.setVisible(false);
-			getInvestors();
+			
+			this.revalidate();
+			this.repaint();
+			
+			
 		}
 		
 	}
