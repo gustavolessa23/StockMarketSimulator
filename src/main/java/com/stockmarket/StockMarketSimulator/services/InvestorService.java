@@ -179,6 +179,8 @@ public class InvestorService {
 		}
 		
 		desirableCompanyIds.removeIf(id -> companyService.getCompanyFromId(id).getShares().size() == 0);
+		
+		desirableCompanyIds.removeIf(id -> companyService.getCompanyFromId(id).getSharePrice() > investor.getBudget());
 
 		Collections.shuffle(desirableCompanyIds);
 		return desirableCompanyIds;

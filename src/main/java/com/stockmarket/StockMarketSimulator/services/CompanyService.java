@@ -62,6 +62,8 @@ public class CompanyService {
 				increasePrice(company);
 			}
 			
+			updateCompanyMap(company);
+			
 			//company.getCompanyDetails();
 			return sold; // return share
 		}
@@ -98,6 +100,9 @@ public class CompanyService {
 		return data.getCompaniesMap().get(id);
 	}
 	
+	public void updateCompanyMap(Company company) {
+		data.getCompaniesMap().replace(company.getId(), company);
+	}
 	
 	/**
 	 * 

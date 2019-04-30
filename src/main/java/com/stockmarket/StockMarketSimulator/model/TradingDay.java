@@ -45,7 +45,7 @@ public class TradingDay {
 			boolean transactionDone = transactionService.tryTransaction(randomInvestor, companyIds);
 			
 			if(!transactionDone) {
-				companyIds = investorService.getCompaniesIds(randomInvestor);
+				companyIds = investorService.getDesirableCompaniesForInvestor(randomInvestor);
 				transactionDone = transactionService.tryTransaction(randomInvestor, companyIds);
 			}
 		}
