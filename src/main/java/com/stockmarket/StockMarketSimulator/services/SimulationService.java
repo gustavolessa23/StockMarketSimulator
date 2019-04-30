@@ -7,7 +7,7 @@ import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
-import com.stockmarket.StockMarketSimulator.view.Report;
+import com.stockmarket.StockMarketSimulator.view.GUI;
 import com.stockmarket.StockMarketSimulator.view.View;
 
 @Service

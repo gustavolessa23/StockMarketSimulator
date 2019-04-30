@@ -14,7 +14,7 @@ import com.stockmarket.StockMarketSimulator.model.TradingDay;
 import com.stockmarket.StockMarketSimulator.services.SimulationService;
 import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
 import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
-import com.stockmarket.StockMarketSimulator.view.Report;
+import com.stockmarket.StockMarketSimulator.view.GUI;
 
 @SpringBootApplication
 @EnableJpaAuditing
@@ -29,7 +29,7 @@ public class StockMarketSimulatorApplication extends JFrame implements CommandLi
 	SimulationService simulation;
 	
 	@Autowired
-	Report report;
+	GUI report;
 	
 			
 	public static void main(String[] args) {
