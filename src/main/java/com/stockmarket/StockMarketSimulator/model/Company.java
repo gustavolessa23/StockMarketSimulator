@@ -138,8 +138,8 @@ public class Company {
 		this.sharesSold++;
 	}
 	
-	public void incrementCapitalBySharePrice() {
-		this.capital = this.capital+this.sharePrice;
+	public void incrementCapitalBySharePrice() {		
+		this.capital = Data.round(this.capital+this.sharePrice,2);
 	}
 
 	public static class CompanyBuilder{

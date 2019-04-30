@@ -16,13 +16,13 @@ public class AsyncService{
 	private InvestorService investorService;
 	
 	
-	@Async ("myThread")
+	@Async 
 	public Future<String> genComapanies () {
 		companyService.populateCompanies();
 		return null;	
 	}
 	
-	@Async ("myThread")
+	@Async
 	public Future<String> genInvestors () {	
 		investorService.populateInvestors();
 		return null;	

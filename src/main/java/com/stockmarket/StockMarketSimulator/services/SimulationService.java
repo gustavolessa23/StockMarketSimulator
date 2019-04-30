@@ -45,20 +45,34 @@ public class SimulationService {
 		
 	@Transactional
 	public void start(){
-
-		asyncGeneration();
-		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
-		view.displayLogo();
-		menuService.start();
+		long time3 = System.currentTimeMillis();
+		companyService.populateCompanies();
+		investorService.populateInvestors();
+		long time4 = System.currentTimeMillis();
+		view.display("NORMAL: "+String.valueOf(time4-time3));
+		
+		long time = System.currentTimeMillis();	
+			asyncGeneration();
+		long time2 = System.currentTimeMillis();
+		view.display("ASYNC: "+String.valueOf(time2-time));
+		
+		
+//		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
+//		view.displayLogo();
+//		menuService.start();
 				
 	}
 	
 	public void asyncGeneration(){ 	
 		Future<String> futureResult =  asyncService.genComapanies();
-		//Future<String> futureResult2 =  asyncService.genInvestors();
+		Future<String> futureResult2 =  asyncService.genInvestors();
 		
 		try {
+			
 			String result = futureResult.get();
+			String result2 = futureResult2.get();
+
+			
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}

@@ -24,10 +24,11 @@ public class StockMarketSimulatorApplication implements CommandLineRunner {
 	@Bean(name="myThread")
     public TaskExecutor threadPoolTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(20);
-        executor.setMaxPoolSize(1000);
+        executor.setCorePoolSize(4);
+        executor.setMaxPoolSize(4);
         executor.setThreadNamePrefix("myThread");
-        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setQueueCapacity(2);
+        //executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.initialize();
       
         return executor;
