@@ -23,7 +23,7 @@ import com.stockmarket.StockMarketSimulator.services.SimulationService;
 
 
 @Component 
-public class Report extends JFrame implements ActionListener{
+public class GUI extends JFrame implements ActionListener{
 	
 	
 	/**
@@ -39,6 +39,7 @@ public class Report extends JFrame implements ActionListener{
 	private JButton investorsWithTheLowestNumberOfShares;
 	private JButton investorsLeastNumberOfCompanies;
 	private JButton totalNumberOfTransactions;
+	private JButton getAllInvestors;
 	private JButton fullReport;
 	static JProgressBar progressBar;
 	
@@ -53,7 +54,7 @@ public class Report extends JFrame implements ActionListener{
 	private Data data;
 
 	
-	public Report() {
+	public GUI() {
 		
 		this.setTitle("Report");
 		setSize(1100,500);
@@ -128,11 +129,15 @@ public class Report extends JFrame implements ActionListener{
 		panel3.add(investorsWithTheLowestNumberOfShares);
 		
 		
-		
 		investorsLeastNumberOfCompanies = new JButton("Least amount of Companies");
 		investorsLeastNumberOfCompanies.setActionCommand("investorsLeastNumberOfCompanies");
 		investorsLeastNumberOfCompanies.addActionListener(this);
 		panel3.add(investorsLeastNumberOfCompanies);
+		
+		getAllInvestors = new JButton("Get all Investors");
+		getAllInvestors.addActionListener(this);
+		getAllInvestors.setActionCommand("investors");
+		panel3.add(getAllInvestors);
 		
 		totalNumberOfTransactions = new JButton("Total number of transactions");
 		totalNumberOfTransactions.setActionCommand("totalNumberOfTransactions");
@@ -211,14 +216,13 @@ public class Report extends JFrame implements ActionListener{
 
 		model.addColumn("id");
 		model.addColumn("budget");
+		model.addColumn("initial_budget");
 		model.addColumn("name");
-		model.addColumn("share_price");
-		model.addColumn("shares_sold");
-		model.addColumn("initial_capital");
-		model.addColumn("initial_share_price");
-		model.addColumn("initial_shares");
+		model.addColumn("number_of_companies_invested_in");
+		model.addColumn("total_number_of_shares_bought");
 		
-		table = new JTable(model);
+		JTable table = new JTable(model);
+		
 		table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.getColumnModel().getColumn(2).setPreferredWidth(95);
@@ -226,9 +230,22 @@ public class Report extends JFrame implements ActionListener{
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel4.add(scrollPane);
 		
+		for(int i = 0; i < data.getInvestors().size(); i++) {
+			
+			((DefaultTableModel)table.getModel()).addRow(new Object[] {
+					
+					data.getInvestors().get(i).getId(),
+					data.getInvestors().get(i).getBudget(),
+					data.getInvestors().get(i).getInitialBudget(),
+					data.getInvestors().get(i).getName(),
+					data.getInvestors().get(i).getNumberOfCompaniesInvestedIn(),
+					data.getInvestors().get(i).getTotalNumberOfSharesBought()
+			});
+		}
+		
 	}
 	public void start() {
-		new Report();
+		new GUI();
 	}
 	
 	public static void fill() 
@@ -252,7 +269,7 @@ public class Report extends JFrame implements ActionListener{
                 progressBar.setValue(i + 10); 
   
                 // delay the thread 
-                Thread.sleep(3000); 
+                Thread.sleep(4000); 
                 i += 20; 
             } 
         } 
@@ -264,48 +281,60 @@ public class Report extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("companiesHighestCapital")){
-			panel.setVisible(false);
 			panel1.setVisible(true);
+			panel.setVisible(false);
+			panel4.setVisible(false);
 		text.setText(simulation.highestCapital());
 			
 		}else if(e.getActionCommand().equals("companiesLowestCapital")) {
-			panel.setVisible(false);
 			panel1.setVisible(true);
+			panel.setVisible(false);
+			panel4.setVisible(false);
 			text.setText(simulation.lowestCapital());
 			
 		}else if(e.getActionCommand().equals("investorsWithTheHighestNumberOfShares")) {
 			panel.setVisible(false);
 			panel1.setVisible(true);
+			panel4.setVisible(false);
 			text.setText(simulation.highestNumberOfShares());
 			
 		}else if(e.getActionCommand().equals("investorsThatHaveInvestedInTheMostCompanies")) {
 			panel.setVisible(false);
 			panel1.setVisible(true);
+			panel4.setVisible(false);
 			text.setText(simulation.highestNumberOfCompanies());
 			
 		}else if(e.getActionCommand().equals("investorsWithTheLowestNumberOfShares")) {
 			panel.setVisible(false);
 			panel1.setVisible(true);
+			panel4.setVisible(false);
 			text.setText(simulation.lowestNumberOfShares());
 			
 		}else if(e.getActionCommand().equals("investorsLeastNumberOfCompanies")) {
 			panel.setVisible(false);
 			panel1.setVisible(true);
+			panel4.setVisible(false);
 			text.setText(simulation.lowestNumberOfCompanies());
 			
 		}else if(e.getActionCommand().equals("totalNumberOfTransactions")) {
 			panel.setVisible(false);
 			panel1.setVisible(true);
+			panel4.setVisible(false);
 			text.setText(simulation.totalTransactions());
 			
 		}else if(e.getActionCommand().equals("fullReport")) {
 			panel.setVisible(false);
 			panel1.setVisible(true);
+			panel4.setVisible(false);
 			text.setText(simulation.fullReport());
 			
 		}else if(e.getActionCommand().equals("companies")) {
 			panel1.setVisible(false);
+			panel4.setVisible(false);
 			getCompanies();
+		}else if(e.getActionCommand().equals("investors")){
+			panel1.setVisible(false);
+			getInvestors();
 		}
 		
 	}
