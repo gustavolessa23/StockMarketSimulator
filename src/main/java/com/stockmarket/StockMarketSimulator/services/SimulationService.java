@@ -7,6 +7,7 @@ import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
+import com.stockmarket.StockMarketSimulator.view.GUI;
 import com.stockmarket.StockMarketSimulator.view.View;
 
 @Service
@@ -34,6 +35,8 @@ public class SimulationService {
 	
 	@Autowired
 	private ReportService reportService;
+	
+	
 
 	
 	public void start() {
@@ -51,9 +54,10 @@ public class SimulationService {
 		reportService.saveReport();
 		
 		view.displayLogo();
+		
+		
 		menuService.start();
-		
-		
+
 	}
 
 	
