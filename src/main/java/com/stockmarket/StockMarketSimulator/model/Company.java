@@ -22,6 +22,7 @@ public class Company {
 	private static int lastId = 0;
 	private String name;
 	private double sharePrice;
+	@Column(scale=2)
 	private double capital;
 	private int sharesSold;
 	private int initialShares;
