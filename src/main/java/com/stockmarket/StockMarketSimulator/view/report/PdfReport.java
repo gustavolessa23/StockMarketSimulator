@@ -31,14 +31,5 @@ public class PdfReport extends ReportFile {
 		document.close();
 	}
 	
-	public void generatePdf(String content) throws FileNotFoundException {
-		
-		PdfWriter writer = new PdfWriter("teste.pdf");
-		PdfDocument pdf = new PdfDocument(writer);
-		Document document = new Document(pdf);
-		document.add(new Paragraph(content));
-		document.close();
-		
-	}
 
 }

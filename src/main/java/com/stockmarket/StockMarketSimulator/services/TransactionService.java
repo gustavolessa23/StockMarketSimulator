@@ -13,6 +13,7 @@ import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.Share;
 import com.stockmarket.StockMarketSimulator.model.Transaction;
+import com.stockmarket.StockMarketSimulator.view.View;
 
 @Service
 public class TransactionService {
@@ -26,6 +27,8 @@ public class TransactionService {
 	@Autowired 
 	private CompanyService companyService;
 
+	@Autowired
+	private View view;
 
 	public void executeTransaction(Company company, Investor investor) throws InvestorOutOfFundsException, CompanyOutOfSharesException{
 		if(investor.getBudget()<company.getSharePrice()) {
@@ -72,15 +75,13 @@ public class TransactionService {
 				company.setHasSoldShare(false); //set all the companies soldShare state back to false
 			}
 			
-			if(!companies.isEmpty()) {
-				System.out.println("Decrease in price for "+companies.size()+" companies:");
-//				for(Company c : companies) {
-//					System.out.print("\t"+c.getId()+": "+c.getName()+" \t");
-//					System.out.printf("\tPrice: " + String.format("%.2f", c.getSharePrice())+"\n");
-//				}
+			if(!companies.isEmpty()) view.display("Decrease in price for "+companies.size()+" companies:");
 				
-			}
 		}
+	}
+	
+	public List<Transaction> getAllTransactions(){
+		return data.getTransactions();
 	}
 
 }

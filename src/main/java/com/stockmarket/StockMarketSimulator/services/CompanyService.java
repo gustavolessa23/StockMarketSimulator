@@ -44,14 +44,13 @@ public class CompanyService {
 		companyRepository.saveAll(companies);
 	}
 
-	public synchronized Share sellShare(Company company) {
+	public Share sellShare(Company company) {
 		if (company.getShares().isEmpty()) {
 			throw new CompanyOutOfSharesException("Company "+company.getName()+" has no shares left to sell."); // check if it's empty
 		}else {
 			company.incrementSharesSold(); // increment sharesSold
 			
-			company.incrementCapitalBySharePrice(); 
-			//System.out.println("Capital now: "+company.getCapital());// increment capital by share price
+			company.incrementCapital(company.getSharePrice()); 
 	
 			Share sold = company.getShares().remove(0); // remove the first share (ArrayList if not empty will always have item on index 0)
 			

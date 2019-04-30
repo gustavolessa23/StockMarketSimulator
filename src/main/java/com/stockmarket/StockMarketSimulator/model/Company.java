@@ -165,8 +165,8 @@ public class Company {
 		this.sharesSold++;
 	}
 	
-	public void incrementCapitalBySharePrice() {
-		this.capital = this.capital+this.sharePrice;
+	public void incrementCapital(double amount) {
+		this.capital = this.capital+amount;
 	}
 
 	public static class CompanyBuilder{

@@ -51,7 +51,7 @@ public class SimulationService {
 
 		companyService.updateCompanies();
 		investorService.updateInvestors();
-		reportService.saveReport();
+		reportService.saveReportToDb();
 		
 		view.displayLogo();
 		
@@ -150,5 +150,18 @@ public class SimulationService {
 		sb.append("\n\nTRANSACTIONS");
 		sb.append(totalTransactions());
 		return sb.toString();
+	}
+	
+	
+	public void generatePdfReport(String path) {
+		reportService.generatePdfReport(fullReport());
+	}
+	
+	public void generateDocxReport(String path) {
+		reportService.generateDocxReport(fullReport());
+	}
+	
+	public void generateTxtReport(String path) {
+		reportService.generateTxtReport(fullReport());
 	}
 }
