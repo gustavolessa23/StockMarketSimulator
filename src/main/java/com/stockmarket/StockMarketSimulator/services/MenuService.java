@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.view.View;
+import com.stockmarket.StockMarketSimulator.view.report.ReportFactory;
+import com.stockmarket.StockMarketSimulator.view.report.ReportType;
 
 
 @Service
@@ -16,8 +18,8 @@ public class MenuService {
 	private @Autowired InputService input;
 	
 	private @Autowired SimulationService simulation;
-	
-	private @Autowired PdfGenerator pdfGenerator;
+		
+	private @Autowired ReportService reportService;
 	
 	
 	/**
@@ -92,12 +94,9 @@ public class MenuService {
 			case 9:
 				String report = simulation.fullReport();
 				view.display(report);
-				try {
-					pdfGenerator.generatePdf(report);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				simulation.generatePdfReport(report);
+				simulation.generateDocxReport(report);
+				simulation.generateTxtReport(report);
 				
 				break;
 			case 10:

@@ -27,11 +27,8 @@ public class StockMarketSimulatorApplication extends JFrame implements CommandLi
 
 	@Autowired
 	SimulationService simulation;
-	
-	@Autowired
-	GUI report;
-	
-			
+
+		
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(StockMarketSimulatorApplication.class);
 		app.run(args);				
@@ -43,8 +40,6 @@ public class StockMarketSimulatorApplication extends JFrame implements CommandLi
 	
         System.out.println("Application starting....");
 		simulation.start();
-		
-		report.start();
 		
 
     }

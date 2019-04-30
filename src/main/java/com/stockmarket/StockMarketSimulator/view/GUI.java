@@ -147,7 +147,7 @@ public class GUI extends JFrame implements ActionListener{
 		validate();
 		repaint();
 		this.setVisible (true);
-		fill();
+		//fill();
 		
 		
 	}
