@@ -44,7 +44,7 @@ public class CompanyService {
 		companyRepository.saveAll(companies);
 	}
 
-	public Share sellShare(Company company) {
+	public synchronized Share sellShare(Company company) {
 		if (company.getShares().isEmpty()) {
 			throw new CompanyOutOfSharesException("Company "+company.getName()+" has no shares left to sell."); // check if it's empty
 		}else {
