@@ -1,22 +1,19 @@
 package com.stockmarket.StockMarketSimulator.services;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
 import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.model.Data;
-import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.Share;
 import com.stockmarket.StockMarketSimulator.repositories.CompanyRepository;
 import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
-import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
 
 @Service
 public class CompanyService {
@@ -33,6 +30,8 @@ public class CompanyService {
 	/**
 	 * This method populates the company list by calling the generator and setting the list.
 	 */
+	
+	
 	public void populateCompanies() {
 		List<Company> companies = companyGenerator.generateCompanies();
 		
@@ -45,8 +44,13 @@ public class CompanyService {
 		data.setCompaniesMap(companyMap);
 		
 		companyRepository.saveAll(companies);
+		
+		System.out.println("COMPANIES COMPLETED");
+		
+		
 	}
 
+	
 	public Share sellShare(Company company) {
 		if (company.getShares().isEmpty()) {
 			throw new CompanyOutOfSharesException("Company "+company.getName()+" has no shares left to sell."); // check if it's empty

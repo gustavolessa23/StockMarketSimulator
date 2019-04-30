@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.exception.InvestorHasInvestedInAllCompaniesException;
@@ -38,6 +39,7 @@ public class InvestorService {
 		List<Investor> investors = investorGenerator.generateInvestors();
 		data.setInvestors(investors);
 		investorRepository.saveAll(investors);
+		System.out.println("INVESTORS COMPLETED");
 	}
 
 	public Investor getRandomInvestor() {
@@ -100,7 +102,7 @@ public class InvestorService {
 		return investor.getWallet().getShares().size();
 	}
 
-
+	@Async ("myThread")
 	public void buyShare(Investor investor, Share share) {
 		investor.setBudget(data.round(investor.getBudget()-share.getPrice(),2));// decrement budget by share price
 		investor.getWallet().getShares().add(share);

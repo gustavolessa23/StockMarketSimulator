@@ -35,7 +35,9 @@ public class TradingDay {
 	private Data data; 
 
 	public void trade() {
-		trade(data.getCompanies(), data.getInvestors());
+		
+			trade(data.getCompanies(), data.getInvestors());
+		
 	}
 
 	/*
@@ -59,9 +61,11 @@ public class TradingDay {
 			}
 		}
 		System.out.println("Simulation ended");
+		
+		
 	}
-
-
+	
+	
 	public boolean simulationCanContinue() {
 		Investor highestBudget = investorService.getHighestBudget();
 		Company cheapestShare = companyService.getCheapestAvailableShare();

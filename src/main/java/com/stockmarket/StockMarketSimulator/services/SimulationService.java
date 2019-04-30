@@ -1,24 +1,35 @@
 package com.stockmarket.StockMarketSimulator.services;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
+import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
+import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
 import com.stockmarket.StockMarketSimulator.view.View;
 
 @Service
 public class SimulationService {
-
-	
 
 	@Autowired
 	private CompanyService companyService; 
 	
 	@Autowired
 	private InvestorService investorService;
+	
+	@Autowired
+	private AsyncService asyncService;
 	
 	@Autowired
 	private MenuService menuService;
@@ -31,20 +42,28 @@ public class SimulationService {
 	
 	@Autowired
 	private View view;
-
-	
-	public void start() {
-	
-		companyService.populateCompanies();
-		investorService.populateInvestors();
-
-		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 		
+	@Transactional
+	public void start(){
+
+		asyncGeneration();
+		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 		view.displayLogo();
 		menuService.start();
-		
-		
+				
 	}
+	
+	public void asyncGeneration(){ 	
+		Future<String> futureResult =  asyncService.genComapanies();
+		//Future<String> futureResult2 =  asyncService.genInvestors();
+		
+		try {
+			String result = futureResult.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+    }
+	
 	
 	public String highestCapital() {
 		StringBuilder sb = new StringBuilder();

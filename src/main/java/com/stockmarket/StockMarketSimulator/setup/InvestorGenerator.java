@@ -23,7 +23,8 @@ public class InvestorGenerator {
 	@Autowired
 	private StoredData sd; //Object that holds random names and other data
 
-	private @Autowired Data data;
+	@Autowired
+	private  Data data;
 	private Random rG = new Random();
 
 	/**
@@ -40,7 +41,7 @@ public class InvestorGenerator {
 		for(int i=0;i<numberOfInvestors;i++) {
 
 			Wallet emptyWallet = new Wallet(); //create a new wallet for each investor
-			String randomName = sd.investorName.get((i+randomShift)%numberOfInvestors); 
+			String randomName = sd.investorName.get((i+randomShift)%50); 
 			double randomBudget = data.round(minBudget+(maxBudget-minBudget)*rG.nextDouble(),2); //create a random number for a budget between 1000 and 10000
 
 			Investor randomInvestor = investorBuilder

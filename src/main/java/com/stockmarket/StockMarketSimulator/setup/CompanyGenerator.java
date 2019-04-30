@@ -26,8 +26,9 @@ public class CompanyGenerator {
 
 	@Autowired
 	private StoredData sd; //Object that holds random names and other data
-
-	private @Autowired Data data;
+	
+	@Autowired
+	private  Data data;
 	
 	private Random rG = new Random();
 
@@ -46,7 +47,7 @@ public class CompanyGenerator {
 
 		for(int i=0;i<numberOfCompanies;i++) {
 
-			String randomName = sd.companyName.get((i+randomShift)%numberOfCompanies); //get a name from the StoredData.java file
+			String randomName = sd.companyName.get((i+randomShift)%50); //get a name from the StoredData.java file
 			int randomShares = minNumberOfShares+rG.nextInt(maxNumberOfShares-minNumberOfShares); //create a random number for a share between 500 and 1000
 			double randomPrice = data.round(minSharePrice+(maxSharePrice-minSharePrice)*rG.nextDouble(),2); //create a random number for a share price between 10.00 and 100.00
 
