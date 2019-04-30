@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.exception.InvestorHasInvestedInAllCompaniesException;
-import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.Share;
@@ -39,7 +38,6 @@ public class InvestorService {
 		List<Investor> investors = investorGenerator.generateInvestors();
 		data.setInvestors(investors);
 		investorRepository.saveAll(investors);
-		System.out.println("INVESTORS COMPLETED");
 	}
 
 	public Investor getRandomInvestor() {
@@ -53,6 +51,10 @@ public class InvestorService {
 	
 	public Investor getInvestorById(int id) {
 		return data.getInvestors().get(id);
+	}
+	
+	public void updateInvestors() {
+		investorRepository.saveAll(data.getInvestors());
 	}
 	
 	/**
@@ -102,15 +104,13 @@ public class InvestorService {
 		return investor.getWallet().getShares().size();
 	}
 
-	@Async ("myThread")
+
 	public void buyShare(Investor investor, Share share) {
 		investor.setBudget(data.round(investor.getBudget()-share.getPrice(),2));// decrement budget by share price
 		investor.getWallet().getShares().add(share);
 		addCompanyId(investor, share.getCompanyId());
 		investor.incrementSharesBought();;		
 	}
-	// ----------- COMPANIES ---------------------
-
 
 	/**
 	 * Method to add a new entry to an investor's map of amount of shares (value) for each company ID (key)
@@ -118,9 +118,10 @@ public class InvestorService {
 	 * @param companyId
 	 * @return
 	 */
-	private int addCompanyId(Investor investor, int companyId) {
-		
-		return investor.getWallet().getCompaniesShares().merge(companyId, 1, Integer::sum);  // add
+	private void addCompanyId(Investor investor, int companyId) {
+		// set the value for 1 or increment existing value
+		investor.getWallet().getCompaniesShares().merge(companyId, 1, Integer::sum);  // add
+		investor.setNumberOfCompaniesInvestedIn(investor.getWallet().getCompaniesShares().size());
 	}
 
 	/**
@@ -191,6 +192,11 @@ public class InvestorService {
 			}
 		}
 		return investor;
+	}
+	
+	public void clearInvestorTable() {
+		 
+		investorRepository.deleteAll();
 	}
 	
 

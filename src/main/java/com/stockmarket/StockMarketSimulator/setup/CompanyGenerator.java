@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.model.Data;
-import com.stockmarket.StockMarketSimulator.model.TradingDay;
-import com.stockmarket.StockMarketSimulator.services.CompanyService;
 
 @Component
 public class CompanyGenerator {
@@ -21,12 +19,10 @@ public class CompanyGenerator {
 	public static double minSharePrice = 10.00;
 	public static double maxSharePrice = 100.00;
 
-	@Autowired
-	private CompanyService companyService;
 
 	@Autowired
 	private StoredData sd; //Object that holds random names and other data
-	
+
 	@Autowired
 	private  Data data;
 	
@@ -47,7 +43,7 @@ public class CompanyGenerator {
 
 		for(int i=0;i<numberOfCompanies;i++) {
 
-			String randomName = sd.companyName.get((i+randomShift)%50); //get a name from the StoredData.java file
+			String randomName = sd.companyName.get((i+randomShift)%numberOfCompanies); //get a name from the StoredData.java file
 			int randomShares = minNumberOfShares+rG.nextInt(maxNumberOfShares-minNumberOfShares); //create a random number for a share between 500 and 1000
 			double randomPrice = data.round(minSharePrice+(maxSharePrice-minSharePrice)*rG.nextDouble(),2); //create a random number for a share price between 10.00 and 100.00
 
@@ -65,4 +61,6 @@ public class CompanyGenerator {
 		return companies;
 	}
 
+
 }
+

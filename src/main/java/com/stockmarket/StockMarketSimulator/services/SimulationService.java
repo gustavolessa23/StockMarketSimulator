@@ -1,35 +1,25 @@
 package com.stockmarket.StockMarketSimulator.services;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
-import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
-import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
+import com.stockmarket.StockMarketSimulator.view.Report;
 import com.stockmarket.StockMarketSimulator.view.View;
 
 @Service
 public class SimulationService {
+
+	
 
 	@Autowired
 	private CompanyService companyService; 
 	
 	@Autowired
 	private InvestorService investorService;
-	
-	@Autowired
-	private AsyncService asyncService;
 	
 	@Autowired
 	private MenuService menuService;
@@ -42,42 +32,30 @@ public class SimulationService {
 	
 	@Autowired
 	private View view;
+	
+	@Autowired
+	private ReportService reportService;
+
+	public void start() {
 		
-	@Transactional
-	public void start(){
-		long time3 = System.currentTimeMillis();
+		companyService.clearCompanyTable();
+		investorService.clearInvestorTable();
+	
 		companyService.populateCompanies();
 		investorService.populateInvestors();
-		long time4 = System.currentTimeMillis();
-		view.display("NORMAL: "+String.valueOf(time4-time3));
-		
-		long time = System.currentTimeMillis();	
-			asyncGeneration();
-		long time2 = System.currentTimeMillis();
-		view.display("ASYNC: "+String.valueOf(time2-time));
-		
-		
-//		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
-//		view.displayLogo();
-//		menuService.start();
-				
-	}
-	
-	public void asyncGeneration(){ 	
-		Future<String> futureResult =  asyncService.genComapanies();
-		Future<String> futureResult2 =  asyncService.genInvestors();
-		
-		try {
-			
-			String result = futureResult.get();
-			String result2 = futureResult2.get();
 
-			
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-    }
-	
+		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
+
+		companyService.updateCompanies();
+		investorService.updateInvestors();
+		reportService.saveReport();
+		
+		view.displayLogo();
+		
+		
+		menuService.start();
+
+	}
 	
 	public String highestCapital() {
 		StringBuilder sb = new StringBuilder();

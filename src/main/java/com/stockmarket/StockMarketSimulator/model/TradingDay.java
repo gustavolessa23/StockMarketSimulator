@@ -1,21 +1,12 @@
 package com.stockmarket.StockMarketSimulator.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-
 import org.springframework.stereotype.Component;
 
-import com.stockmarket.StockMarketSimulator.StockMarketSimulatorApplication;
-import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
-import com.stockmarket.StockMarketSimulator.exception.InvestorHasInvestedInAllCompaniesException;
-import com.stockmarket.StockMarketSimulator.exception.InvestorOutOfFundsException;
 import com.stockmarket.StockMarketSimulator.services.CompanyService;
 import com.stockmarket.StockMarketSimulator.services.InvestorService;
 import com.stockmarket.StockMarketSimulator.services.TransactionService;
-import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
-import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -35,9 +26,9 @@ public class TradingDay {
 	private Data data; 
 
 	public void trade() {
-		
-			trade(data.getCompanies(), data.getInvestors());
-		
+
+		trade(data.getCompanies(), data.getInvestors());
+
 	}
 
 	/*
@@ -61,11 +52,10 @@ public class TradingDay {
 			}
 		}
 		System.out.println("Simulation ended");
-		
-		
+
 	}
-	
-	
+
+
 	public boolean simulationCanContinue() {
 		Investor highestBudget = investorService.getHighestBudget();
 		Company cheapestShare = companyService.getCheapestAvailableShare();
@@ -74,9 +64,13 @@ public class TradingDay {
 		
 		if(cheapestShare.getSharePrice() > highestBudget.getBudget()) return false;
 		
+		//transactionService.tryTransaction(highestBudget, cheapestShare);
+
+		
 		return true;
 	}
-	
+
+
 	public List<Company> getHighestCapital(){
 		List<Company> companies = new ArrayList<>();
 		

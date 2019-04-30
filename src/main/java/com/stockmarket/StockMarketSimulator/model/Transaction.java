@@ -23,6 +23,9 @@ public class Transaction {
 	
 	private Transaction() {
 		this.transactionId = -1;
+		this.company = null;
+		this.investor = null;
+		this.date = null;
 	}
 	
 	
@@ -44,8 +47,27 @@ public class Transaction {
 		.append("COMPANY: \t" + this.getCompany().getId()+": "+this.getCompany().getName()+" ("+this.getCompany().getShares().size()+")")
 		.append("INVESTOR: \t" + this.getInvestor().getId()+": "+this.getInvestor().getName() +" ($"+this.getInvestor().getBudget()+")")
 		.append("TRADED AT: " + String.format("%.2f", this.getCompany().getSharePrice()));
-
 		return sb.toString();
 	}
 
+	/**
+	 * @return the investorId
+	 */
+	public Investor getInvestor() {
+		return investor;
+	}
+	
+	/**
+	 * @return the date
+	 */
+	public Date getDate() {
+		return date;
+	}
+	
+	/**
+	 * @param date the date to set
+	 */
+	public void setDate(Date date) {
+		this.date = date;
+	}
 }
