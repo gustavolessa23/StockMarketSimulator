@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
-import org.springframework.stereotype.Component;
-
 //import javax.persistence.Entity;
 //import javax.persistence.GeneratedValue;
 //import javax.persistence.Id;
@@ -24,6 +22,7 @@ public class Company {
 	private static int lastId = 0;
 	private String name;
 	private double sharePrice;
+	@Column(scale=2)
 	private double capital;
 	private int sharesSold;
 	private int initialShares;
@@ -169,8 +168,8 @@ public class Company {
 		this.sharesSold++;
 	}
 	
-	public void incrementCapitalBySharePrice() {
-		this.capital = Data.round(this.capital+this.sharePrice,2);
+	public void incrementCapital(double amount) {
+		this.capital = this.capital+amount;
 	}
 
 	public static class CompanyBuilder{

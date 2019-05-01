@@ -47,7 +47,7 @@ public class TradingDay {
 			boolean transactionDone = transactionService.tryTransaction(randomInvestor, companyIds);
 			
 			if(!transactionDone) {
-				companyIds = investorService.getCompaniesIds(randomInvestor);
+				companyIds = investorService.getDesirableCompaniesForInvestor(randomInvestor);
 				transactionDone = transactionService.tryTransaction(randomInvestor, companyIds);
 			}
 		}
@@ -69,7 +69,6 @@ public class TradingDay {
 		
 		return true;
 	}
-
 
 	public List<Company> getHighestCapital(){
 		List<Company> companies = new ArrayList<>();

@@ -7,7 +7,7 @@ import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
-import com.stockmarket.StockMarketSimulator.view.Report;
+import com.stockmarket.StockMarketSimulator.view.GUI;
 import com.stockmarket.StockMarketSimulator.view.View;
 
 @Service
@@ -48,7 +48,7 @@ public class SimulationService {
 
 		companyService.updateCompanies();
 		investorService.updateInvestors();
-		reportService.saveReport();
+		reportService.saveReportToDb();
 		
 		view.displayLogo();
 		
@@ -146,5 +146,18 @@ public class SimulationService {
 		sb.append("\n\nTRANSACTIONS");
 		sb.append(totalTransactions());
 		return sb.toString();
+	}
+	
+	
+	public void generatePdfReport(String path) {
+		reportService.generatePdfReport(fullReport(), path);
+	}
+	
+	public void generateDocxReport(String path) {
+		reportService.generateDocxReport(fullReport(), path);
+	}
+	
+	public void generateTxtReport(String path) {
+		reportService.generateTxtReport(fullReport(), path);
 	}
 }

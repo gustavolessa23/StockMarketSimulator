@@ -1,11 +1,16 @@
 package com.stockmarket.StockMarketSimulator.services;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.model.Report;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
 import com.stockmarket.StockMarketSimulator.repositories.ReportRepository;
+import com.stockmarket.StockMarketSimulator.view.report.ReportFactory;
+import com.stockmarket.StockMarketSimulator.view.report.ReportFile;
+import com.stockmarket.StockMarketSimulator.view.report.ReportType;
 
 @Service
 public class ReportService {
@@ -16,7 +21,7 @@ public class ReportService {
 	@Autowired
 	TradingDay td;
 	
-	public void saveReport() {
+	public void saveReportToDb() {
 		
 		Report report = Report.builder()
 				.highestCapital(td.getHighestCapital().get(0).getCapital())
@@ -31,5 +36,36 @@ public class ReportService {
 		reportRepository.save(report);
 		
 	}
+	
+	public void generatePdfReport(String content, String path) {
+		ReportFile file = ReportFactory.create(ReportType.PDF, path+"1.pdf", content);
+		try {
+			file.generate();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void generateDocxReport(String content, String path) {
+		ReportFile file = ReportFactory.create(ReportType.DOCX, path+"1.docx", content);
+		try {
+			file.generate();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void generateTxtReport(String content, String path) {
+		ReportFile file = ReportFactory.create(ReportType.TXT, path+"1.txt", content);
+		try {
+			file.generate();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 
 }

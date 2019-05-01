@@ -121,6 +121,7 @@ public class InvestorService {
 	private void addCompanyId(Investor investor, int companyId) {
 		// set the value for 1 or increment existing value
 		investor.getWallet().getCompaniesShares().merge(companyId, 1, Integer::sum);  // add
+		
 		investor.setNumberOfCompaniesInvestedIn(investor.getWallet().getCompaniesShares().size());
 	}
 
@@ -178,6 +179,8 @@ public class InvestorService {
 		}
 		
 		desirableCompanyIds.removeIf(id -> companyService.getCompanyFromId(id).getShares().size() == 0);
+		
+		desirableCompanyIds.removeIf(id -> companyService.getCompanyFromId(id).getSharePrice() > investor.getBudget());
 
 		Collections.shuffle(desirableCompanyIds);
 		return desirableCompanyIds;
