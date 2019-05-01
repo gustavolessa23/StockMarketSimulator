@@ -1,5 +1,8 @@
 package com.stockmarket.StockMarketSimulator.services;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +17,14 @@ import com.stockmarket.StockMarketSimulator.view.View;
 public class SimulationService {
 
 	
-
 	@Autowired
 	private CompanyService companyService; 
 	
 	@Autowired
 	private InvestorService investorService;
+	
+	@Autowired
+	private AsyncService asyncService; 
 	
 	@Autowired
 	private MenuService menuService;
@@ -37,23 +42,49 @@ public class SimulationService {
 	private ReportService reportService;
 
 	public void start() {
+
+		generateObjects();
 		
-		companyService.clearCompanyTable();
-		investorService.clearInvestorTable();
-	
-		companyService.populateCompanies();
-		investorService.populateInvestors();
-
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
-
+		
 		companyService.updateCompanies();
 		investorService.updateInvestors();
 		reportService.saveReportToDb();
 		
 		view.displayLogo();
-		
-		
 		menuService.start();
+
+	}
+	
+	public void restart() {
+		companyService.clearCompanyTable();
+		investorService.clearInvestorTable();
+	
+		generateObjects();
+
+		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
+		
+		companyService.updateCompanies();
+		investorService.updateInvestors();
+		reportService.saveReportToDb();
+	}
+	
+	/*
+	 * @Async function to generate companies at the same time
+	 */
+	public void generateObjects() {
+		
+		Future<String> futureResult =  asyncService.genComapanies();
+		Future<String> futureResult2 = asyncService.genInvestors();
+		
+		try {
+			String result = futureResult.get();
+			String result2 = futureResult.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
 
 	}
 	

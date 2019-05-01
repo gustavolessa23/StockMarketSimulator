@@ -19,7 +19,7 @@ public class Company {
 //	@GeneratedValue
 	@Id
 	private final int id;
-	private static int lastId = 0;
+	public static int lastId = 0;
 	private String name;
 	private double sharePrice;
 	@Column(scale=2)

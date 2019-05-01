@@ -12,7 +12,7 @@ public class Investor {
 	
 	@Id
 	private final int id;
-	private static int lastId = 0;
+	public static int lastId = 0;
 	private String name;
 	private double budget;
 	private double initialBudget;

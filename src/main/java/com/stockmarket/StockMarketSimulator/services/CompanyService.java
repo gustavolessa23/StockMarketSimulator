@@ -172,6 +172,8 @@ public class CompanyService {
 	public void clearCompanyTable() {
 		
 		companyRepository.deleteAll();
+		data.setCompanies(null);
+		Company.lastId = 0;
 
 	}
 	

@@ -68,7 +68,7 @@ public class MenuService {
 			
 			switch(option) {
 			case 1:
-				simulation.start();
+				simulation.restart();
 				break;
 			case 2:
 				view.display(simulation.highestCapital());

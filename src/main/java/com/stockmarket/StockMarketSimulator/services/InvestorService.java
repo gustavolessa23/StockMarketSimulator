@@ -200,6 +200,8 @@ public class InvestorService {
 	public void clearInvestorTable() {
 		 
 		investorRepository.deleteAll();
+		data.setInvestors(null);
+		Investor.lastId = 0;
 	}
 	
 
