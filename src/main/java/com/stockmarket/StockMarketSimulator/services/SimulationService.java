@@ -10,6 +10,7 @@ import com.stockmarket.StockMarketSimulator.model.Company;
 import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.TradingDay;
+import com.stockmarket.StockMarketSimulator.model.Transaction;
 import com.stockmarket.StockMarketSimulator.view.GUI;
 import com.stockmarket.StockMarketSimulator.view.View;
 
@@ -40,6 +41,9 @@ public class SimulationService {
 	
 	@Autowired
 	private ReportService reportService;
+	
+	@Autowired
+	private GUI gui;
 
 	public void start() {
 
@@ -47,12 +51,12 @@ public class SimulationService {
 		
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 		
-		companyService.updateCompanies();
-		investorService.updateInvestors();
+		//companyService.updateCompanies();
+		//investorService.updateInvestors();
 		reportService.saveReportToDb();
 		
-		view.displayLogo();
-		menuService.start();
+		//view.displayLogo();
+		//menuService.start();
 
 	}
 	
@@ -61,6 +65,8 @@ public class SimulationService {
 		investorService.clearInvestorTable();
 	
 		generateObjects();
+		
+		//gui.start();
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 		
@@ -86,6 +92,17 @@ public class SimulationService {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public String displayTransaction() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("\nCompany/Companies with Highest capital:");
+		for(Transaction t : data.getTransactions()) {
+			sb.append(t.toString());
+		}
+		return sb.toString();
+		
 	}
 	
 	public String highestCapital() {

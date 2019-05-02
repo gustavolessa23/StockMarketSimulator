@@ -17,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.services.CompanyService;
@@ -43,6 +44,8 @@ public class GUI extends JFrame implements ActionListener{
 	private JButton totalNumberOfTransactions;
 	private JButton getAllInvestors;
 	private JButton fullReport;
+	private JButton restartSimulation;
+	private JButton exit;
 	static JProgressBar progressBar;
 	
 	private JPanel mainPanel;
@@ -62,10 +65,11 @@ public class GUI extends JFrame implements ActionListener{
 	@Autowired
 	private CompanyService companyService;
 	
+	
 	public GUI() {
 		
 		this.setTitle("Report");
-		setSize(1100,500);
+		setSize(1100,580);
 		//this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -73,15 +77,15 @@ public class GUI extends JFrame implements ActionListener{
 		
 		mainPanel = new JPanel();
 		mainPanel.validate();
-		mainPanel.setBounds(3, 2, 611, 455);
+		mainPanel.setBounds(3, 2, 611, 550);
 		
 		this.add(mainPanel);
 		
 		panel1 = new JPanel();
 		panel1.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
 		panel1.validate();
-//		panel1.setVisible(true);
-		panel1.setBounds(5, 5, 550, 450);
+		panel1.setVisible(true);
+		panel1.setBounds(5, 5, 550, 650);
 		mainPanel.add(panel1);
 		
 		text = new JTextArea(24, 30);
@@ -98,79 +102,84 @@ public class GUI extends JFrame implements ActionListener{
 		panel2.setBorder(BorderFactory.createTitledBorder("Companies"));
 		panel2.validate();
 		panel2.setVisible(true);
-		panel2.setBounds(630, 5, 300, 150);
+		panel2.setBounds(630, 5, 350, 120);
 		this.add(panel2);
 		
-		companiesHighestCapital = new JButton("Companies Highest Capital");
-		companiesHighestCapital.setBounds(630, 15, 40, 5);
+		companiesHighestCapital = new JButton("Companies highest capital");
 		companiesHighestCapital.setActionCommand("companiesHighestCapital");
+		companiesHighestCapital.setBounds(630, 15, 40, 5);
 		companiesHighestCapital.addActionListener(this);
 		panel2.add(companiesHighestCapital);
 		
-		companiesLowestCapital = new JButton("Companies Lowest Capital");
+		companiesLowestCapital = new JButton("Companies lowest capital");
 		companiesLowestCapital.setActionCommand("companiesLowestCapital");
+		companiesLowestCapital.setBounds(630, 35, 40, 5);
 		companiesLowestCapital.addActionListener(this);
 		panel2.add(companiesLowestCapital);
-		companiesLowestCapital.setBounds(630, 35, 40, 5);
-		JButton button = new JButton("Get All Companies Detail");
+		
+		JButton button = new JButton("Get all company details");
 		button.setActionCommand("companies");
 		button.addActionListener(this);
 		panel2.add(button);
 		
-		
 		panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel3.setBorder(BorderFactory.createTitledBorder("Investors"));
 		panel3.validate();
-		panel3.setBounds(630, 150, 350, 210);
+		panel3.setBounds(630, 150, 350, 190);
 		this.add(panel3);
 		
-		
-		investorsWithTheHighestNumberOfShares = new JButton("Investors with the highest number of shares");
+		investorsWithTheHighestNumberOfShares = new JButton("Highest number of shares");
 		investorsWithTheHighestNumberOfShares.setActionCommand("investorsWithTheHighestNumberOfShares");
 		investorsWithTheHighestNumberOfShares.addActionListener(this);
 		panel3.add(investorsWithTheHighestNumberOfShares);
 		
-		investorsThatHaveInvestedInTheMostCompanies = new JButton("Investors with the most Companies");
-		investorsThatHaveInvestedInTheMostCompanies.setActionCommand("investorsThatHaveInvestedInTheMostCompanies");
-		investorsThatHaveInvestedInTheMostCompanies.addActionListener(this);
-		panel3.add(investorsThatHaveInvestedInTheMostCompanies);
-		
-		investorsWithTheLowestNumberOfShares = new JButton("Investors with the lowest number of shares ");
+		investorsWithTheLowestNumberOfShares = new JButton("Lowest number of shares ");
 		investorsWithTheLowestNumberOfShares.setActionCommand("investorsWithTheLowestNumberOfShares");
 		investorsWithTheLowestNumberOfShares.addActionListener(this);
 		panel3.add(investorsWithTheLowestNumberOfShares);
 		
+		investorsThatHaveInvestedInTheMostCompanies = new JButton("Most amount of companies");
+		investorsThatHaveInvestedInTheMostCompanies.setActionCommand("investorsThatHaveInvestedInTheMostCompanies");
+		investorsThatHaveInvestedInTheMostCompanies.addActionListener(this);
+		panel3.add(investorsThatHaveInvestedInTheMostCompanies);
 		
-		investorsLeastNumberOfCompanies = new JButton("Least amount of Companies");
+		investorsLeastNumberOfCompanies = new JButton("Least amount of companies");
 		investorsLeastNumberOfCompanies.setActionCommand("investorsLeastNumberOfCompanies");
 		investorsLeastNumberOfCompanies.addActionListener(this);
 		panel3.add(investorsLeastNumberOfCompanies);
 		
-		getAllInvestors = new JButton("Get all Investors");
-		getAllInvestors.addActionListener(this);
+		getAllInvestors = new JButton("Get all investor details");
 		getAllInvestors.setActionCommand("investors");
+		getAllInvestors.addActionListener(this);
 		panel3.add(getAllInvestors);
 		
 		panel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel4.setBorder(BorderFactory.createTitledBorder("Simulation"));
 		panel4.validate();
-		panel4.setBounds(630, 364, 350, 100);
+		panel4.setBounds(630, 364, 350, 120);
+	
 		this.add(panel4);
 		
-		fullReport = new JButton("Full report");
+		fullReport = new JButton("Generate full report");
 		fullReport.setActionCommand("fullReport");
 		fullReport.addActionListener(this);
 		panel4.add(fullReport);
 		
-		totalNumberOfTransactions = new JButton("Total number of transactions");
+		totalNumberOfTransactions = new JButton("View total number of transactions");
 		totalNumberOfTransactions.setActionCommand("totalNumberOfTransactions");
 		totalNumberOfTransactions.addActionListener(this);
 		panel4.add(totalNumberOfTransactions);
 		
+		restartSimulation = new JButton("Restart the simulation");
+		restartSimulation.setActionCommand("restartSimulation");
+		restartSimulation.addActionListener(this);
+		panel4.add(restartSimulation);
 		
-		
-		
-	
+		exit = new JButton("Exit");
+		exit.setActionCommand("exit");
+		exit.addActionListener(this);
+		panel4.add(exit);
+
 		validate();
 		repaint();
 		this.setVisible (true);
@@ -408,6 +417,16 @@ public class GUI extends JFrame implements ActionListener{
 			this.revalidate();
 			this.repaint();
 			
+			
+		}else if(e.getActionCommand().equals("restartSimulation")) {
+			//this.dispose();
+			simulation.restart();
+			this.revalidate();
+			this.repaint();
+
+		}
+		else if(e.getActionCommand().equals("exit")){
+			System.exit(ABORT);;
 			
 		}
 		
