@@ -12,7 +12,7 @@ public class Investor {
 	
 	@Id
 	private final int id;
-	private static int lastId = 0;
+	public static int lastId = 0;
 	private String name;
 	private double budget;
 	private double initialBudget;
@@ -44,9 +44,6 @@ public class Investor {
 		this.initialBudget = 0;
 		this.numberOfCompaniesInvestedIn = 0;
 	}
-
-	
-	
 	
 	/**
 	 * @return the initialBudget
@@ -54,7 +51,6 @@ public class Investor {
 	public double getInitialBudget() {
 		return initialBudget;
 	}
-	
 	
 
 	/**
