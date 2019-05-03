@@ -54,16 +54,15 @@ public class SimulationService {
 
 
 	public void start() {
-
-		companyService.clearCompanyTable();
-		investorService.clearInvestorTable();
-	
+		
 		companyService.populateCompanies();
 		investorService.populateInvestors();
+		
+		//generateObjects();
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 
-		if(td.isSimulationFinished()) { 
+		//if(td.isSimulationFinished()) { 
 			companyService.updateCompanies();
 			investorService.updateInvestors();
 			gui.setButtonsActive(true);
@@ -71,27 +70,35 @@ public class SimulationService {
 			
 			reportService.saveReportToDb();
 
-			view.displayLogo();
 			
-			//menuService.start();
-			
-		}
+		//}
 
 	}
 	
 	public void restart() {
+		td.setSimulationFinished(false);
+		
 		companyService.clearCompanyTable();
 		investorService.clearInvestorTable();
 	
 		generateObjects();
-		
-		//gui.start();
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 		
 		companyService.updateCompanies();
 		investorService.updateInvestors();
-		reportService.saveReportToDb();
+		//if(td.isSimulationFinished()) { 
+			
+			//gui.setButtonsActive(true);
+			
+			
+			reportService.saveReportToDb();
+
+			//view.displayLogo();
+			
+			//menuService.start();
+			
+		//}
 	}
 	
 	/*
@@ -103,19 +110,6 @@ public class SimulationService {
 		Future<String> futureResult2 = asyncService.genInvestors();
 		
 		try {
-			if(td.isSimulationFinished()) { 
-				companyService.updateCompanies();
-				investorService.updateInvestors();
-				gui.setButtonsActive(true);
-				
-				
-				reportService.saveReportToDb();
-
-				view.displayLogo();
-				
-				//menuService.start();
-			}
-			
 			String result = futureResult.get();
 			String result2 = futureResult.get();
 		} catch (InterruptedException e) {
