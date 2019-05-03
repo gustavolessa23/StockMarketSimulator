@@ -12,15 +12,23 @@ import com.stockmarket.StockMarketSimulator.view.report.ReportFactory;
 import com.stockmarket.StockMarketSimulator.view.report.ReportFile;
 import com.stockmarket.StockMarketSimulator.view.report.ReportType;
 
+/**
+ * Class to handle the Report generation and persistance.
+ * @author Gustavo Lessa (https://github.com/gustavolessa23/)
+ *
+ */
 @Service
 public class ReportService {
 	
 	@Autowired
-	ReportRepository reportRepository;
+	private ReportRepository reportRepository; //to handle DB operations
 	
 	@Autowired
-	TradingDay td;
+	private TradingDay td; // to retrieve the stats from the simulation
 	
+	/**
+	 * 
+	 */
 	public void saveReportToDb() {
 		
 		Report report = Report.builder()
@@ -33,7 +41,7 @@ public class ReportService {
 				.numberOfTransactions(td.getTotalNumberOfTransactions())
 				.build();
 		
-		reportRepository.save(report);
+		Report savedReport = reportRepository.save(report);
 		
 	}
 	

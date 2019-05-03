@@ -55,7 +55,6 @@ public class SimulationService {
 		
 		view.displayLogo();
 		
-		
 		menuService.start();
 
 	}

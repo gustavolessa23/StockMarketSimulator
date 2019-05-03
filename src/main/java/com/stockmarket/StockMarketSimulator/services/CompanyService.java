@@ -82,6 +82,7 @@ public class CompanyService {
 				company = current;
 			}
 		}
+		
 		return company;
 	}
 	

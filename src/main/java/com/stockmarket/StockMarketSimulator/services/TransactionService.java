@@ -54,9 +54,9 @@ public class TransactionService {
 				executeTransaction(randomCompany, investor);
 				return true;
 			}catch(InvestorOutOfFundsException i){
-				System.out.println(i.getMessage());
+				view.display(i.getMessage());
 			}catch( CompanyOutOfSharesException c) {
-				System.out.println(c.getMessage());
+				view.display(c.getMessage());
 			}	
 		}
 		return false;
