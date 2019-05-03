@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -22,6 +23,7 @@ import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.services.CompanyService;
 import com.stockmarket.StockMarketSimulator.services.InvestorService;
 import com.stockmarket.StockMarketSimulator.services.SimulationService;
+import com.stockmarket.StockMarketSimulator.services.TransactionService;
 
 
 @Component 
@@ -43,7 +45,13 @@ public class GUI extends JFrame implements ActionListener{
 	private JButton totalNumberOfTransactions;
 	private JButton getAllInvestors;
 	private JButton fullReport;
+	private JButton savePDFFile;
+	private JButton transactions;
+	private String choosertitle = "";
 	static JProgressBar progressBar;
+	
+	
+	private JFileChooser chooser;
 	
 	private JPanel mainPanel;
 	private JPanel panel1;
@@ -62,10 +70,12 @@ public class GUI extends JFrame implements ActionListener{
 	@Autowired
 	private CompanyService companyService;
 	
+	@Autowired TransactionService transactionService;
+	
 	public GUI() {
 		
 		this.setTitle("Report");
-		setSize(1100,500);
+		setSize(1200,500);
 		//this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -73,16 +83,31 @@ public class GUI extends JFrame implements ActionListener{
 		
 		mainPanel = new JPanel();
 		mainPanel.validate();
-		mainPanel.setBounds(3, 2, 611, 455);
-		
+		mainPanel.setBounds(0, 2, 610, 460);
+
 		this.add(mainPanel);
+		
+		JPanel saveFile = new JPanel();
+		saveFile.validate();
+		saveFile.setBounds(610, 20, 180, 80 );
+		this.add(saveFile);
+		
+		savePDFFile = new JButton("Save PDF File");
+		savePDFFile.addActionListener(this);
+		savePDFFile.setActionCommand("savePDF");
+		saveFile.add(savePDFFile);
+		
+		transactions = new JButton("Get All Transactions");
+		transactions.addActionListener(this);
+		transactions.setActionCommand("transactions");
+		saveFile.add(transactions);
 		
 		panel1 = new JPanel();
 		panel1.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
 		panel1.validate();
-//		panel1.setVisible(true);
-		panel1.setBounds(5, 5, 550, 450);
+		panel1.setBounds(3, 5, 550, 450);
 		mainPanel.add(panel1);
+		
 		
 		text = new JTextArea(24, 30);
 		JScrollPane scrollPane = new JScrollPane(text);
@@ -93,12 +118,13 @@ public class GUI extends JFrame implements ActionListener{
 		progressBar.setValue(0);
 		progressBar.setStringPainted(true);
 		panel1.add(progressBar);
+		
 
 		panel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel2.setBorder(BorderFactory.createTitledBorder("Companies"));
 		panel2.validate();
 		panel2.setVisible(true);
-		panel2.setBounds(630, 5, 300, 150);
+		panel2.setBounds(790, 5, 300, 150);
 		this.add(panel2);
 		
 		companiesHighestCapital = new JButton("Companies Highest Capital");
@@ -121,7 +147,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel3.setBorder(BorderFactory.createTitledBorder("Investors"));
 		panel3.validate();
-		panel3.setBounds(630, 150, 350, 210);
+		panel3.setBounds(790, 150, 350, 210);
 		this.add(panel3);
 		
 		
@@ -154,7 +180,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel4.setBorder(BorderFactory.createTitledBorder("Simulation"));
 		panel4.validate();
-		panel4.setBounds(630, 364, 350, 100);
+		panel4.setBounds(790, 364, 350, 100);
 		this.add(panel4);
 		
 		fullReport = new JButton("Full report");
@@ -273,6 +299,51 @@ public class GUI extends JFrame implements ActionListener{
 		return panel4;
 		
 	}
+	public JPanel getAllTransactions() {
+		
+		JPanel panel =new JPanel();
+		panel.setBorder(BorderFactory.createTitledBorder("Transactions"));	
+		panel.setBounds(5, 5, 550, 450);
+		panel.validate();
+		panel.repaint();
+		panel.setVisible(true);
+		
+		DefaultTableModel model = new DefaultTableModel();
+
+		model.addColumn("id");
+		model.addColumn("Companies");
+		model.addColumn("Date");
+		model.addColumn("Investors");
+		
+		
+		
+		JTable table = new JTable(model);
+		table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.getColumnModel().getColumn(2).setPreferredWidth(95);
+		table.setPreferredScrollableViewportSize(new Dimension(500, 350));
+		JScrollPane scrollPane = new JScrollPane(table);
+		panel.add(scrollPane);
+		
+		
+		
+		for(int i = 0; i < transactionService.getAllTransactions().size(); i++) {
+			
+			((DefaultTableModel)table.getModel()).addRow(new Object[] {
+					
+					transactionService.getAllTransactions().get(i).getTransactionId(),
+					transactionService.getAllTransactions().get(i).getCompany(),
+					transactionService.getAllTransactions().get(i).getDate(),
+					transactionService.getAllTransactions().get(i).getInvestor(),
+					
+					
+			});
+		}
+		
+		
+		return panel;
+		
+	}
 	public void start() {
 		new GUI();
 	}
@@ -327,36 +398,30 @@ public class GUI extends JFrame implements ActionListener{
 			mainPanel.removeAll();
 			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			getCompanies().setVisible(false);
 			text.setText(simulation.highestNumberOfShares());
 			
 		}else if(e.getActionCommand().equals("investorsThatHaveInvestedInTheMostCompanies")) {
 			mainPanel.removeAll();
 			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			getCompanies().setVisible(false);
 			text.setText(simulation.highestNumberOfCompanies());
 			
 		}else if(e.getActionCommand().equals("investorsWithTheLowestNumberOfShares")) {
 			mainPanel.removeAll();
 			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			getCompanies().setVisible(false);
 			text.setText(simulation.lowestNumberOfShares());
 			
 		}else if(e.getActionCommand().equals("investorsLeastNumberOfCompanies")) {
 			mainPanel.removeAll();
 			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			getCompanies().setVisible(false);
 			text.setText(simulation.lowestNumberOfCompanies());
 			
 		}else if(e.getActionCommand().equals("totalNumberOfTransactions")) {
 			mainPanel.removeAll();
 			mainPanel.add(panel1);
 			panel1.setVisible(true);
-			getCompanies().setVisible(false);
-	
 			text.setText(simulation.totalTransactions());
 			
 		}else if(e.getActionCommand().equals("fullReport")) {
@@ -377,11 +442,6 @@ public class GUI extends JFrame implements ActionListener{
 			companies.repaint();
 			mainPanel.add(companies);
 			
-//			mainPanel.remove(getInvestors());
-			//mainPanel.add(getCompanies());
-			//getCompanies().setVisible(true);
-			
-			//getInvestors().setVisible(false);
 			panel1.setVisible(false);
 			
 			this.revalidate();
@@ -398,16 +458,48 @@ public class GUI extends JFrame implements ActionListener{
 			investors.repaint();
 			mainPanel.add(investors);
 			
-			//mainPanel.remove(getCompanies());
-			//mainPanel.add(getInvestors());
-	
-			//getInvestors().setVisible(true);
 			getCompanies().setVisible(false);
 			panel1.setVisible(false);
 			
 			this.revalidate();
 			this.repaint();
 			
+			
+		}else if(e.getActionCommand().equals("transactions")) {
+			
+			mainPanel.removeAll();
+			
+			JPanel transaction = getAllTransactions();
+			transaction.validate();
+			transaction.setVisible(true);
+			transaction.repaint();
+			mainPanel.add(transaction);
+			
+			this.revalidate();
+			this.repaint();
+			
+		}else if(e.getActionCommand().equals("savePDF")) {
+			
+
+	    	simulation.generatePdfReport((choosertitle.isEmpty() ? "report" : choosertitle));
+	    	
+		    chooser = new JFileChooser(); 
+		    chooser.setCurrentDirectory(new java.io.File("."));
+		    chooser.setDialogTitle(choosertitle);
+		    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		    
+		    chooser.setAcceptAllFileFilterUsed(true);
+		    
+		    
+		    if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION ) { 
+		    	
+		        System.out.println("getCurrentDirectory(): " +  chooser.getCurrentDirectory());
+		        System.out.println("getSelectedFile() : " +  chooser.getSelectedFile());
+
+		        }
+		      else {
+		        System.out.println("No Selection ");
+		        }
 			
 		}
 		
