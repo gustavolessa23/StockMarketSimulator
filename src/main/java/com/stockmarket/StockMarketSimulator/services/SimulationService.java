@@ -34,9 +34,6 @@ public class SimulationService {
 	
 	private TransactionService transactionService;
 	
-//	@Autowired
-//	private MenuService menuService;
-	
 	@Autowired
 	private TradingDay td;
 	
@@ -65,6 +62,7 @@ public class SimulationService {
 		//if(td.isSimulationFinished()) { 
 			companyService.updateCompanies();
 			investorService.updateInvestors();
+			gui.simulationFinished(true);
 			gui.setButtonsActive(true);
 			
 			
