@@ -86,7 +86,7 @@ public class GUI extends JFrame implements ActionListener{
 		// set basic config
 		this.setTitle("Report");
 		setSize(1000,550);
-		this.setResizable(true);
+		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		this.setLayout(null);
@@ -125,38 +125,25 @@ public class GUI extends JFrame implements ActionListener{
 		saveDocsFile.addActionListener(this);
 		saveFile.add(saveDocsFile);
 
-		// create panel for loading message
-		loadingPanel = new JPanel();
-		loadingPanel.setLayout(new BorderLayout());
-		loadingPanel.setBounds(3, 5, 550, 450);
-		loadingLabel = new JLabel("RUNNING SIMULATION, PLEASE WAIT...");
-		loadingLabel.setFont(loadingLabel.getFont().deriveFont(30.0f));
-		loadingLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		loadingLabel.setVerticalAlignment(SwingConstants.CENTER);
-		loadingPanel.add(loadingLabel, BorderLayout.CENTER);
-		loadingPanel.setVisible(true);
-		loadingPanel.validate();
-		
-		// create panel for all the outputs
-		outputPanel = new JPanel();
-		outputPanel.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
-		outputPanel.validate();
-		outputPanel.setBounds(3, 5, 550, 450);
+		// create panel to wrap text area
+		panel1 = new JPanel();
+		panel1.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
+		panel1.validate();
+		panel1.setBounds(3, 5, 550, 450);
+		mainPanel.add(panel1);
 
 		// create text area
 		text = new JTextArea(24, 30);
 		text.setEditable(false);
 		JScrollPane scrollPane = new JScrollPane(text);
-		outputPanel.add(scrollPane);
-		mainPanel.add(this.loadingPanel);
-
+		panel1.add(scrollPane);
 
 		// create panel for companies options
 		panel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel2.setBorder(BorderFactory.createTitledBorder("Companies"));
 		panel2.validate();
 		panel2.setVisible(true);
-		panel2.setBounds(630, 5, 350, 135);
+		panel2.setBounds(630, 5, 300, 150);
 		this.add(panel2);
 
 
@@ -189,7 +176,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel3.setBorder(BorderFactory.createTitledBorder("Investors"));
 		panel3.validate();
-		panel3.setBounds(630, 150, 350, 195);
+		panel3.setBounds(630, 150, 350, 210);
 		this.add(panel3);
 
 
@@ -235,7 +222,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel4.setBorder(BorderFactory.createTitledBorder("Simulation"));
 		panel4.validate();
-		panel4.setBounds(630, 350, 350, 160);
+		panel4.setBounds(630, 364, 350, 155);
 		this.add(panel4);
 
 		// create button for full report
