@@ -13,7 +13,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -22,9 +21,7 @@ import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.stereotype.Component;
 
-import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.services.CompanyService;
 import com.stockmarket.StockMarketSimulator.services.InvestorService;
 import com.stockmarket.StockMarketSimulator.services.SimulationService;
@@ -521,23 +518,6 @@ public class GUI extends JFrame implements ActionListener{
 			
 		}else if(e.getActionCommand().equals("savePDF")) {
 			
-	    	
-//		    chooser = new JFileChooser(); 
-//		    chooser.setCurrentDirectory(new java.io.File("."));
-//		    chooser.setDialogTitle((choosertitle.isEmpty() ? "report" : choosertitle));
-//		    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-//		    
-//		    chooser.setAcceptAllFileFilterUsed(true);
-//		    
-//		    
-//		    if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION ) { 
-//
-//		    	System.out.println("getCurrentDirectory(): " +  chooser.getCurrentDirectory());
-//		    	System.out.println("getSelectedFile() : " +  chooser.getSelectedFile());
-//
-//		    } else {
-//		    	System.out.println("No Selection ");
-//		    }
 			
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setDialogTitle("Specify a file to save");   
