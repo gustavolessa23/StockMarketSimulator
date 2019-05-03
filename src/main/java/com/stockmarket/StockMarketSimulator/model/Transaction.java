@@ -47,8 +47,9 @@ public class Transaction {
 		.append("COMPANY: \t" + this.getCompany().getId()+": "+this.getCompany().getName()+" ("+this.getCompany().getShares().size()+")")
 		.append("INVESTOR: \t" + this.getInvestor().getId()+": "+this.getInvestor().getName() +" ($"+this.getInvestor().getBudget()+")")
 		.append("TRADED AT: " + String.format("%.2f", this.getCompany().getSharePrice()));
-
 		return sb.toString();
 	}
 
+
 }
+

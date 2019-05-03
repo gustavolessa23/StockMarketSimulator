@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
@@ -25,7 +26,6 @@ public class CompanyService {
 	
 	@Autowired
 	private Data data; 
-	
 	
 	/**
 	 * This method populates the company list by calling the generator and setting the list.
@@ -96,11 +96,10 @@ public class CompanyService {
 		return companyRepository.getOne(id);
 	}
 	
-	
 	public Company getCompanyFromId(int id) {
 		return data.getCompaniesMap().get(id);
 	}
-	
+
 	public void updateCompanyMap(Company company) {
 		data.getCompaniesMap().replace(company.getId(), company);
 	}
@@ -174,6 +173,8 @@ public class CompanyService {
 	public void clearCompanyTable() {
 		
 		companyRepository.deleteAll();
+		data.setCompanies(null);
+		Company.lastId = 0;
 
 	}
 	

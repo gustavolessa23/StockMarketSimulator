@@ -26,7 +26,7 @@ public class TransactionService {
 
 	@Autowired 
 	private CompanyService companyService;
-
+	
 	@Autowired
 	private View view;
 
