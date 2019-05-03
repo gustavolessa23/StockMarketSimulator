@@ -13,7 +13,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -22,10 +21,7 @@ import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.services.CompanyService;
 import com.stockmarket.StockMarketSimulator.services.InvestorService;
 import com.stockmarket.StockMarketSimulator.services.SimulationService;
@@ -55,7 +51,10 @@ public class GUI extends JFrame implements ActionListener{
 	private JButton getAllInvestors;
 	private JButton fullReport;
 	private JButton savePDFFile;
+	private JButton saveTxtFile;
+	private JButton saveDocsFile;
 	private JButton transactions;
+	private JButton reRun;
 
 	private JPanel mainPanel;
 	private JPanel panel1;
@@ -86,8 +85,8 @@ public class GUI extends JFrame implements ActionListener{
 
 		// set basic config
 		this.setTitle("Report");
-		setSize(1200,500);
-		//this.setResizable(false);
+		setSize(1000,550);
+		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		this.setLayout(null);
@@ -102,7 +101,7 @@ public class GUI extends JFrame implements ActionListener{
 		// create save file panel
 		JPanel saveFile = new JPanel();
 		saveFile.validate();
-		saveFile.setBounds(610, 20, 180, 80 );
+		saveFile.setBounds(50, 470, 500, 50 );
 		this.add(saveFile);
 
 		// Button to save file
@@ -112,13 +111,19 @@ public class GUI extends JFrame implements ActionListener{
 		savePDFFile.setActionCommand("savePDF");
 		saveFile.add(savePDFFile);
 
-
-		// button to show transactions
-		transactions = new JButton("Get All Transactions");
-		buttonsList.add(transactions);
-		transactions.addActionListener(this);
-		transactions.setActionCommand("transactions");
-		saveFile.add(transactions);
+		// Button to save txt file
+		saveTxtFile = new JButton("Save Text File");
+		buttonsList.add(saveTxtFile);
+		saveTxtFile.setActionCommand("textFile");
+		saveTxtFile.addActionListener(this);
+		saveFile.add(saveTxtFile);
+		
+		// Button to save Docx File
+		saveDocsFile = new JButton("Save Docx File");
+		buttonsList.add(saveDocsFile);
+		saveDocsFile.setActionCommand("saveDoc");
+		saveDocsFile.addActionListener(this);
+		saveFile.add(saveDocsFile);
 
 		// create panel to wrap text area
 		panel1 = new JPanel();
@@ -138,7 +143,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel2.setBorder(BorderFactory.createTitledBorder("Companies"));
 		panel2.validate();
 		panel2.setVisible(true);
-		panel2.setBounds(790, 5, 300, 150);
+		panel2.setBounds(630, 5, 300, 150);
 		this.add(panel2);
 
 
@@ -171,8 +176,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel3.setBorder(BorderFactory.createTitledBorder("Investors"));
 		panel3.validate();
-
-		panel3.setBounds(790, 150, 350, 210);
+		panel3.setBounds(630, 150, 350, 210);
 		this.add(panel3);
 
 
@@ -218,7 +222,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel4.setBorder(BorderFactory.createTitledBorder("Simulation"));
 		panel4.validate();
-		panel4.setBounds(790, 364, 350, 100);
+		panel4.setBounds(630, 364, 350, 155);
 		this.add(panel4);
 
 		// create button for full report
@@ -235,6 +239,19 @@ public class GUI extends JFrame implements ActionListener{
 		totalNumberOfTransactions.setActionCommand("totalNumberOfTransactions");
 		totalNumberOfTransactions.addActionListener(this);
 		panel4.add(totalNumberOfTransactions);
+		
+		// button to show transactions
+		transactions = new JButton("Get All Transactions");
+		buttonsList.add(transactions);
+		transactions.addActionListener(this);
+		transactions.setActionCommand("transactions");
+		panel4.add(transactions);
+
+		reRun = new JButton("Restart Simulation");
+		buttonsList.add(reRun);
+		reRun.addActionListener(this);
+		reRun.setActionCommand("rerun");
+		panel4.add(reRun);
 
 		validate();
 		repaint();
@@ -513,7 +530,6 @@ public class GUI extends JFrame implements ActionListener{
 
 
 		}else if(e.getActionCommand().equals("savePDF")) {
-
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setDialogTitle("Specify a file to save");   
 
@@ -525,6 +541,33 @@ public class GUI extends JFrame implements ActionListener{
 				simulation.generatePdfReport(reportContent, fileToSave.getAbsolutePath());
 			}
 
+		}else if(e.getActionCommand().equals("textFile")) {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setDialogTitle("Specify a file to save");   
+
+			int userSelection = fileChooser.showSaveDialog(this);
+
+			if (userSelection == JFileChooser.APPROVE_OPTION) {
+				File fileToSave = fileChooser.getSelectedFile();
+				System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+				simulation.generateTxtReport(reportContent, fileToSave.getAbsolutePath());
+			}
+			
+		}else if(e.getActionCommand().equals("saveDoc")) {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setDialogTitle("Specify a file to save");   
+
+			int userSelection = fileChooser.showSaveDialog(this);
+
+			if (userSelection == JFileChooser.APPROVE_OPTION) {
+				File fileToSave = fileChooser.getSelectedFile();
+				System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+				simulation.generateDocxReport(reportContent, fileToSave.getAbsolutePath());
+			}
+			
+		}
+		else if(e.getActionCommand().equals("rerun")) {
+			
 		}
 
 		this.revalidate();

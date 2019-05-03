@@ -1,6 +1,8 @@
 package com.stockmarket.StockMarketSimulator.services;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,16 +55,27 @@ public class SimulationService {
 
 	public void start() {
 
-		generateObjects();
-		
+		companyService.clearCompanyTable();
+		investorService.clearInvestorTable();
+	
+		companyService.populateCompanies();
+		investorService.populateInvestors();
+
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
-		
-		//companyService.updateCompanies();
-		//investorService.updateInvestors();
-		reportService.saveReportToDb();
-		
-		//view.displayLogo();
-		//menuService.start();
+
+		if(td.isSimulationFinished()) { 
+			companyService.updateCompanies();
+			investorService.updateInvestors();
+			gui.setButtonsActive(true);
+			
+			
+			reportService.saveReportToDb();
+
+			view.displayLogo();
+			
+			//menuService.start();
+			
+		}
 
 	}
 	
@@ -86,34 +99,35 @@ public class SimulationService {
 	 */
 	public void generateObjects() {
 
-		if(td.isSimulationFinished()) { 
-			companyService.updateCompanies();
-			investorService.updateInvestors();
-			gui.setButtonsActive(true);
-			
-			
-			reportService.saveReportToDb();
+		Future<String> futureResult =  asyncService.genComapanies();
+		Future<String> futureResult2 = asyncService.genInvestors();
+		
+		try {
+			if(td.isSimulationFinished()) { 
+				companyService.updateCompanies();
+				investorService.updateInvestors();
+				gui.setButtonsActive(true);
+				
+				
+				reportService.saveReportToDb();
 
-			view.displayLogo();
+				view.displayLogo();
+				
+				//menuService.start();
+			}
 			
-			//menuService.start();
+			String result = futureResult.get();
+			String result2 = futureResult.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+		e.printStackTrace();
+		}
+		
+		
 			
 		}
 
-//		Future<String> futureResult =  asyncService.genComapanies();
-//		Future<String> futureResult2 = asyncService.genInvestors();
-//		
-//		try {
-//			String result = futureResult.get();
-//			String result2 = futureResult.get();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			e.printStackTrace();
-//		}
-
-
-	}
 	
 	public String displayTransaction() {
 		StringBuilder sb = new StringBuilder();
