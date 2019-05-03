@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -236,6 +237,9 @@ public class GUI extends JFrame implements ActionListener{
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel.add(scrollPane);
 		
+		TableRowSorter<DefaultTableModel> sort = new TableRowSorter<DefaultTableModel>(model);
+		table.setRowSorter(sort);
+		
 		for(int i = 0; i < companyService.getAllCompanies().size(); i++) {
 			
 			((DefaultTableModel)table.getModel()).addRow(new Object[] {
@@ -283,6 +287,9 @@ public class GUI extends JFrame implements ActionListener{
 		JScrollPane scrollPane = new JScrollPane(table1);
 		panel4.add(scrollPane);
 		
+		TableRowSorter<DefaultTableModel> sort = new TableRowSorter<DefaultTableModel>(model1);
+		table1.setRowSorter(sort);
+		
 		for(int i = 0; i < investorService.getAllInvestors().size(); i++) {
 			
 			((DefaultTableModel)table1.getModel()).addRow(new Object[] {
@@ -299,11 +306,16 @@ public class GUI extends JFrame implements ActionListener{
 		return panel4;
 		
 	}
+	
+	/**
+	 * This method is responsible to create a transaction table, and returns all the transactions made by the simulation.
+	 * @return
+	 */
 	public JPanel getAllTransactions() {
 		
 		JPanel panel =new JPanel();
 		panel.setBorder(BorderFactory.createTitledBorder("Transactions"));	
-		panel.setBounds(5, 5, 550, 450);
+		panel.setBounds(5, 5, 450, 450);
 		panel.validate();
 		panel.repaint();
 		panel.setVisible(true);
@@ -321,12 +333,13 @@ public class GUI extends JFrame implements ActionListener{
 		table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.getColumnModel().getColumn(2).setPreferredWidth(95);
-		table.setPreferredScrollableViewportSize(new Dimension(500, 350));
+		table.setPreferredScrollableViewportSize(new Dimension(400, 350));
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel.add(scrollPane);
 		
 		
-		
+		TableRowSorter<DefaultTableModel> sort = new TableRowSorter<DefaultTableModel>(model);
+		table.setRowSorter(sort);
 		for(int i = 0; i < transactionService.getAllTransactions().size(); i++) {
 			
 			((DefaultTableModel)table.getModel()).addRow(new Object[] {
