@@ -137,6 +137,7 @@ public class GUI extends JFrame implements ActionListener{
 		loadingPanel.setVisible(true);
 		loadingPanel.validate();
 		
+		// create panel for all the outputs
 		outputPanel = new JPanel();
 		outputPanel.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
 		outputPanel.validate();
