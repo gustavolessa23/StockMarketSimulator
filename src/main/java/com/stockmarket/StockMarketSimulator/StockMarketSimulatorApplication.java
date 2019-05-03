@@ -40,8 +40,6 @@ public class StockMarketSimulatorApplication{
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = new SpringApplicationBuilder(StockMarketSimulatorApplication.class).headless(false).run(args);
 		GUI appFrame = context.getBean(GUI.class);
-
-
 	}
 
 }

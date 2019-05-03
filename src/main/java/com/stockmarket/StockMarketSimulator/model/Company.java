@@ -1,6 +1,8 @@
 package com.stockmarket.StockMarketSimulator.model;
 
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -167,7 +169,9 @@ public class Company {
 	}
 	
 	public void incrementCapital(double amount) {
-		this.capital = this.capital+amount;
+	    BigDecimal bd = new BigDecimal(this.capital+amount);
+	    bd = bd.setScale(2, RoundingMode.HALF_UP);
+		this.capital = bd.doubleValue();;
 	}
 
 	public static class CompanyBuilder{
