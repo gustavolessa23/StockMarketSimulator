@@ -21,8 +21,8 @@ public class SimulationService {
 	@Autowired
 	private InvestorService investorService;
 	
-	@Autowired
-	private MenuService menuService;
+//	@Autowired
+//	private MenuService menuService;
 	
 	@Autowired
 	private TradingDay td;
@@ -36,6 +36,8 @@ public class SimulationService {
 	@Autowired
 	private ReportService reportService;
 	
+	@Autowired
+	private GUI gui;
 	
 
 	
@@ -49,13 +51,20 @@ public class SimulationService {
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 
-		companyService.updateCompanies();
-		investorService.updateInvestors();
-		reportService.saveReportToDb();
+		if(td.isSimulationFinished()) { 
+			companyService.updateCompanies();
+			investorService.updateInvestors();
+			gui.setButtonsActive(true);
+			
+			
+			reportService.saveReportToDb();
+
+			view.displayLogo();
+			
+			//menuService.start();
+			
+		}
 		
-		view.displayLogo();
-		
-		menuService.start();
 
 	}
 

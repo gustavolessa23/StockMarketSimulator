@@ -95,7 +95,7 @@ public class MenuService {
 				String report = simulation.fullReport();
 				view.display(report);
 				
-				String path = "";// get this path from JFileChooser
+				String path = "/Users/gustavolessa1/Desktop";// get this path from JFileChooser
 				simulation.generatePdfReport((path.isEmpty() ? "report" : path));
 				simulation.generateDocxReport((path.isEmpty() ? "report" : path));
 				simulation.generateTxtReport((path.isEmpty() ? "report" : path));

@@ -9,6 +9,9 @@ import com.stockmarket.StockMarketSimulator.services.InvestorService;
 import com.stockmarket.StockMarketSimulator.services.TransactionService;
 import com.stockmarket.StockMarketSimulator.view.View;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -30,6 +33,9 @@ public class TradingDay {
 
 	@Autowired
 	private View view; // display feature
+	
+	@Getter @Setter
+	private boolean simulationFinished = false;
 
 
 	/**
@@ -55,6 +61,7 @@ public class TradingDay {
 
 		}
 		view.display("Simulation ended"); // display message
+		this.simulationFinished = true;
 	}
 
 	/**

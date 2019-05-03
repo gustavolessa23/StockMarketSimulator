@@ -1,5 +1,6 @@
 package com.stockmarket.StockMarketSimulator.services;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import com.stockmarket.StockMarketSimulator.view.report.ReportFile;
 import com.stockmarket.StockMarketSimulator.view.report.ReportType;
 
 /**
- * Class to handle the Report generation and persistance.
+ * Class to handle the Report generation and persistence.
  * @author Gustavo Lessa (https://github.com/gustavolessa23/)
  *
  */
@@ -45,10 +46,15 @@ public class ReportService {
 		
 	}
 	
+	
+	
 	public void generatePdfReport(String content, String path) {
-		ReportFile file = ReportFactory.create(ReportType.PDF, path+"1.pdf", content);
+		ReportFile file = ReportFactory.create(ReportType.PDF, (path.endsWith(".pdf") ? path : path+".pdf"), content);
 		try {
 			file.generate();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,19 +63,27 @@ public class ReportService {
 	}
 	
 	public void generateDocxReport(String content, String path) {
-		ReportFile file = ReportFactory.create(ReportType.DOCX, path+"1.docx", content);
+		ReportFile file = ReportFactory.create(ReportType.DOCX, (path.endsWith(".doc") || path.endsWith(".docx") ? path : path+".docx"), content);
 		try {
 			file.generate();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	public void generateTxtReport(String content, String path) {
-		ReportFile file = ReportFactory.create(ReportType.TXT, path+"1.txt", content);
+		ReportFile file = ReportFactory.create(ReportType.TXT, (path.endsWith(".txt") ? path : path+".txt"), content);
 		try {
 			file.generate();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
