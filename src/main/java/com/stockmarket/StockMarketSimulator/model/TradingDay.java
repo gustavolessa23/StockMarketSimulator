@@ -37,7 +37,6 @@ public class TradingDay {
 	@Getter @Setter
 	private boolean simulationFinished = false;
 
-
 	/**
 	 * Method to run a simulation of a trading day.
 	 * @param List<Company> companyList
@@ -60,8 +59,10 @@ public class TradingDay {
 			transactionService.tryTransaction(randomInvestor, companyIds);
 
 		}
+
 		view.display("Simulation ended"); // display message
 		this.simulationFinished = true;
+
 	}
 
 	/**
@@ -69,6 +70,7 @@ public class TradingDay {
 	 * @return true if simulation can continue.
 	 */
 	public boolean simulationCanContinue() {
+
 		Investor highestBudget = investorService.getHighestBudget(); // get investor with highest budget
 		Company cheapestShare = companyService.getCheapestAvailableShare(); // get company with cheapest share
 
@@ -77,6 +79,7 @@ public class TradingDay {
 		if(cheapestShare.getSharePrice() > highestBudget.getBudget()) return false; // if investor can't afford share, return false
 
 		return true; 
+
 	}
 
 	/**
@@ -222,3 +225,4 @@ public class TradingDay {
 	}
 
 }
+

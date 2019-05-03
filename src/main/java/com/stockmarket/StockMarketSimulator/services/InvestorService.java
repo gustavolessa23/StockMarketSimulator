@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.exception.InvestorHasInvestedInAllCompaniesException;
@@ -29,7 +30,6 @@ public class InvestorService {
 
 	@Autowired
 	private Data data; 
-
 
 	/**
 	 * Method to populate the investor list using generator.
@@ -200,7 +200,10 @@ public class InvestorService {
 	public void clearInvestorTable() {
 		 
 		investorRepository.deleteAll();
+		data.setInvestors(null);
+		Investor.lastId = 0;
 	}
 	
-	
+
 }
+

@@ -13,17 +13,18 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.stockmarket.StockMarketSimulator.services.SimulationService;
 import com.stockmarket.StockMarketSimulator.view.GUI;
 
 @EnableJpaAuditing
+
+@EnableAsync
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
-public class StockMarketSimulatorApplication{
-
-	/**
+public class StockMarketSimulatorApplication{	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;

@@ -21,7 +21,7 @@ public class Company {
 //	@GeneratedValue
 	@Id
 	private final int id;
-	private static int lastId = 0;
+	public static int lastId = 0;
 	private String name;
 	private double sharePrice;
 	@Column(scale=2)
@@ -45,6 +45,7 @@ public class Company {
 		this.capital = builder.capital;
 		this.sharesSold = builder.sharesSold;
 		this.hasSoldShare = builder.hasSoldShare;
+
 		this.initialCapital = builder.initialCapital;
 		this.initialSharePrice = builder.initialSharePrice;
 		this.initialShares = builder.initialShares;
@@ -65,6 +66,7 @@ public class Company {
 		this.capital = 0;
 		this.sharesSold = 0;
 		this.hasSoldShare = false;
+
 		this.initialCapital = 0;
 		this.initialSharePrice = 0;
 		this.initialShares = 0;
