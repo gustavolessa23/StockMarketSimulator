@@ -86,7 +86,7 @@ public class GUI extends JFrame implements ActionListener{
 		// set basic config
 		this.setTitle("Stock Market Simulator");
 		setSize(1000,550);
-		this.setResizable(false);
+		this.setResizable(true);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		this.setLayout(null);
@@ -147,7 +147,7 @@ public class GUI extends JFrame implements ActionListener{
 		text = new JTextArea(24, 30);
 		text.setEditable(false);
 		JScrollPane scrollPane = new JScrollPane(text);
-		
+		outputPanel.add(scrollPane);
 		mainPanel.add(this.loadingPanel);
 		
 
@@ -156,7 +156,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel2.setBorder(BorderFactory.createTitledBorder("Companies"));
 		panel2.validate();
 		panel2.setVisible(true);
-		panel2.setBounds(630, 5, 300, 150);
+		panel2.setBounds(630, 5, 350, 135);
 		this.add(panel2);
 
 		// create button for highest capital
@@ -186,7 +186,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel3.setBorder(BorderFactory.createTitledBorder("Investors"));
 		panel3.validate();
-		panel3.setBounds(630, 150, 350, 210);
+		panel3.setBounds(630, 150, 350, 195);
 		this.add(panel3);
 
 		// create button for highest number of shares
@@ -230,7 +230,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel4.setBorder(BorderFactory.createTitledBorder("Simulation"));
 		panel4.validate();
-		panel4.setBounds(630, 364, 350, 155);
+		panel4.setBounds(630, 350, 350, 160);
 		this.add(panel4);
 
 		// create button for full report
