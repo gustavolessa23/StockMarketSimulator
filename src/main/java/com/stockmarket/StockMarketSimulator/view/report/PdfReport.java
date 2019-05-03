@@ -24,6 +24,7 @@ public class PdfReport extends ReportFile {
 	
 	@Override
 	public void generate() throws IOException {
+		System.out.println("trying to save at: "+this.path);
 		PdfWriter writer = new PdfWriter(this.path);
 		PdfDocument pdf = new PdfDocument(writer);
 		Document document = new Document(pdf);

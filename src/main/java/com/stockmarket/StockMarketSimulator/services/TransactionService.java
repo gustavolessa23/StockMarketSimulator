@@ -33,7 +33,7 @@ public class TransactionService {
 	public void executeTransaction(Company company, Investor investor) throws InvestorOutOfFundsException, CompanyOutOfSharesException{
 		if(investor.getBudget()<company.getSharePrice()) {
 			throw new InvestorOutOfFundsException("Investor "+investor.getId()+", budget: "+investor.getBudget()+" cannot afford Company "+company.getId()+" share, priced "+company.getSharePrice());
-		} else if (company.getNumberOfSharesAvailable() == 0){
+		} else if (company.getNumberOfSharesAvailable() <= 0){
 			throw new CompanyOutOfSharesException("Company "+company.getId()+" has no more shares to sell!");
 		} else {
 			Share share = companyService.sellShare(company);
@@ -54,9 +54,9 @@ public class TransactionService {
 				executeTransaction(randomCompany, investor);
 				return true;
 			}catch(InvestorOutOfFundsException i){
-				System.out.println(i.getMessage());
+				view.display(i.getMessage());
 			}catch( CompanyOutOfSharesException c) {
-				System.out.println(c.getMessage());
+				view.display(c.getMessage());
 			}	
 		}
 		return false;

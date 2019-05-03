@@ -1,7 +1,6 @@
 package com.stockmarket.StockMarketSimulator.services;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,7 @@ import com.stockmarket.StockMarketSimulator.model.TradingDay;
 import com.stockmarket.StockMarketSimulator.model.Transaction;
 import com.stockmarket.StockMarketSimulator.view.GUI;
 import com.stockmarket.StockMarketSimulator.view.View;
+
 
 @Service
 public class SimulationService {
@@ -30,6 +30,11 @@ public class SimulationService {
 	@Autowired
 	private MenuService menuService;
 	
+	private TransactionService transactionService;
+	
+//	@Autowired
+//	private MenuService menuService;
+	
 	@Autowired
 	private TradingDay td;
 	
@@ -44,6 +49,7 @@ public class SimulationService {
 	
 	@Autowired
 	private GUI gui;
+
 
 	public void start() {
 
@@ -79,18 +85,33 @@ public class SimulationService {
 	 * @Async function to generate companies at the same time
 	 */
 	public void generateObjects() {
-		
-		Future<String> futureResult =  asyncService.genComapanies();
-		Future<String> futureResult2 = asyncService.genInvestors();
-		
-		try {
-			String result = futureResult.get();
-			String result2 = futureResult.get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+
+		if(td.isSimulationFinished()) { 
+			companyService.updateCompanies();
+			investorService.updateInvestors();
+			gui.setButtonsActive(true);
+			
+			
+			reportService.saveReportToDb();
+
+			view.displayLogo();
+			
+			//menuService.start();
+			
 		}
+
+//		Future<String> futureResult =  asyncService.genComapanies();
+//		Future<String> futureResult2 = asyncService.genInvestors();
+//		
+//		try {
+//			String result = futureResult.get();
+//			String result2 = futureResult.get();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			e.printStackTrace();
+//		}
+
 
 	}
 	
@@ -179,6 +200,46 @@ public class SimulationService {
 
 	}
 	
+	public String allCompanies() {
+		StringBuilder sb = new StringBuilder();
+
+		List<Company> companies = companyService.getAllCompanies();
+		
+		sb.append("\nCompanies report: ");
+		for(int x = 0; x < companies.size(); x++) {
+			sb.append("\n"+companies.get(x).getId()+" - "+companies.get(x).getName()+" - Capital: "+companies.get(x).getCapital()+" - Shares sold: "+
+					companies.get(x).getSharesSold()+" - Shares left: "+
+					(companies.get(x).getSharesSold() - companies.get(x).getInitialShares())+
+					" Share price: "+companies.get(x).getSharePrice());
+		}
+		return sb.toString();
+	}
+	
+	
+	public String allInvestors() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("\nInvestors report");
+		for(Investor i : investorService.getAllInvestors()) {
+			sb.append("\n"+i.getId()+" - Name: "+i.getName()+" - Companies: "+
+						investorService.getAmountOfCompaniesInvestedIn(i)+" - Shares: "+i.getTotalNumberOfSharesBought()+
+						" - Initial Budget: "+i.getInitialBudget()+
+						" - Final Budget: "+i.getTotalNumberOfSharesBought());
+		}
+		return sb.toString();
+	}
+	
+	public String allTransactions() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("\nTransactions report");
+		for(Transaction i : transactionService.getAllTransactions()) {
+			sb.append("\n"+i.getTransactionId()+" - Investor: "+i.getInvestor().getName()+" - Company: "+
+						i.getCompany().getName()+" - Date: "+i.getDate().toString());
+		}
+		return sb.toString();
+	}
+	
 	
 	public String fullReport() {
 		StringBuilder sb = new StringBuilder();
@@ -197,15 +258,15 @@ public class SimulationService {
 	}
 	
 	
-	public void generatePdfReport(String path) {
-		reportService.generatePdfReport(fullReport(), path);
+	public void generatePdfReport(String content, String path) {
+		reportService.generatePdfReport(content, path);
 	}
 	
-	public void generateDocxReport(String path) {
-		reportService.generateDocxReport(fullReport(), path);
+	public void generateDocxReport(String content, String path) {
+		reportService.generateDocxReport(content, path);
 	}
 	
-	public void generateTxtReport(String path) {
-		reportService.generateTxtReport(fullReport(), path);
+	public void generateTxtReport(String content, String path) {
+		reportService.generateTxtReport(content, path);
 	}
 }
