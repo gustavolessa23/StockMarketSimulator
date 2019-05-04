@@ -81,6 +81,7 @@ public class GUI extends JFrame implements ActionListener{
 
 
 	public GUI() {
+		
 		buttonsList = new ArrayList<>(); // create new list for buttons
 
 		// set basic config
