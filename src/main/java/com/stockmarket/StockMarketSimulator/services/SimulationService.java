@@ -1,6 +1,8 @@
 package com.stockmarket.StockMarketSimulator.services;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,6 @@ import com.stockmarket.StockMarketSimulator.view.View;
 public class SimulationService {
 
 	
-
 	@Autowired
 	private CompanyService companyService; 
 	
@@ -26,6 +27,11 @@ public class SimulationService {
 	private InvestorService investorService;
 	
 	@Autowired
+	private AsyncService asyncService; 
+	
+	@Autowired
+	private MenuService menuService;
+	
 	private TransactionService transactionService;
 	
 //	@Autowired
@@ -45,20 +51,18 @@ public class SimulationService {
 	
 	@Autowired
 	private GUI gui;
-	
 
-	
+
 	public void start() {
 		
-		companyService.clearCompanyTable();
-		investorService.clearInvestorTable();
-	
 		companyService.populateCompanies();
 		investorService.populateInvestors();
+		
+		//generateObjects();
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 
-		if(td.isSimulationFinished()) { 
+		//if(td.isSimulationFinished()) { 
 			companyService.updateCompanies();
 			investorService.updateInvestors();
 			gui.setButtonsActive(true);
@@ -66,15 +70,69 @@ public class SimulationService {
 			
 			reportService.saveReportToDb();
 
-			view.displayLogo();
+			
+		//}
+
+	}
+	
+	public void restart() {
+		td.setSimulationFinished(false);
+		
+		companyService.clearCompanyTable();
+		investorService.clearInvestorTable();
+	
+		generateObjects();
+
+		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
+		
+		companyService.updateCompanies();
+		investorService.updateInvestors();
+		//if(td.isSimulationFinished()) { 
+			
+			//gui.setButtonsActive(true);
+			
+			
+			reportService.saveReportToDb();
+
+			//view.displayLogo();
 			
 			//menuService.start();
 			
+		//}
+	}
+	
+	/*
+	 * @Async function to generate companies at the same time
+	 */
+	public void generateObjects() {
+
+		Future<String> futureResult =  asyncService.genComapanies();
+		Future<String> futureResult2 = asyncService.genInvestors();
+		
+		try {
+			String result = futureResult.get();
+			String result2 = futureResult.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+		e.printStackTrace();
 		}
 		
+		
+			
+		}
 
+	
+	public String displayTransaction() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("\nCompany/Companies with Highest capital:");
+		for(Transaction t : data.getTransactions()) {
+			sb.append(t.toString());
+		}
+		return sb.toString();
+		
 	}
-
 	
 	public String highestCapital() {
 		StringBuilder sb = new StringBuilder();

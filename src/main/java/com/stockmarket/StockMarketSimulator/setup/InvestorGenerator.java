@@ -9,6 +9,9 @@ import com.stockmarket.StockMarketSimulator.model.Investor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 @Component
 public class InvestorGenerator {
 
@@ -18,8 +21,10 @@ public class InvestorGenerator {
 
 	@Autowired
 	private StoredData sd; //Object that holds random names and other data
+	
+	@Autowired
+	private  Data data;
 
-	private @Autowired Data data;
 	private Random rG = new Random();
 
 	/**
@@ -49,4 +54,6 @@ public class InvestorGenerator {
 		}	
 		return investors;
 	}
+
 }
+

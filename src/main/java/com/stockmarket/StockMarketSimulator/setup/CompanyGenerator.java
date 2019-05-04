@@ -19,10 +19,12 @@ public class CompanyGenerator {
 	public static double minSharePrice = 10.00;
 	public static double maxSharePrice = 100.00;
 
+
 	@Autowired
 	private StoredData sd; //Object that holds random names and other data
 
-	private @Autowired Data data;
+	@Autowired
+	private  Data data;
 	
 	private Random rG = new Random();
 
@@ -59,4 +61,6 @@ public class CompanyGenerator {
 		return companies;
 	}
 
+
 }
+

@@ -147,11 +147,13 @@ public class GUI extends JFrame implements ActionListener{
 		panel2.setBounds(630, 5, 300, 150);
 		this.add(panel2);
 
+
 		// create button for highest capital
 		companiesHighestCapital = new JButton("Companies Highest Capital");
 		buttonsList.add(companiesHighestCapital);
 		companiesHighestCapital.setBounds(630, 15, 40, 5);
 		companiesHighestCapital.setActionCommand("companiesHighestCapital");
+		companiesHighestCapital.setBounds(630, 15, 40, 5);
 		companiesHighestCapital.addActionListener(this);
 		panel2.add(companiesHighestCapital);
 
@@ -159,12 +161,13 @@ public class GUI extends JFrame implements ActionListener{
 		companiesLowestCapital = new JButton("Companies Lowest Capital");
 		buttonsList.add(companiesLowestCapital);
 		companiesLowestCapital.setActionCommand("companiesLowestCapital");
+		companiesLowestCapital.setBounds(630, 35, 40, 5);
 		companiesLowestCapital.addActionListener(this);
 		panel2.add(companiesLowestCapital);
 		companiesLowestCapital.setBounds(630, 35, 40, 5);
 
 		// create button for all companies
-		JButton button = new JButton("Get All Companies Detail");
+		JButton button = new JButton("Display All Companies");
 		buttonsList.add(button);
 		button.setActionCommand("companies");
 		button.addActionListener(this);
@@ -177,41 +180,43 @@ public class GUI extends JFrame implements ActionListener{
 		panel3.setBounds(630, 150, 350, 210);
 		this.add(panel3);
 
+
 		// create button for highest number of shares
-		investorsWithTheHighestNumberOfShares = new JButton("Investors with the highest number of shares");
+		investorsWithTheHighestNumberOfShares = new JButton("Highest Steakholder");
 		buttonsList.add(investorsWithTheHighestNumberOfShares);
 		investorsWithTheHighestNumberOfShares.setActionCommand("investorsWithTheHighestNumberOfShares");
 		investorsWithTheHighestNumberOfShares.addActionListener(this);
 		panel3.add(investorsWithTheHighestNumberOfShares);
+		
 
 		// create button for highest number of companies
-		investorsThatHaveInvestedInTheMostCompanies = new JButton("Investors with the most Companies");
+		investorsThatHaveInvestedInTheMostCompanies = new JButton("Most Compananies Invested In");
 		buttonsList.add(investorsThatHaveInvestedInTheMostCompanies);
 		investorsThatHaveInvestedInTheMostCompanies.setActionCommand("investorsThatHaveInvestedInTheMostCompanies");
 		investorsThatHaveInvestedInTheMostCompanies.addActionListener(this);
 		panel3.add(investorsThatHaveInvestedInTheMostCompanies);
 
-
 		// create button for lowest number of shares
-		investorsWithTheLowestNumberOfShares = new JButton("Investors with the lowest number of shares ");
+		investorsWithTheLowestNumberOfShares = new JButton("Lowest Steakholder");
 		buttonsList.add(investorsWithTheLowestNumberOfShares);
 		investorsWithTheLowestNumberOfShares.setActionCommand("investorsWithTheLowestNumberOfShares");
 		investorsWithTheLowestNumberOfShares.addActionListener(this);
 		panel3.add(investorsWithTheLowestNumberOfShares);
-
-
+		
 		// create button for lowest number of companies		
-		investorsLeastNumberOfCompanies = new JButton("Least amount of Companies");
+		investorsLeastNumberOfCompanies = new JButton("Least Companies Invested In");
 		buttonsList.add(investorsLeastNumberOfCompanies);
 		investorsLeastNumberOfCompanies.setActionCommand("investorsLeastNumberOfCompanies");
 		investorsLeastNumberOfCompanies.addActionListener(this);
 		panel3.add(investorsLeastNumberOfCompanies);
 
+
 		// create button for all investors information
-		getAllInvestors = new JButton("Get all Investors");
+		getAllInvestors = new JButton("Display All Investors");
 		buttonsList.add(getAllInvestors);
 		getAllInvestors.addActionListener(this);
 		getAllInvestors.setActionCommand("investors");
+		getAllInvestors.addActionListener(this);
 		panel3.add(getAllInvestors);
 
 		// create panel for simulation
@@ -222,34 +227,32 @@ public class GUI extends JFrame implements ActionListener{
 		this.add(panel4);
 
 		// create button for full report
-		fullReport = new JButton("Full report");
+		fullReport = new JButton("View Full Report");
 		buttonsList.add(fullReport);
 		fullReport.setActionCommand("fullReport");
 		fullReport.addActionListener(this);
 		panel4.add(fullReport);
 
+
 		// create button for total number of transactions
-		totalNumberOfTransactions = new JButton("Total number of transactions");
+		totalNumberOfTransactions = new JButton("Total Transactions");
 		buttonsList.add(totalNumberOfTransactions);
 		totalNumberOfTransactions.setActionCommand("totalNumberOfTransactions");
 		totalNumberOfTransactions.addActionListener(this);
 		panel4.add(totalNumberOfTransactions);
 		
 		// button to show transactions
-		transactions = new JButton("Get All Transactions");
+		transactions = new JButton("View All Transactions");
 		buttonsList.add(transactions);
 		transactions.addActionListener(this);
 		transactions.setActionCommand("transactions");
 		panel4.add(transactions);
-
 
 		reRun = new JButton("Restart Simulation");
 		buttonsList.add(reRun);
 		reRun.addActionListener(this);
 		reRun.setActionCommand("rerun");
 		panel4.add(reRun);
-
-
 
 		validate();
 		repaint();
@@ -565,7 +568,7 @@ public class GUI extends JFrame implements ActionListener{
 			
 		}
 		else if(e.getActionCommand().equals("rerun")) {
-			
+			simulation.restart();
 		}
 
 		this.revalidate();
