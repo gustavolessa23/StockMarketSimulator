@@ -15,6 +15,7 @@ import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Share;
 import com.stockmarket.StockMarketSimulator.repositories.CompanyRepository;
 import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
+import com.stockmarket.StockMarketSimulator.view.View;
 
 @Service
 public class CompanyService {
@@ -28,10 +29,14 @@ public class CompanyService {
 	@Autowired
 	private Data data; 
 	
+	@Autowired
+	private View view;
+	
 	/**
 	 * This method populates the company list by calling the generator and setting the list.
 	 */
 	public void populateCompanies() {
+		view.display("Generating companies...");
 		List<Company> companies = companyGenerator.generateCompanies();
 		
 		data.setCompanies(companies);

@@ -15,6 +15,7 @@ import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.Share;
 import com.stockmarket.StockMarketSimulator.repositories.InvestorRepository;
 import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
+import com.stockmarket.StockMarketSimulator.view.View;
 
 @Service
 public class InvestorService {
@@ -31,10 +32,14 @@ public class InvestorService {
 	@Autowired
 	private Data data; 
 
+	@Autowired
+	private View view;
+	
 	/**
 	 * Method to populate the investor list using generator.
 	 */
 	public void populateInvestors() {
+		view.display("Generating investors...");
 		List<Investor> investors = investorGenerator.generateInvestors();
 		data.setInvestors(investors);
 		investorRepository.saveAll(investors);

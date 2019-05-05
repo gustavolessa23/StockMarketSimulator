@@ -53,11 +53,14 @@ public class SimulationService {
 
 	public void start() {
 		
+		view.display("Starting simulation...");
 		companyService.clearCompanyTable();
 		investorService.clearInvestorTable();
+		
+		generateObjects();
 	
-		companyService.populateCompanies();
-		investorService.populateInvestors();
+//		companyService.populateCompanies();
+//		investorService.populateInvestors();
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 
@@ -78,6 +81,7 @@ public class SimulationService {
 		
 		start();
 	}
+	
 	
 	/*
 	 * @Async function to generate companies at the same time

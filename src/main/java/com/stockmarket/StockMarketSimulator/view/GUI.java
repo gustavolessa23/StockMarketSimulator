@@ -85,6 +85,8 @@ public class GUI extends JFrame implements ActionListener{
 	@Autowired 
 	private TransactionService transactionService;
 
+	private JTextArea consoleText;
+
 
 
 	public GUI() {
@@ -137,10 +139,18 @@ public class GUI extends JFrame implements ActionListener{
 		loadingPanel.setLayout(new BorderLayout());
 		loadingPanel.setBounds(3, 5, 550, 450);
 		loadingLabel = new JLabel("RUNNING SIMULATION, PLEASE WAIT...");
-		loadingLabel.setFont(loadingLabel.getFont().deriveFont(20.0f));
+		loadingLabel.setFont(loadingLabel.getFont().deriveFont(25.0f));
 		loadingLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		loadingLabel.setVerticalAlignment(SwingConstants.CENTER);
-		loadingPanel.add(loadingLabel, BorderLayout.CENTER);
+		loadingPanel.add(loadingLabel, BorderLayout.NORTH);
+		
+		consoleText = new JTextArea(20,24);
+		consoleText.setEditable(false);
+		JScrollPane scroll = new JScrollPane(consoleText);
+		consoleText.setVisible(false);
+		loadingPanel.add(scroll, BorderLayout.CENTER);
+
+		
 		loadingPanel.setVisible(true);
 		loadingPanel.validate();
 
@@ -286,6 +296,12 @@ public class GUI extends JFrame implements ActionListener{
 
 
 	}
+	
+	public void setConsoleText(String s) {
+		consoleText.setVisible(true);
+		consoleText.append("\n"+s);
+		consoleText.setCaretPosition(consoleText.getDocument().getLength());
+	}
 
 	public boolean simulationFinished(boolean state) {
 		this.mainPanel.removeAll();
@@ -303,11 +319,8 @@ public class GUI extends JFrame implements ActionListener{
 		return true;
 	}
 	
-	public void showParametersPane() {
-		int numberOfCompanies = 100; //Number of companies to generate
-		int numberOfInvestors = 100;
-		
-		
+	public boolean showParametersPane() {
+
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(2,3));
 		JLabel compLabel = new JLabel("Companies");
@@ -339,15 +352,19 @@ public class GUI extends JFrame implements ActionListener{
 		panel.add(invSlider);
 		panel.add(invValue);
 		
-		if(JOptionPane.showConfirmDialog(this,panel,"Parameters",JOptionPane.OK_OPTION) == 0) {
+		int response = JOptionPane.showConfirmDialog(null, panel,"Choose simulation parameters",JOptionPane.OK_OPTION);
+		
+		if(response == 0) {
 			try {
 				CompanyGenerator.numberOfCompanies = Integer.parseInt(compValue.getText());
 				InvestorGenerator.numberOfInvestors = Integer.parseInt(invValue.getText());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			}
+			return true;
+		} else {
+			return false;
 		}
-		
 			
 	}
 
@@ -673,14 +690,17 @@ public class GUI extends JFrame implements ActionListener{
 
 		}
 		else if(e.getActionCommand().equals("rerun")) {
-			showParametersPane();
-			simulationFinished(false);
-
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					simulation.restart();
-				}
-			});
+			boolean shouldReRun = showParametersPane();
+			
+			if (shouldReRun) {
+				simulationFinished(false);
+				
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						simulation.restart();
+					}
+				});
+			}
 
 		}
 
