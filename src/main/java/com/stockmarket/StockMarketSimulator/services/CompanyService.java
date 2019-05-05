@@ -163,6 +163,7 @@ public class CompanyService {
 		boolean tenSharesSold = c.getSharesSold()%10==0; //check if 10 shares were sold
 		
 		if(tenSharesSold) { 
+			view.display("Increase in price for "+c.getName());
 			double newPrice = data.round((c.getSharePrice()*2),2); //increase price by 200%
 			c.setSharePrice(newPrice);
 		}
