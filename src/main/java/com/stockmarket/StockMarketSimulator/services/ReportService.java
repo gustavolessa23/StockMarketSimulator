@@ -29,10 +29,10 @@ public class ReportService {
 	private ReportRepository reportRepository; //to handle DB operations
 	
 	@Autowired
-	private TradingDay td; // to retrieve the stats from the simulation
+	private TradingDay td; // to retrieve the state from the simulation
 	
 	/**
-	 * 
+	 * Saves a new entry to the report table, after creating using the builder.
 	 */
 	public void saveReportToDb() {
 		
@@ -50,36 +50,49 @@ public class ReportService {
 		
 	}
 	
-	
-	
+	/**
+	 * Generates a PDF file of the report current on display.
+	 * @param content
+	 * @param path
+	 */
 	public void generatePdfReport(String content, String path) {
+		// retrieve a ReportFile for PDF, passing content and path, using the Factory Pattern, and correcting the extension if needed.
 		ReportFile file = ReportFactory.create(ReportType.PDF, (path.endsWith(".pdf") ? path : path+".pdf"), content);
 		try {
-			file.generate();
+			file.generate(); // generate file
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
 	
+	/**
+	 * Generates a Docx file of the report current on display.
+	 * @param content
+	 * @param path
+	 */
 	public void generateDocxReport(String content, String path) {
+		// retrieve a ReportFile for DOCX, passing content and path, using the Factory Pattern, and correcting the extension if needed.
 		ReportFile file = ReportFactory.create(ReportType.DOCX, (path.endsWith(".doc") || path.endsWith(".docx") ? path : path+".docx"), content);
 		try {
 			file.generate();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Generates a Txt file of the report current on display.
+	 * @param content
+	 * @param path
+	 */
 	public void generateTxtReport(String content, String path) {
+		
+		// retrieve a ReportFile for TXT, passing content and path, using the Factory Pattern, and correcting the extension if needed.
 		ReportFile file = ReportFactory.create(ReportType.TXT, (path.endsWith(".txt") ? path : path+".txt"), content);
 		try {
 			file.generate();

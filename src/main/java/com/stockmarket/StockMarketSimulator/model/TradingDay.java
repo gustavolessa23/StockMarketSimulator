@@ -44,6 +44,7 @@ public class TradingDay {
 	 */
 	public void trade(List<Company> companyList, List<Investor> invList) {
 
+		view.display("Starting trading day...");
 		while(simulationCanContinue()) { // pretty intuitive, I believe (while simulation can continue)
 
 			//chooses a random investor

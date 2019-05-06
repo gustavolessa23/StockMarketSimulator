@@ -14,6 +14,7 @@ import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Share;
 import com.stockmarket.StockMarketSimulator.repositories.CompanyRepository;
 import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
+import com.stockmarket.StockMarketSimulator.view.View;
 
 @Service
 public class CompanyService {
@@ -27,10 +28,14 @@ public class CompanyService {
 	@Autowired
 	private Data data; 
 	
+	@Autowired
+	private View view;
+	
 	/**
 	 * This method populates the company list by calling the generator and setting the list.
 	 */
 	public void populateCompanies() {
+		view.display("Generating companies...");
 		List<Company> companies = companyGenerator.generateCompanies();
 		
 		data.setCompanies(companies);
@@ -157,6 +162,7 @@ public class CompanyService {
 		boolean tenSharesSold = c.getSharesSold()%10==0; //check if 10 shares were sold
 		
 		if(tenSharesSold) { 
+			view.display("Increase in price for "+c.getName());
 			double newPrice = data.round((c.getSharePrice()*2),2); //increase price by 200%
 			c.setSharePrice(newPrice);
 		}

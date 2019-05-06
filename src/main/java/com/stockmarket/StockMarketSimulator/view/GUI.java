@@ -1,7 +1,9 @@
 package com.stockmarket.StockMarketSimulator.view;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -12,10 +14,17 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -26,6 +35,8 @@ import com.stockmarket.StockMarketSimulator.services.CompanyService;
 import com.stockmarket.StockMarketSimulator.services.InvestorService;
 import com.stockmarket.StockMarketSimulator.services.SimulationService;
 import com.stockmarket.StockMarketSimulator.services.TransactionService;
+import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
+import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -61,6 +72,10 @@ public class GUI extends JFrame implements ActionListener{
 	private JPanel panel2;
 	private JPanel panel3;
 	private JPanel panel4;
+	
+	private JPanel loadingPanel;
+	private JPanel outputPanel;
+	private JLabel loadingLabel;
 
 	private List<JButton> buttonsList;
 
@@ -78,6 +93,8 @@ public class GUI extends JFrame implements ActionListener{
 
 	@Autowired 
 	private TransactionService transactionService;
+
+	private JTextArea consoleText;
 
 
 	public GUI() {
@@ -125,12 +142,33 @@ public class GUI extends JFrame implements ActionListener{
 		saveDocsFile.addActionListener(this);
 		saveFile.add(saveDocsFile);
 
-		// create panel to wrap text area
-		panel1 = new JPanel();
-		panel1.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
-		panel1.validate();
-		panel1.setBounds(3, 5, 550, 450);
-		mainPanel.add(panel1);
+		// create panel for loading message
+		loadingPanel = new JPanel();
+		loadingPanel.setLayout(new BorderLayout());
+		loadingPanel.setBounds(3, 5, 550, 450);
+		loadingLabel = new JLabel("RUNNING SIMULATION, PLEASE WAIT...");
+		loadingLabel.setFont(loadingLabel.getFont().deriveFont(25.0f));
+		loadingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		loadingLabel.setVerticalAlignment(SwingConstants.CENTER);
+		loadingPanel.add(loadingLabel, BorderLayout.NORTH);
+		
+		consoleText = new JTextArea(20,24);
+		consoleText.setEditable(false);
+		JScrollPane scroll = new JScrollPane(consoleText);
+		consoleText.setVisible(false);
+		loadingPanel.add(scroll, BorderLayout.CENTER);
+
+		
+		loadingPanel.setVisible(true);
+		loadingPanel.validate();
+
+		// create panel for all the outputs
+		outputPanel = new JPanel();
+		outputPanel.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
+		outputPanel.validate();
+		outputPanel.setBounds(3, 5, 550, 450);
+
+
 
 		// create text area
 		text = new JTextArea(24, 30);
@@ -260,6 +298,77 @@ public class GUI extends JFrame implements ActionListener{
 		this.setButtonsActive(false);
 
 
+	}
+	
+	public void setConsoleText(String s) {
+		consoleText.setVisible(true);
+		consoleText.append("\n"+s);
+		consoleText.setCaretPosition(consoleText.getDocument().getLength());
+	}
+
+	public boolean simulationFinished(boolean state) {
+		this.mainPanel.removeAll();
+		if(state) {
+			this.mainPanel.add(this.outputPanel);
+			setButtonsActive(true);
+			fullReport.doClick();
+		} else {
+			this.mainPanel.add(this.loadingPanel);
+			setButtonsActive(false);
+		}
+
+		this.validate();
+		this.repaint();
+		return true;
+	}
+	
+	public boolean showParametersPane() {
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(2,3));
+		JLabel compLabel = new JLabel("Companies");
+		JSlider compSlider = new JSlider(1, 200, 100);
+		JLabel compValue = new JLabel("100");
+		compSlider.addChangeListener(new ChangeListener() {
+	        @Override
+	        public void stateChanged(ChangeEvent ce) {
+	            compValue.setText(String.valueOf(((JSlider) ce.getSource()).getValue()));
+	        }
+	    });
+		panel.add(compLabel);
+		panel.add(compSlider);
+		panel.add(compValue);
+		
+		
+		
+		JLabel invLabel = new JLabel("Investors");
+		JSlider invSlider = new JSlider(1, 200, 100);
+		JLabel invValue = new JLabel("100");
+		invSlider.addChangeListener(new ChangeListener() {
+	        @Override
+	        public void stateChanged(ChangeEvent ce) {
+	            invValue.setText(String.valueOf(((JSlider) ce.getSource()).getValue()));
+	        }
+	    });
+
+		panel.add(invLabel);
+		panel.add(invSlider);
+		panel.add(invValue);
+		
+		int response = JOptionPane.showConfirmDialog(null, panel,"Choose simulation parameters",JOptionPane.OK_OPTION);
+		
+		if(response == 0) {
+			try {
+				CompanyGenerator.numberOfCompanies = Integer.parseInt(compValue.getText());
+				InvestorGenerator.numberOfInvestors = Integer.parseInt(invValue.getText());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+			return true;
+		} else {
+			return false;
+		}
+			
 	}
 
 	public void setButtonsActive(boolean state) {
@@ -567,7 +676,19 @@ public class GUI extends JFrame implements ActionListener{
 			
 		}
 		else if(e.getActionCommand().equals("rerun")) {
-			simulation.restart();
+
+			boolean shouldReRun = showParametersPane();
+			
+			if (shouldReRun) {
+				simulationFinished(false);
+				
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						simulation.start();
+					}
+				});
+			}
+
 		}
 
 		this.revalidate();
