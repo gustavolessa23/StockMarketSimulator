@@ -75,20 +75,13 @@ public class TransactionService {
 				company.setHasSoldShare(false); //set all the companies soldShare state back to false
 			}
 			
-			if(!companies.isEmpty()) view.display("Decrease in price for "+companies.size()+
-					(companies.size() == 1 ? " company." : " companies."));
+			if(!companies.isEmpty()) view.display("Decrease in price for "+companies.size()+" companies:");
 				
 		}
 	}
 	
 	public List<Transaction> getAllTransactions(){
 		return data.getTransactions();
-	}
-
-
-	public void clearTransactions() {
-		data.setTransactions(new ArrayList<Transaction>());
-		Transaction.resetId();
 	}
 
 }

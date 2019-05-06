@@ -200,7 +200,7 @@ public class InvestorService {
 	public void clearInvestorTable() {
 		 
 		investorRepository.deleteAll();
-		data.setInvestors(new ArrayList<Investor>());
+		data.setInvestors(null);
 		Investor.lastId = 0;
 	}
 	

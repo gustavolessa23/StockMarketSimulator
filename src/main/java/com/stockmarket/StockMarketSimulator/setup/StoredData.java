@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SampleData {
+public class StoredData {
 	
 	public List<String> companyName = new ArrayList <>(Arrays.asList(
 			"Ralph Lauren Corporation", "Oracle Corporation","Kellogg Company","Kleenex","Apple Inc.","HSBC","Facebook, Inc.","Corona","IKEA","Intel Corporation","L'Or�al",

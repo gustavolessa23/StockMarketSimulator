@@ -30,6 +30,8 @@ public class SimulationService {
 	private AsyncService asyncService; 
 	
 	@Autowired
+	private MenuService menuService;
+	
 	private TransactionService transactionService;
 	
 //	@Autowired
@@ -53,6 +55,27 @@ public class SimulationService {
 
 	public void start() {
 		
+		companyService.populateCompanies();
+		investorService.populateInvestors();
+		
+		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
+
+		if(td.isSimulationFinished()) { 
+			companyService.updateCompanies();
+			investorService.updateInvestors();
+			gui.setButtonsActive(true);
+			
+			
+			reportService.saveReportToDb();
+
+			
+		}
+
+	}
+	
+	public void restart() {
+		td.setSimulationFinished(false);
+		
 		companyService.clearCompanyTable();
 		investorService.clearInvestorTable();
 	
@@ -60,23 +83,17 @@ public class SimulationService {
 		investorService.populateInvestors();
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
-
+		
+		companyService.updateCompanies();
+		investorService.updateInvestors();
 		if(td.isSimulationFinished()) { 
-			companyService.updateCompanies();
-			investorService.updateInvestors();
-			gui.simulationFinished(true);			
-			reportService.saveReportToDb();			
+			
+			gui.setButtonsActive(true);			
+			
+			reportService.saveReportToDb();
+
+			
 		}
-
-	}
-	
-	public void restart() {
-		
-		td.setSimulationFinished(false);
-		transactionService.clearTransactions();
-
-		
-		start();
 	}
 	
 	/*
