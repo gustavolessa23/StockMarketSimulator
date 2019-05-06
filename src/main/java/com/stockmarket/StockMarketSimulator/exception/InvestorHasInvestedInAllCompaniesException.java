@@ -1,5 +1,10 @@
 package com.stockmarket.StockMarketSimulator.exception;
 
+/**
+ * 
+ * @author gustavolessa1
+ *
+ */
 public class InvestorHasInvestedInAllCompaniesException extends RuntimeException {
 
 	/**

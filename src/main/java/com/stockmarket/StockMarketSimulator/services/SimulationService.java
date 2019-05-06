@@ -55,7 +55,7 @@ public class SimulationService {
 		
 		view.display("Starting simulation...");
 		companyService.clearCompanyTable();
-		investorService.clearInvestorTable();
+		investorService.clearInvestors();
 		
 		generateObjects();
 	
