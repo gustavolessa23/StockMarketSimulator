@@ -174,7 +174,7 @@ public class TradingDay {
 	public List<Investor> getHighestNumberOfCompanies(){
 		List<Investor> investors = new ArrayList<>(); // create list
 
-		investors.add(investorService.getInvestorById(0)); // add first investor to list
+		investors.add(investorService.getInvestorById(1)); // add first investor to list
 
 		for (int x = 1; x<investorService.getAllInvestors().size(); x++) { // iterate through list
 			Investor current = investorService.getAllInvestors().get(x); // get current investor
@@ -199,7 +199,7 @@ public class TradingDay {
 	public List<Investor> getLowestNumberOfCompanies(){
 		List<Investor> investors = new ArrayList<>(); // create list
 
-		investors.add(investorService.getInvestorById(0)); // add first investor to list
+		investors.add(investorService.getInvestorById(1)); // add first investor to list
 
 		for (int x = 1; x<investorService.getAllInvestors().size(); x++) { // iterate through list
 			Investor current = investorService.getAllInvestors().get(x); // get current investor

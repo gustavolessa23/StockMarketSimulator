@@ -694,6 +694,7 @@ public class GUI extends JFrame implements ActionListener{
 			
 			if (shouldReRun) {
 				simulationFinished(false);
+				this.consoleText.setText("Restarting application...");
 				
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
