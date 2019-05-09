@@ -16,7 +16,9 @@ public class Wallet {
 	@Getter @Setter
 	private Map<Integer, Integer> companiesShares; // maps companyID->amount of shares. 
 	
-	
+	/**
+	 * Prints out a formated list of a Wallet's details
+	 */
 	public void getWalletDetails() {
 		
 		System.out.println("WALLET DETAILS: \t");
@@ -40,3 +42,4 @@ public class Wallet {
 
 
 }
+

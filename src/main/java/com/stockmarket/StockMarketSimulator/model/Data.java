@@ -30,7 +30,13 @@ public class Data {
 		this.investorsMap = new HashMap<>();
 	}
 	
-	public double round(double value, int places) {
+	/**
+	 * A method to round of all monetary values
+	 * @param value the amount to round off
+	 * @param places the amount of 0s after the number
+	 * @return the newly rounded value
+	 */
+	public static double round(double value, int places) {
 	    if (places < 0) throw new IllegalArgumentException();
 
 	    BigDecimal bd = new BigDecimal(value);
@@ -41,4 +47,3 @@ public class Data {
 
 
 }
-

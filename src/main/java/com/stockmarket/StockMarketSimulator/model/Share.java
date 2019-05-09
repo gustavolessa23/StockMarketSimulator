@@ -21,6 +21,10 @@ public class Share {
 		return this.companyId;
 	}
 
+	/**
+	 * 
+	 * @return the dateSold
+	 */
 	public Date getDateSold() { 
 		return this.dateSold;
 	}

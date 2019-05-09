@@ -23,13 +23,22 @@ public class Transaction {
 	
 	private Transaction() {
 		this.transactionId = -1;
+		this.company = null;
+		this.investor = null;
+		this.date = null;
 	}
 	
+	public static void resetId() {
+		lastId = 0;
+	}
 	
+	/**
+	 * prints out a formated list of a transaction's details
+	 */
 	public void getTransactionDetails() {
 		System.out.println("----------TRANSATION----------");
 		System.out.println("TRANSACTION ID: \t" + this.getTransactionId());
-		System.out.println("COMPANY: \t" + this.getCompany().getId()+": "+this.getCompany().getName()+" ("+this.getCompany().getShares().size()+") --- $ "+this.getCompany().getCapital());
+		System.out.println("COMPANY: \t" + this.getCompany().getId()+": "+this.getCompany().getName()+" ("+this.getCompany().getShares().size()+")");
 		System.out.println("INVESTOR: \t" + this.getInvestor().getId()+": "+this.getInvestor().getName() +" ($"+this.getInvestor().getBudget()+")");
 		System.out.printf("TRADED AT: " + "\t$ %.2f %n",this.getCompany().getSharePrice());
 
@@ -44,8 +53,9 @@ public class Transaction {
 		.append("COMPANY: \t" + this.getCompany().getId()+": "+this.getCompany().getName()+" ("+this.getCompany().getShares().size()+")")
 		.append("INVESTOR: \t" + this.getInvestor().getId()+": "+this.getInvestor().getName() +" ($"+this.getInvestor().getBudget()+")")
 		.append("TRADED AT: " + String.format("%.2f", this.getCompany().getSharePrice()));
-
 		return sb.toString();
 	}
 
+
 }
+

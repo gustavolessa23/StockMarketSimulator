@@ -1,373 +1,229 @@
 package com.stockmarket.StockMarketSimulator.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-
 import org.springframework.stereotype.Component;
 
-import com.stockmarket.StockMarketSimulator.StockMarketSimulatorApplication;
-import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
-import com.stockmarket.StockMarketSimulator.exception.InvestorHasInvestedInAllCompaniesException;
-import com.stockmarket.StockMarketSimulator.exception.InvestorOutOfFundsException;
 import com.stockmarket.StockMarketSimulator.services.CompanyService;
 import com.stockmarket.StockMarketSimulator.services.InvestorService;
 import com.stockmarket.StockMarketSimulator.services.TransactionService;
-import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
-import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
+import com.stockmarket.StockMarketSimulator.view.View;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
-
+/**
+ * Class that represents a trading day at stock market.
+ * @author Gustavo Lessa
+ *
+ */
 @Component
 public class TradingDay {
 
 	@Autowired
-	CompanyService companyService;
+	private CompanyService companyService;  // company operations
 
 	@Autowired
-	InvestorService investorService;
+	private InvestorService investorService; // investor operations
+
+	@Autowired
+	private TransactionService transactionService; // transaction operations
+
+	@Autowired
+	private View view; // display feature
 	
-	@Autowired
-	TransactionService transactionService;
+	@Getter @Setter
+	private boolean simulationFinished = false;
 
-	@Autowired
-	private Data data; 
-
-	public void trade() {
-		trade(data.getCompanies(), data.getInvestors());
-	}
-
-	/*
-	 * the core functionality method
+	/**
+	 * Method to run a simulation of a trading day.
+	 * @param List<Company> companyList
+	 * @param List<Investor> invList
 	 */
-	public void trade(List<Company> companyList, List<Investor>invList) {
-		
-		while(simulationCanContinue()) {
+	public void trade(List<Company> companyList, List<Investor> invList) {
+
+		view.display("Starting trading day...");
+		while(simulationCanContinue()) { // pretty intuitive, I believe (while simulation can continue)
 
 			//chooses a random investor
 			Investor randomInvestor = investorService.getRandomInvestor();
-			
-			//get random company that is unique for chosen investor, if existent, or a random company
+
+			//get random still available and affordable company that is unique for chosen investor, if existent, or a random available and affordable one
 			List<Integer> companyIds = investorService.getDesirableCompaniesForInvestor(randomInvestor);
-			
-			boolean transactionDone = transactionService.tryTransaction(randomInvestor, companyIds);
-			
-			if(!transactionDone) {
-				companyIds = investorService.getCompaniesIds(randomInvestor);
-				transactionDone = transactionService.tryTransaction(randomInvestor, companyIds);
-<<<<<<< HEAD
-			}
 
+			//if list is empty, go back to the loop declaration
+			if (companyIds.isEmpty()) continue;
+
+			//try transactions until one is successful or return false if non is possible.
+			transactionService.tryTransaction(randomInvestor, companyIds);
 
 		}
-//		data.setCompanies(companyList);
-//		data.setInvestors(invList);
-		System.out.println("Simulation ended");
-		System.out.println("INVESTORS: "+invList.size());
-		System.out.println("COMPANIES: "+companyList.size());
+
+		view.display("Simulation ended"); // display message
+		this.simulationFinished = true;
 
 	}
 
-
+	/**
+	 * Checks if the simulation can continue, by checking if there is still a possible transaction to be made.
+	 * @return true if simulation can continue.
+	 */
 	public boolean simulationCanContinue() {
-		
-		Investor highestBudget = investorService.getHighestBudget();
-		Company cheapestShare = companyService.getCheapestAvailableShare();
-		
-		if(cheapestShare == null) return false;
-		
-		if(cheapestShare.getSharePrice() > highestBudget.getBudget()) return false;
-		
-		return true;
+
+		Investor highestBudget = investorService.getHighestBudget(); // get investor with highest budget
+		Company cheapestShare = companyService.getCheapestAvailableShare(); // get company with cheapest share
+
+		if(cheapestShare == null || highestBudget == null) return false; // if any is null
+
+		if(cheapestShare.getSharePrice() > highestBudget.getBudget()) return false; // if investor can't afford share, return false
+
+		return true; 
 
 	}
-	
+
+	/**
+	 * Get company/companies with highest capital.
+	 * @return List<Company> companies with highest capital
+	 */
 	public List<Company> getHighestCapital(){
-		List<Company> companies = new ArrayList<>();
-		
-		companies.add(companyService.getAllCompanies().get(0));
-		
-		for (int x = 1; x<companyService.getAllCompanies().size(); x++) {
-			Company current = companyService.getAllCompanies().get(x);
-			if (current.getCapital()>companies.get(0).getCapital()) {
-				companies.clear();
-				companies.add(current);
-			} else if (current.getCapital()==companies.get(0).getCapital()) {
-				companies.add(current);
-=======
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
+		List<Company> companies = new ArrayList<>(); // create new ArrayList
+
+		companies.add(companyService.getAllCompanies().get(0)); // add first existent company to the list
+
+		for (int x = 1; x<companyService.getAllCompanies().size(); x++) { // iterate through list
+			Company current = companyService.getAllCompanies().get(x); //get current company
+			if (current.getCapital()>companies.get(0).getCapital()) { // if current company's capital is greater than previous one
+				companies.clear();										// clear the list
+				companies.add(current);									// add current to the list
+			} else if (current.getCapital()==companies.get(0).getCapital()) { // if capital is the same
+				companies.add(current); // add current to the list, without clearing first
 			}
 		}
-<<<<<<< HEAD
-		
-		return companies;
-=======
-		System.out.println("Simulation ended");
+		return companies; // return list
 	}
 
-
-	public boolean simulationCanContinue() {
-		Investor highestBudget = investorService.getHighestBudget();
-		Company cheapestShare = companyService.getCheapestAvailableShare();
-		
-		if(cheapestShare == null) return false;
-		
-		if(cheapestShare.getSharePrice() > highestBudget.getBudget()) return false;
-		
-		return true;
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
-	}
-	
-<<<<<<< HEAD
+	/**
+	 * Get company/companies with lowest capital.
+	 * @return
+	 */
 	public List<Company> getLowestCapital(){
-=======
-	public List<Company> getHighestCapital(){
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
-		List<Company> companies = new ArrayList<>();
-		
-		companies.add(companyService.getAllCompanies().get(0));
-		
-		for (int x = 1; x<companyService.getAllCompanies().size(); x++) {
-			Company current = companyService.getAllCompanies().get(x);
-<<<<<<< HEAD
-			if (current.getCapital()<companies.get(0).getCapital()) {
-=======
-			if (current.getCapital()>companies.get(0).getCapital()) {
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
-				companies.clear();
-				companies.add(current);
-			} else if (current.getCapital()==companies.get(0).getCapital()) {
-				companies.add(current);
+		List<Company> companies = new ArrayList<>(); // create new ArrayList
+
+		companies.add(companyService.getAllCompanies().get(0)); // add first existent company to the list
+
+		for (int x = 1; x<companyService.getAllCompanies().size(); x++) { // iterate through list
+			Company current = companyService.getAllCompanies().get(x); //get current company
+			if (current.getCapital()<companies.get(0).getCapital()) { // if current company's capital is smaller than previous one
+				companies.clear();										// clear the list
+				companies.add(current);									// add current to the list
+			} else if (current.getCapital()==companies.get(0).getCapital()) { // if capital is the same
+				companies.add(current); // add current to the list, without clearing first
 			}
 		}
-<<<<<<< HEAD
-		
-=======
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
-		return companies;
+		return companies; // return list
 	}
-	
-<<<<<<< HEAD
-	
+
+	/**
+	 * Get investors with the highest number of shares.
+	 * @return List<Investor>
+	 */
 	public List<Investor> getHighestNumberOfShares(){
-		List<Investor> investors = new ArrayList<>();
-		
-		investors.add(investorService.getAllInvestors().get(0));
-		
-		for (int x = 1; x<investorService.getAllInvestors().size(); x++) {
-			Investor current = investorService.getAllInvestors().get(x);
-			if (current.getTotalNumberOfSharesBought()>investors.get(0).getTotalNumberOfSharesBought()) {
-				investors.clear();
-				investors.add(current);
-			} else if (current.getTotalNumberOfSharesBought()==investors.get(0).getTotalNumberOfSharesBought()) {
-				investors.add(current);
-=======
-	public List<Company> getLowestCapital(){
-		List<Company> companies = new ArrayList<>();
-		
-		companies.add(companyService.getAllCompanies().get(0));
-		
-		for (int x = 1; x<companyService.getAllCompanies().size(); x++) {
-			Company current = companyService.getAllCompanies().get(x);
-			if (current.getCapital()<companies.get(0).getCapital()) {
-				companies.clear();
-				companies.add(current);
-			} else if (current.getCapital()==companies.get(0).getCapital()) {
-				companies.add(current);
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
+		List<Investor> investors = new ArrayList<>(); // create new list
+
+		investors.add(investorService.getAllInvestors().get(0)); // add first investor to the list
+
+		for (int x = 1; x<investorService.getAllInvestors().size(); x++) { // iterate through all investors
+			Investor current = investorService.getAllInvestors().get(x); // get current investor
+			if (current.getTotalNumberOfSharesBought()>investors.get(0).getTotalNumberOfSharesBought()) { // if current bought more shares than the previous
+				investors.clear(); // clear list
+				investors.add(current); // add current
+			} else if (current.getTotalNumberOfSharesBought()==investors.get(0).getTotalNumberOfSharesBought()) { // if current has same amount of shares than previous
+				investors.add(current); // just add current, without clearing the list first.
 			}
 		}
-		
-<<<<<<< HEAD
-		return investors;
+		return investors; // return list
 	}
 
+	/**
+	 * Get investors with the lowest number of shares.
+	 * @return List<Investor>
+	 */
 	public List<Investor> getLowestNumberOfShares(){
-		List<Investor> investors = new ArrayList<>();
-		
-		investors.add(investorService.getAllInvestors().get(0));
-		
-		for (int x = 1; x<investorService.getAllInvestors().size(); x++) {
-			Investor current = investorService.getAllInvestors().get(x);
-			if (current.getTotalNumberOfSharesBought()<investors.get(0).getTotalNumberOfSharesBought()) {
-				investors.clear();
-				investors.add(current);
-			} else if (current.getTotalNumberOfSharesBought()==investors.get(0).getTotalNumberOfSharesBought()) {
-				investors.add(current);
+		List<Investor> investors = new ArrayList<>(); // create new list
+
+		investors.add(investorService.getAllInvestors().get(0)); // add first investor to the list
+
+		for (int x = 1; x<investorService.getAllInvestors().size(); x++) { // iterate through all investors
+			Investor current = investorService.getAllInvestors().get(x); // get current investor
+			if (current.getTotalNumberOfSharesBought()<investors.get(0).getTotalNumberOfSharesBought()) { // if current bought less shares than the previous
+				investors.clear(); // clear list
+				investors.add(current); // add current
+			} else if (current.getTotalNumberOfSharesBought()==investors.get(0).getTotalNumberOfSharesBought()) { // if current has same amount of shares than previous
+				investors.add(current); // just add current, without clearing the list first.
 			}
 		}
-		
-		return investors;
-=======
-		return companies;
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
+		return investors; // return list
 	}
-	
-<<<<<<< HEAD
+
+	/**
+	 * Get investor who bought shares from the highest number of companies.
+	 * @return List<Investor>
+	 */
 	public List<Investor> getHighestNumberOfCompanies(){
-		List<Investor> investors = new ArrayList<>();
-		
-		investors.add(investorService.getInvestorById(0));
-		
-		for (int x = 1; x<investorService.getAllInvestors().size(); x++) {
-			Investor current = investorService.getAllInvestors().get(x);
+		List<Investor> investors = new ArrayList<>(); // create list
+
+		investors.add(investorService.getInvestorById(0)); // add first investor to list
+
+		for (int x = 1; x<investorService.getAllInvestors().size(); x++) { // iterate through list
+			Investor current = investorService.getAllInvestors().get(x); // get current investor
+			
+			// if current investor invested in a higher number of companies
 			if (investorService.getAmountOfCompaniesInvestedIn(current)>investorService.getAmountOfCompaniesInvestedIn(investors.get(0))) {
-				investors.clear();
-				investors.add(current);
+				investors.clear(); // clear list
+				investors.add(current); // add current investor to list
+			
+			// if current investor invested in the same amount of companies
 			} else if (investorService.getAmountOfCompaniesInvestedIn(current)==investorService.getAmountOfCompaniesInvestedIn(investors.get(0))) {
-=======
-	
-	public List<Investor> getHighestNumberOfShares(){
-		List<Investor> investors = new ArrayList<>();
-		
-		investors.add(investorService.getAllInvestors().get(0));
-		
-		for (int x = 1; x<investorService.getAllInvestors().size(); x++) {
-			Investor current = investorService.getAllInvestors().get(x);
-			if (current.getTotalNumberOfSharesBought()>investors.get(0).getTotalNumberOfSharesBought()) {
-				investors.clear();
-				investors.add(current);
-			} else if (current.getTotalNumberOfSharesBought()==investors.get(0).getTotalNumberOfSharesBought()) {
-				investors.add(current);
-			}
-    }
-		return investors;
-	}
-
-	public List<Investor> getLowestNumberOfShares(){
-		List<Investor> investors = new ArrayList<>();
-		
-		investors.add(investorService.getAllInvestors().get(0));
-		
-		for (int x = 1; x<investorService.getAllInvestors().size(); x++) {
-			Investor current = investorService.getAllInvestors().get(x);
-			if (current.getTotalNumberOfSharesBought()<investors.get(0).getTotalNumberOfSharesBought()) {
-				investors.clear();
-				investors.add(current);
-			} else if (current.getTotalNumberOfSharesBought()==investors.get(0).getTotalNumberOfSharesBought()) {
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
-				investors.add(current);
+				investors.add(current); // only add to the list, without clearing first.
 			}
 		}
-<<<<<<< HEAD
-		
-=======
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
-		return investors;
+		return investors; // return list
 	}
-	
-<<<<<<< HEAD
+
+	/**
+	 * Get investor who bought shares from the lowest number of companies.
+	 * @return List<Investor>
+	 */
 	public List<Investor> getLowestNumberOfCompanies(){
-=======
-	public List<Investor> getHighestNumberOfCompanies(){
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
-		List<Investor> investors = new ArrayList<>();
-		
-		investors.add(investorService.getInvestorById(0));
-		
-		for (int x = 1; x<investorService.getAllInvestors().size(); x++) {
-			Investor current = investorService.getAllInvestors().get(x);
-<<<<<<< HEAD
+		List<Investor> investors = new ArrayList<>(); // create list
+
+		investors.add(investorService.getInvestorById(0)); // add first investor to list
+
+		for (int x = 1; x<investorService.getAllInvestors().size(); x++) { // iterate through list
+			Investor current = investorService.getAllInvestors().get(x); // get current investor
+			
+			// if current investor invested in a lower number of companies
 			if (investorService.getAmountOfCompaniesInvestedIn(current)<investorService.getAmountOfCompaniesInvestedIn(investors.get(0))) {
-=======
-			if (investorService.getAmountOfCompaniesInvestedIn(current)>investorService.getAmountOfCompaniesInvestedIn(investors.get(0))) {
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
-				investors.clear();
-				investors.add(current);
+				investors.clear(); // clear list
+				investors.add(current); // add current investor to list
+			
+			// if current investor invested in the same amount of companies
 			} else if (investorService.getAmountOfCompaniesInvestedIn(current)==investorService.getAmountOfCompaniesInvestedIn(investors.get(0))) {
-				investors.add(current);
+				investors.add(current); // only add to the list, without clearing first.
 			}
 		}
-<<<<<<< HEAD
-		
-=======
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
-		return investors;
+		return investors; // return list
 	}
-	
-<<<<<<< HEAD
+
+	/**
+	 * Get total number of transactions
+	 * @return long
+	 */
 	public long getTotalNumberOfTransactions() {
-		return data.getTransactions().size();
-	}
-
-//	public void tradeShare (Company company, Investor investor) {
-//		try {
-//			System.out.println("COMPANY SHAREEEES:"+company.getNumberOfSharesAvailable());
-//			Share soldShare = company.sellShare(); //returns a share that is sold from company (updates share lists)
-//
-//			investor.buyShare(soldShare.getPrice()); //buy share for the share price (update budget)
-//			investor.getWallet().addShare(soldShare); //add sold share to wallet (update wallet)
-//
-//			Transaction transaction = new Transaction(company,investor); //creates a transaction between the company and investor
-//
-//			transaction.getTransactionDetails(); //displays the transactions
-//
-//			afterTenTransactions(transaction); //a check for every 10 transactions in the simulation
-//		} catch (CompanyOutOfSharesException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//	}
-
-//	public void afterTenTransactions(Transaction transaction) {
-//		if(transaction.getTransactionId()%10==0) { //checks after every 10 transactions
-//			System.out.println("Decrease in price for: ");
-//			for(int i = 0;i<CompanyGenerator.numberOfCompanies;i++) {
-//				Company company = CompanyGenerator.companyList.get(i);
-//				if(company.getHasSoldShare()==false){ //check if company has sold share or not
-//					company.decreasePrice(); //decrease the price if company has not sold share
-//					System.out.print("\t"+company.getId()+": "+company.getName()+" \t");
-//					System.out.printf("\tPrice: " + "\t$ %.2f %n", company.getSharePrice());
-//				}
-//				company.setHasSoldShare(false); //set all the companies soldShare state back to false
-//			}
-//			System.out.println();
-//		}
-//	}
-
-//	public void checkSharesAmount(Company company) {
-//		if(company.getShares().isEmpty()) { //checks if there are no shares
-//			CompanyGenerator.companyList.remove(company); //the company is removed from the simulation
-//			CompanyGenerator.numberOfCompanies = CompanyGenerator.numberOfCompanies-1; //update value so that trade will continue with the amount of companies in the list
-//			System.out.printf("Company removed --- "+company.getId()+": "+company.getName()+ "\t$ %.2f %n",company.getCapital());
-//			System.out.println();
-//		}
-//	}
-//
-//	//checks the budget of an investor...if there are no more funds, the investor is removed from the simulation
-//	public void checkBudgetAmount(Investor investor) {
-//		if(investor.getBudget()<=0) { //this needs to change!!!!!!!!!!!!!!!!!!!!!
-//			InvestorGenerator.investorList.remove(investor);
-//			InvestorGenerator.numberOfInvestors = InvestorGenerator.numberOfInvestors-1; //update value so that trade will continue with the amount of investors in the list
-//			System.out.println("Investor removed: "+investor.getId()+" "+investor.getName()+" "+investor.getBudget()+"\n");
-//		}
-//	}
-
-
-}
-=======
-	public List<Investor> getLowestNumberOfCompanies(){
-		List<Investor> investors = new ArrayList<>();
-		
-		investors.add(investorService.getInvestorById(0));
-		
-		for (int x = 1; x<investorService.getAllInvestors().size(); x++) {
-			Investor current = investorService.getAllInvestors().get(x);
-			if (investorService.getAmountOfCompaniesInvestedIn(current)<investorService.getAmountOfCompaniesInvestedIn(investors.get(0))) {
-				investors.clear();
-				investors.add(current);
-			} else if (investorService.getAmountOfCompaniesInvestedIn(current)==investorService.getAmountOfCompaniesInvestedIn(investors.get(0))) {
-				investors.add(current);
-			}
-		}
-		return investors;
-	}
-	
-	public long getTotalNumberOfTransactions() {
-		return data.getTransactions().size();
+		return transactionService.getAllTransactions().size(); // get list of transactions from service and get its size.
 	}
 
 }
->>>>>>> branch 'master' of https://github.com/gustavolessa23/StockMarketSimulator.git
+

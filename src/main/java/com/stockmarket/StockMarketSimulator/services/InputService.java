@@ -16,10 +16,10 @@ import com.stockmarket.StockMarketSimulator.view.View;
 public class InputService {
 	
 	@Autowired
-	ValidationService validate;
+	private ValidationService validate;
 	
 	@Autowired
-	View view;
+	private View view;
 
 	private Scanner scan; // Scanner to retrieve input.
 
@@ -64,7 +64,7 @@ public class InputService {
 			}
 			
 		} catch(InputMismatchException e){ // if input is not an integer
-			view.displayError("\n*** InputService is not an integer. ***\nPlease try again.\n"); // display message
+			view.displayError("\n*** Input was not an integer. ***\nPlease try again.\n"); // display message
 			scan.nextLine(); // flush scanner
 			return getNextInt(limit); // recursively call this method again.
 		}

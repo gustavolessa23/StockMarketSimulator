@@ -1,5 +1,6 @@
 package com.stockmarket.StockMarketSimulator.view;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.stockmarket.StockMarketSimulator.model.Company;
@@ -8,6 +9,8 @@ import com.stockmarket.StockMarketSimulator.model.Investor;
 @Component
 public class View {
 	
+	@Autowired
+	GUI gui;
 
 	
 	/**
@@ -26,6 +29,7 @@ public class View {
 	 * @param string
 	 */
 	public void display(String string) {
+		gui.setConsoleText(string);
 		System.out.println(string);
 	}
 	
