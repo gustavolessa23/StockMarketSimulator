@@ -27,30 +27,40 @@ public class TransactionService {
 
 	@Autowired 
 	private CompanyService companyService;
-	
-	@Autowired
-	private ReportRepository reportRepository;
-	
+		
 	@Autowired
 	private View view;
 
+	/**
+	 * This method creates a transaction between a company and investor and creates a new transaction object
+	 * @param company the company that is trading
+	 * @param investor the investor that is trading
+	 * @throws InvestorOutOfFundsException Investor has no more funds
+	 * @throws CompanyOutOfSharesException Company has no more shares
+	 */
 	public void executeTransaction(Company company, Investor investor) throws InvestorOutOfFundsException, CompanyOutOfSharesException{
-		if(investor.getBudget()<company.getSharePrice()) {
+		if(investor.getBudget()<company.getSharePrice()) { //check if investors budget is less than share price
 			throw new InvestorOutOfFundsException("Investor "+investor.getId()+", budget: "+investor.getBudget()+" cannot afford Company "+company.getId()+" share, priced "+company.getSharePrice());
-		} else if (company.getNumberOfSharesAvailable() <= 0){
+		} else if (company.getNumberOfSharesAvailable() <= 0){ //check if company has shares
 			throw new CompanyOutOfSharesException("Company "+company.getId()+" has no more shares to sell!");
 		} else {
-			Share share = companyService.sellShare(company);
-			//System.out.println("Share price: "+share.getPrice());
-			investorService.buyShare(investor, share);	
-			Transaction transaction = new Transaction(company, investor);
-			data.getTransactions().add(transaction);
+			Share share = companyService.sellShare(company); //company sells the share
+			investorService.buyShare(investor, share);	 //investor buys the share
+			Transaction transaction = new Transaction(company, investor); //transaction is made from that company and investor
+			data.getTransactions().add(transaction); //transaction is added to the simulation list
 
-			afterTenTransactionsVerification(transaction);
+			afterTenTransactionsVerification(transaction); //check transaction is 10th transaction from before
 		}
 	}
 
 
+	/**
+	 * This method creates the check if an investor is eligible to but a share
+	 * @param investor The investor
+	 * @param companyIds The company 
+	 * @return true if the check is viable
+	 * @return false if the check is unviable
+	 */
 	public boolean tryTransaction(Investor investor, List<Integer> companyIds) {
 		while(!companyIds.isEmpty()) {
 			Company randomCompany = companyService.getCompanyFromId(companyIds.remove(0));
@@ -66,6 +76,10 @@ public class TransactionService {
 		return false;
 	}
 
+	/**
+	 * This method checks if the 10th transaction has occurred and makes the necessary changes to the prices of the comapnies
+	 * @param transaction
+	 */
 	public void afterTenTransactionsVerification(Transaction transaction) {
 		if(transaction.getTransactionId()%10==0) { //checks after every 10 transactions
 			
