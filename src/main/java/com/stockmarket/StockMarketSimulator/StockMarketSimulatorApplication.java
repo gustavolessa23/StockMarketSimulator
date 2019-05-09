@@ -2,6 +2,8 @@ package com.stockmarket.StockMarketSimulator;
 
 import javax.annotation.PostConstruct;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -39,6 +41,14 @@ public class StockMarketSimulatorApplication{	/**
 	}
 
 	public static void main(String[] args) {
+		
+		try {
+			UIManager.setLookAndFeel(
+			        UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
 		ConfigurableApplicationContext context = new SpringApplicationBuilder(StockMarketSimulatorApplication.class).headless(false).run(args);
 		GUI appFrame = context.getBean(GUI.class);
 	}

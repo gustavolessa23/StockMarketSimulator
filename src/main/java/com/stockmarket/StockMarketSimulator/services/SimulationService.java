@@ -30,8 +30,6 @@ public class SimulationService {
 	private AsyncService asyncService; 
 	
 	@Autowired
-	private MenuService menuService;
-	
 	private TransactionService transactionService;
 	
 //	@Autowired
@@ -55,51 +53,35 @@ public class SimulationService {
 
 	public void start() {
 		
-		companyService.populateCompanies();
-		investorService.populateInvestors();
+		view.display("Starting simulation...");
+		companyService.clearCompanyTable();
+		investorService.clearInvestors();
 		
-		//generateObjects();
+		generateObjects();
+	
+//		companyService.populateCompanies();
+//		investorService.populateInvestors();
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 
-		//if(td.isSimulationFinished()) { 
+		if(td.isSimulationFinished()) { 
 			companyService.updateCompanies();
 			investorService.updateInvestors();
-			gui.setButtonsActive(true);
-			
-			
-			reportService.saveReportToDb();
-
-			
-		//}
+			gui.simulationFinished(true);			
+			reportService.saveReportToDb();			
+		}
 
 	}
 	
 	public void restart() {
+		
 		td.setSimulationFinished(false);
-		
-		companyService.clearCompanyTable();
-		investorService.clearInvestorTable();
-	
-		generateObjects();
+		transactionService.clearTransactions();
 
-		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 		
-		companyService.updateCompanies();
-		investorService.updateInvestors();
-		//if(td.isSimulationFinished()) { 
-			
-			//gui.setButtonsActive(true);
-			
-			
-			reportService.saveReportToDb();
-
-			//view.displayLogo();
-			
-			//menuService.start();
-			
-		//}
+		start();
 	}
+	
 	
 	/*
 	 * @Async function to generate companies at the same time

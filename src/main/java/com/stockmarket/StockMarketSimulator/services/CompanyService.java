@@ -1,5 +1,6 @@
 package com.stockmarket.StockMarketSimulator.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Share;
 import com.stockmarket.StockMarketSimulator.repositories.CompanyRepository;
 import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
+import com.stockmarket.StockMarketSimulator.view.View;
 
 @Service
 public class CompanyService {
@@ -27,10 +29,14 @@ public class CompanyService {
 	@Autowired
 	private Data data; 
 	
+	@Autowired
+	private View view;
+	
 	/**
 	 * This method populates the company list by calling the generator and setting the list.
 	 */
 	public void populateCompanies() {
+		view.display("Generating companies...");
 		List<Company> companies = companyGenerator.generateCompanies();
 		
 		data.setCompanies(companies);
@@ -136,7 +142,7 @@ public class CompanyService {
 	 * This method is responsible for the update of the Company.
 	 * @param company takes the Object Company
 	 */
-	public void updateAllCompanies(Company company) {
+	public void updateCompany(Company company) {
 		companyRepository.save(company);
 	}
 	
@@ -157,6 +163,7 @@ public class CompanyService {
 		boolean tenSharesSold = c.getSharesSold()%10==0; //check if 10 shares were sold
 		
 		if(tenSharesSold) { 
+			view.display("Increase in price for "+c.getName());
 			double newPrice = data.round((c.getSharePrice()*2),2); //increase price by 200%
 			c.setSharePrice(newPrice);
 		}
@@ -173,7 +180,7 @@ public class CompanyService {
 	public void clearCompanyTable() {
 		
 		companyRepository.deleteAll();
-		data.setCompanies(null);
+		data.setCompanies(new ArrayList<Company>());
 		Company.lastId = 0;
 
 	}

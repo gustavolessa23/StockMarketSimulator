@@ -1,7 +1,9 @@
 package com.stockmarket.StockMarketSimulator.view;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -12,10 +14,17 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -26,18 +35,13 @@ import com.stockmarket.StockMarketSimulator.services.CompanyService;
 import com.stockmarket.StockMarketSimulator.services.InvestorService;
 import com.stockmarket.StockMarketSimulator.services.SimulationService;
 import com.stockmarket.StockMarketSimulator.services.TransactionService;
-
-import lombok.Getter;
-import lombok.Setter;
+import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
+import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
 
 
 @SpringBootApplication
 public class GUI extends JFrame implements ActionListener{
 
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private JTextArea text;
@@ -55,17 +59,19 @@ public class GUI extends JFrame implements ActionListener{
 	private JButton saveDocsFile;
 	private JButton transactions;
 	private JButton reRun;
+	private JButton disableButtons;
 
 	private JPanel mainPanel;
-	private JPanel panel1;
 	private JPanel panel2;
 	private JPanel panel3;
 	private JPanel panel4;
+	private JPanel loadingPanel;
+	private JPanel outputPanel;
+	private JLabel loadingLabel;
 
 	private List<JButton> buttonsList;
 
-	private String reportContent;
-
+	private String reportContent; // hold the current information to be saved to file
 
 	@Autowired 
 	private SimulationService simulation;
@@ -79,16 +85,23 @@ public class GUI extends JFrame implements ActionListener{
 	@Autowired 
 	private TransactionService transactionService;
 
+	private JTextArea consoleText;
+
+
 
 	public GUI() {
 		
 		buttonsList = new ArrayList<>(); // create new list for buttons
 
-		// set basic config
+		// set basic configuration
 		this.setTitle("Report");
 		setSize(1000,550);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setTitle("Stock Market Simulator");
+		setSize(900,555);
+		this.setResizable(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		this.setLayout(null);
 
@@ -105,33 +118,62 @@ public class GUI extends JFrame implements ActionListener{
 		saveFile.setBounds(50, 470, 500, 50 );
 		this.add(saveFile);
 
-		// Button to save file
+		// Button to save PDF file
 		savePDFFile = new JButton("Save PDF File");
 		buttonsList.add(savePDFFile);
 		savePDFFile.addActionListener(this);
 		savePDFFile.setActionCommand("savePDF");
 		saveFile.add(savePDFFile);
 
-		// Button to save txt file
-		saveTxtFile = new JButton("Save Text File");
+		// Button to save TXT file
+		saveTxtFile = new JButton("Save TXT File");
 		buttonsList.add(saveTxtFile);
 		saveTxtFile.setActionCommand("textFile");
 		saveTxtFile.addActionListener(this);
 		saveFile.add(saveTxtFile);
-		
-		// Button to save Docx File
-		saveDocsFile = new JButton("Save Docx File");
+
+		// Button to save DOCX File
+		saveDocsFile = new JButton("Save DOCX File");
 		buttonsList.add(saveDocsFile);
 		saveDocsFile.setActionCommand("saveDoc");
 		saveDocsFile.addActionListener(this);
 		saveFile.add(saveDocsFile);
 
+
 		// create panel to wrap text area
-		panel1 = new JPanel();
+		JPanel panel1 = new JPanel();
 		panel1.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
 		panel1.validate();
 		panel1.setBounds(3, 5, 550, 450);
 		mainPanel.add(panel1);
+
+		// create panel for loading message
+		loadingPanel = new JPanel();
+		loadingPanel.setLayout(new BorderLayout());
+		loadingPanel.setBounds(3, 5, 550, 450);
+		loadingLabel = new JLabel("RUNNING SIMULATION, PLEASE WAIT...");
+		loadingLabel.setFont(loadingLabel.getFont().deriveFont(25.0f));
+		loadingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		loadingLabel.setVerticalAlignment(SwingConstants.CENTER);
+		loadingPanel.add(loadingLabel, BorderLayout.NORTH);
+		
+		// create a text area to hold all the information required by the buttons.
+		consoleText = new JTextArea(20,24);
+		consoleText.setEditable(false);
+		JScrollPane scroll = new JScrollPane(consoleText);
+		consoleText.setVisible(false);
+		loadingPanel.add(scroll, BorderLayout.CENTER);
+
+		
+		loadingPanel.setVisible(true);
+		loadingPanel.validate();
+
+		// create panel for all the outputs
+		outputPanel = new JPanel();
+		outputPanel.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
+		outputPanel.validate();
+		outputPanel.setBounds(3, 5, 550, 450);
+
 
 		// create text area
 		text = new JTextArea(24, 30);
@@ -145,15 +187,14 @@ public class GUI extends JFrame implements ActionListener{
 		panel2.validate();
 		panel2.setVisible(true);
 		panel2.setBounds(630, 5, 300, 150);
+		panel2.setBounds(630, 5, 260, 135);
 		this.add(panel2);
-
 
 		// create button for highest capital
 		companiesHighestCapital = new JButton("Companies Highest Capital");
 		buttonsList.add(companiesHighestCapital);
 		companiesHighestCapital.setBounds(630, 15, 40, 5);
 		companiesHighestCapital.setActionCommand("companiesHighestCapital");
-		companiesHighestCapital.setBounds(630, 15, 40, 5);
 		companiesHighestCapital.addActionListener(this);
 		panel2.add(companiesHighestCapital);
 
@@ -161,7 +202,6 @@ public class GUI extends JFrame implements ActionListener{
 		companiesLowestCapital = new JButton("Companies Lowest Capital");
 		buttonsList.add(companiesLowestCapital);
 		companiesLowestCapital.setActionCommand("companiesLowestCapital");
-		companiesLowestCapital.setBounds(630, 35, 40, 5);
 		companiesLowestCapital.addActionListener(this);
 		panel2.add(companiesLowestCapital);
 		companiesLowestCapital.setBounds(630, 35, 40, 5);
@@ -178,8 +218,8 @@ public class GUI extends JFrame implements ActionListener{
 		panel3.setBorder(BorderFactory.createTitledBorder("Investors"));
 		panel3.validate();
 		panel3.setBounds(630, 150, 350, 210);
+		panel3.setBounds(630, 150, 260, 195);
 		this.add(panel3);
-
 
 		// create button for highest number of shares
 		investorsWithTheHighestNumberOfShares = new JButton("Highest Steakholder");
@@ -187,22 +227,23 @@ public class GUI extends JFrame implements ActionListener{
 		investorsWithTheHighestNumberOfShares.setActionCommand("investorsWithTheHighestNumberOfShares");
 		investorsWithTheHighestNumberOfShares.addActionListener(this);
 		panel3.add(investorsWithTheHighestNumberOfShares);
-		
 
 		// create button for highest number of companies
-		investorsThatHaveInvestedInTheMostCompanies = new JButton("Most Compananies Invested In");
+		investorsThatHaveInvestedInTheMostCompanies = new JButton("Most Companies Invested In");
 		buttonsList.add(investorsThatHaveInvestedInTheMostCompanies);
 		investorsThatHaveInvestedInTheMostCompanies.setActionCommand("investorsThatHaveInvestedInTheMostCompanies");
 		investorsThatHaveInvestedInTheMostCompanies.addActionListener(this);
 		panel3.add(investorsThatHaveInvestedInTheMostCompanies);
 
+
 		// create button for lowest number of shares
-		investorsWithTheLowestNumberOfShares = new JButton("Lowest Steakholder");
+		investorsWithTheLowestNumberOfShares = new JButton("Lowest Stakeholder");
 		buttonsList.add(investorsWithTheLowestNumberOfShares);
 		investorsWithTheLowestNumberOfShares.setActionCommand("investorsWithTheLowestNumberOfShares");
 		investorsWithTheLowestNumberOfShares.addActionListener(this);
 		panel3.add(investorsWithTheLowestNumberOfShares);
-		
+
+
 		// create button for lowest number of companies		
 		investorsLeastNumberOfCompanies = new JButton("Least Companies Invested In");
 		buttonsList.add(investorsLeastNumberOfCompanies);
@@ -210,13 +251,11 @@ public class GUI extends JFrame implements ActionListener{
 		investorsLeastNumberOfCompanies.addActionListener(this);
 		panel3.add(investorsLeastNumberOfCompanies);
 
-
 		// create button for all investors information
 		getAllInvestors = new JButton("Display All Investors");
 		buttonsList.add(getAllInvestors);
 		getAllInvestors.addActionListener(this);
 		getAllInvestors.setActionCommand("investors");
-		getAllInvestors.addActionListener(this);
 		panel3.add(getAllInvestors);
 
 		// create panel for simulation
@@ -224,15 +263,15 @@ public class GUI extends JFrame implements ActionListener{
 		panel4.setBorder(BorderFactory.createTitledBorder("Simulation"));
 		panel4.validate();
 		panel4.setBounds(630, 364, 350, 155);
+		panel4.setBounds(630, 350, 260, 165);
 		this.add(panel4);
 
 		// create button for full report
-		fullReport = new JButton("View Full Report");
+		fullReport = new JButton("Full report");
 		buttonsList.add(fullReport);
 		fullReport.setActionCommand("fullReport");
 		fullReport.addActionListener(this);
 		panel4.add(fullReport);
-
 
 		// create button for total number of transactions
 		totalNumberOfTransactions = new JButton("Total Transactions");
@@ -240,39 +279,146 @@ public class GUI extends JFrame implements ActionListener{
 		totalNumberOfTransactions.setActionCommand("totalNumberOfTransactions");
 		totalNumberOfTransactions.addActionListener(this);
 		panel4.add(totalNumberOfTransactions);
-		
+
 		// button to show transactions
-		transactions = new JButton("View All Transactions");
+		transactions = new JButton("Display All Transactions");
 		buttonsList.add(transactions);
 		transactions.addActionListener(this);
 		transactions.setActionCommand("transactions");
 		panel4.add(transactions);
 
+		// button to restart simulation
 		reRun = new JButton("Restart Simulation");
 		buttonsList.add(reRun);
 		reRun.addActionListener(this);
 		reRun.setActionCommand("rerun");
 		panel4.add(reRun);
 
-		validate();
-		repaint();
+		disableButtons = new JButton();
+
+		disableButtons.addActionListener(new ActionListener(){  
+			public void actionPerformed(ActionEvent e){  
+				simulationFinished(false);  
+			}  
+		});
+
+
+
+		this.validate();
+		this.repaint();
 		this.setVisible (true);
-		//fill();
 		this.setButtonsActive(false);
 
 
 	}
+	
+	/**
+	 * 
+	 * @param s
+	 */
+	public void setConsoleText(String s) {
+		consoleText.setVisible(true);
+		consoleText.append("\n"+s);
+		consoleText.setCaretPosition(consoleText.getDocument().getLength());
+	}
 
+	/**
+	 * Method to check whether the is finished or not
+	 * @param state takes the state of the simulation
+	 * @return true when the simulation is done
+	 */
+	public boolean simulationFinished(boolean state) {
+		this.mainPanel.removeAll();
+		if(state) {
+			this.mainPanel.add(this.outputPanel);
+			setButtonsActive(true);
+			fullReport.doClick();
+		} else {
+			this.mainPanel.add(this.loadingPanel);
+			setButtonsActive(false);
+		}
+
+		this.validate();
+		this.repaint();
+		return true;
+	}
+	
+	/**
+	 * Method check if the user wants to run the simulation again
+	 * @return
+	 */
+	public boolean showParametersPane() {
+
+		//creates a panel that holds label and slider
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(2,3));
+		JLabel compLabel = new JLabel("Companies");
+		
+		//create a company slider to check how many companies the user wants to be created in the new simulation
+		JSlider compSlider = new JSlider(1, 200, 100);
+		JLabel compValue = new JLabel("100");
+		compSlider.addChangeListener(new ChangeListener() {
+	        @Override
+	        public void stateChanged(ChangeEvent ce) {
+	            compValue.setText(String.valueOf(((JSlider) ce.getSource()).getValue()));
+	        }
+	    });
+		panel.add(compLabel);
+		panel.add(compSlider);
+		panel.add(compValue);
+		
+		
+		JLabel invLabel = new JLabel("Investors");
+		//creates a investor slider to check how mane investors the user wants to create in the new simulation
+		JSlider invSlider = new JSlider(1, 200, 100);
+		JLabel invValue = new JLabel("100");
+		invSlider.addChangeListener(new ChangeListener() {
+	        @Override
+	        public void stateChanged(ChangeEvent ce) {
+	            invValue.setText(String.valueOf(((JSlider) ce.getSource()).getValue()));
+	        }
+	    });
+
+		panel.add(invLabel);
+		panel.add(invSlider);
+		panel.add(invValue);
+		
+		//create a JOptiion to confirm whether the user wants to continue to restart the simulation and add the panel into message displayed
+		int response = JOptionPane.showConfirmDialog(null, panel,"Choose simulation parameters",JOptionPane.OK_OPTION);
+		
+		//check the number of companies and investors the user wants to create 
+		if(response == 0) {
+			try {
+				
+				CompanyGenerator.numberOfCompanies = Integer.parseInt(compValue.getText());
+				InvestorGenerator.numberOfInvestors = Integer.parseInt(invValue.getText());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+			return true;
+		} else {
+			return false;
+		}
+			
+	}
+
+	/**
+	 * This method is responsible to set all the Button as null, till the simulation is finished 
+	 * @param state gets the state of the simulation
+	 */
 	public void setButtonsActive(boolean state) {
 		for(JButton button : buttonsList) {
 			button.setEnabled(state);
 		}
 	}
+	
 	/**
-	 * This method is responsible to return all the companies and all the details into a JTable
+	 * This method is responsible to get all the companies details each time a simulation happens from the Databse
+	 * @return JPanel with the Company Table
 	 */
 	public JPanel getCompanies() {
 
+		// create a panel to hold the Companies table
 		JPanel panel =new JPanel();
 		panel.setBorder(BorderFactory.createTitledBorder("Companies"));	
 		panel.setBounds(5, 5, 550, 450);
@@ -280,14 +426,18 @@ public class GUI extends JFrame implements ActionListener{
 		panel.repaint();
 		panel.setVisible(true);
 
+		//create a default model table
 		DefaultTableModel model = new DefaultTableModel() {
-			public boolean isCellEditable(int row, int column)
-			{
+			
+			
+			//This is a boolean method, that sets the cells on the table no editable 
+			public boolean isCellEditable(int row, int column){
 				return false;
 			}
 
 		};
-
+		
+		//add columns to the table
 		model.addColumn("ID");
 		model.addColumn("Name");
 		model.addColumn("Capital");
@@ -296,21 +446,27 @@ public class GUI extends JFrame implements ActionListener{
 		model.addColumn("Initial Share Price");
 		model.addColumn("Final Share Price");
 
+		//create a JTable and add the default model into it
 		JTable table = new JTable(model);
 		table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.getColumnModel().getColumn(2).setPreferredWidth(95);
 		table.setPreferredScrollableViewportSize(new Dimension(500, 350));
+		
+		//creates a scroll pane to allow us to scroll down, up and left and right
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel.add(scrollPane);
 
+		//create a sort option, to allow the user to make sort from the column header
 		TableRowSorter<DefaultTableModel> sort = new TableRowSorter<DefaultTableModel>(model);
 		table.setRowSorter(sort);
 
+		//get a list of all the companies from the database through the CompanyService
 		for(int i = 0; i < companyService.getAllCompanies().size(); i++) {
 
 			((DefaultTableModel)table.getModel()).addRow(new Object[] {
 
+					//adding the rows into the table from the database
 					companyService.getAllCompanies().get(i).getId(),
 					companyService.getAllCompanies().get(i).getName(),
 					companyService.getAllCompanies().get(i).getCapital(),
@@ -326,8 +482,13 @@ public class GUI extends JFrame implements ActionListener{
 
 	}
 
+	/**
+	 * Method to create a table on Investors from each transaction, get all the investors from the Database
+	 * @return a JPanel with the Investors table
+	 */
 	public JPanel getInvestors() {
 
+		// create panel to hold the investors table
 		JPanel panel4 = new JPanel();
 		panel4.setBorder(BorderFactory.createTitledBorder("Investors"));	
 		panel4.setBounds(5, 5, 550, 450);
@@ -335,36 +496,44 @@ public class GUI extends JFrame implements ActionListener{
 		panel4.setVisible(true);
 		panel4.repaint();
 
+		// create a default model table
 		DefaultTableModel model1 = new DefaultTableModel() {
 			public boolean isCellEditable(int row, int column){
 				return false;
 			}
 
 		};
-
+		
+		//create all the columns on the table
 		model1.addColumn("ID");
 		model1.addColumn("Name");
 		model1.addColumn("Initial Budget");
 		model1.addColumn("Final Budget");
-		model1.addColumn("Amount of Companies Invested In");
-		model1.addColumn("Amount of Shares Bought");
+		model1.addColumn("Companies Invested In");
+		model1.addColumn("Shares Bought");
 
+		//create a JTable and add the default model create into it
 		JTable table1 = new JTable(model1);
 
 		table1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 		table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table1.getColumnModel().getColumn(2).setPreferredWidth(95);
 		table1.setPreferredScrollableViewportSize(new Dimension(500, 350));
+		
+		//creates a scroll pane to allow us to scroll down, up and left and right
 		JScrollPane scrollPane = new JScrollPane(table1);
 		panel4.add(scrollPane);
 
+		//create a sort option, to allow the user to make sort from the column header
 		TableRowSorter<DefaultTableModel> sort = new TableRowSorter<DefaultTableModel>(model1);
 		table1.setRowSorter(sort);
 
+		//get a list of all the companies from the database through InvestorService
 		for(int i = 0; i < investorService.getAllInvestors().size(); i++) {
 
 			((DefaultTableModel)table1.getModel()).addRow(new Object[] {
 
+					//add all the rows on the table from the database
 					investorService.getAllInvestors().get(i).getId(),
 					investorService.getAllInvestors().get(i).getName(),
 					investorService.getAllInvestors().get(i).getInitialBudget(),
@@ -378,11 +547,12 @@ public class GUI extends JFrame implements ActionListener{
 	}
 
 	/**
-	 * This method is responsible to create a transaction table, and returns all the transactions made by the simulation.
-	 * @return
+	 * This method is responsible to create a transaction table from each time we run a simulation.
+	 * @return JPanel with all the transactions
 	 */
 	public JPanel getAllTransactions() {
 
+		//create a panel to hold the Transactions table
 		JPanel panel =new JPanel();
 		panel.setBorder(BorderFactory.createTitledBorder("Transactions"));	
 		panel.setBounds(5, 5, 450, 450);
@@ -390,40 +560,48 @@ public class GUI extends JFrame implements ActionListener{
 		panel.repaint();
 		panel.setVisible(true);
 
+		
 		DefaultTableModel model = new DefaultTableModel() {
-			public boolean isCellEditable(int row, int column)
-			{
+			public boolean isCellEditable(int row, int column){
 				return false;
 			}
 
 		};
 
+		//add the columns on the table
 		model.addColumn("Transaction ID");
 		model.addColumn("Investor ID");
 		model.addColumn("Company ID");
 		model.addColumn("Date");
 
-		
+
+		//create the JTable and the the default model
 		JTable table = new JTable(model);
 		table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.getColumnModel().getColumn(2).setPreferredWidth(95);
 		table.setPreferredScrollableViewportSize(new Dimension(400, 350));
+		
+		//creates a scroll pane to allow us to scroll down, up and left and right
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel.add(scrollPane);
-
-
+		
+		//create a sort option, to allow the user to make sort from the column header
 		TableRowSorter<DefaultTableModel> sort = new TableRowSorter<DefaultTableModel>(model);
 		table.setRowSorter(sort);
+		
+		//get a list of all the transactions on through the TransactionService
 		for(int i = 0; i < transactionService.getAllTransactions().size(); i++) {
 
 			((DefaultTableModel)table.getModel()).addRow(new Object[] {
+					
+					//add all the rows on the table
 					transactionService.getAllTransactions().get(i).getTransactionId(),
 					transactionService.getAllTransactions().get(i).getInvestor().getId(),
 					transactionService.getAllTransactions().get(i).getCompany().getId(),
 					transactionService.getAllTransactions().get(i).getDate().toString(),
 			});
-			
+
 		}
 		return panel;
 
@@ -436,106 +614,134 @@ public class GUI extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
+		this.saveDocsFile.setEnabled(true);
+		this.savePDFFile.setEnabled(true);
+
 		if(e.getActionCommand().equals("companiesHighestCapital")){
 			mainPanel.removeAll();
-			mainPanel.add(panel1);
-			panel1.setVisible(true);
+			mainPanel.add(outputPanel);
+			outputPanel.setVisible(true);
 			reportContent = simulation.highestCapital();
 			text.setText(simulation.highestCapital());
+			text.setCaretPosition(0);
+
 
 		}else if(e.getActionCommand().equals("companiesLowestCapital")) {
 			mainPanel.removeAll();
-			mainPanel.add(panel1);
-			panel1.setVisible(true);
+			mainPanel.add(outputPanel);
+			outputPanel.setVisible(true);
 			reportContent = simulation.lowestCapital();
 			text.setText(simulation.lowestCapital());
+			text.setCaretPosition(0);
 
 		}else if(e.getActionCommand().equals("investorsWithTheHighestNumberOfShares")) {
 			mainPanel.removeAll();
-			mainPanel.add(panel1);
-			panel1.setVisible(true);
+			mainPanel.add(outputPanel);
+			outputPanel.setVisible(true);
 			reportContent = simulation.highestNumberOfShares();
 			text.setText(simulation.highestNumberOfShares());
+			text.setCaretPosition(0);
+
 
 		}else if(e.getActionCommand().equals("investorsThatHaveInvestedInTheMostCompanies")) {
 			mainPanel.removeAll();
-			mainPanel.add(panel1);
-			panel1.setVisible(true);
+			mainPanel.add(outputPanel);
+			outputPanel.setVisible(true);
 			reportContent = simulation.highestNumberOfCompanies();
 			text.setText(simulation.highestNumberOfCompanies());
+			text.setCaretPosition(0);
+
 
 		}else if(e.getActionCommand().equals("investorsWithTheLowestNumberOfShares")) {
 			mainPanel.removeAll();
-			mainPanel.add(panel1);
-			panel1.setVisible(true);
+			mainPanel.add(outputPanel);
+			outputPanel.setVisible(true);
 			reportContent = simulation.lowestNumberOfShares();
 			text.setText(simulation.lowestNumberOfShares());
-
+			text.setCaretPosition(0);
+	
 		}else if(e.getActionCommand().equals("investorsLeastNumberOfCompanies")) {
 			mainPanel.removeAll();
-			mainPanel.add(panel1);
-			panel1.setVisible(true);
+			mainPanel.add(outputPanel);
+			outputPanel.setVisible(true);
 			reportContent = simulation.lowestNumberOfCompanies();
 			text.setText(simulation.lowestNumberOfCompanies());
+			text.setCaretPosition(0);
+
 
 		}else if(e.getActionCommand().equals("totalNumberOfTransactions")) {
 			mainPanel.removeAll();
-			mainPanel.add(panel1);
-			panel1.setVisible(true);
+			mainPanel.add(outputPanel);
+			outputPanel.setVisible(true);
 			reportContent = simulation.totalTransactions();
 			text.setText(simulation.totalTransactions());
+			text.setCaretPosition(0);
+
 
 		}else if(e.getActionCommand().equals("fullReport")) {
 			mainPanel.removeAll();
-			mainPanel.add(panel1);
-			panel1.setVisible(true);
+			mainPanel.add(outputPanel);
+			outputPanel.setVisible(true);
 			reportContent = simulation.fullReport();
 			text.setText(simulation.fullReport());
+			text.setCaretPosition(0);
+
 
 		}else if(e.getActionCommand().equals("companies")) {
+			// remove the items on the main panel in order to create a new panel that will hold the company table
 			mainPanel.removeAll();
+			
+			//create a new company panel  to hold the company table
 			JPanel companies = getCompanies();
 			companies.validate();
 			companies.setVisible(true);
 			companies.repaint();
+			
 			mainPanel.add(companies);
-			panel1.setVisible(false);
+			outputPanel.setVisible(false);
 			reportContent = simulation.allCompanies();
 
 
 		}else if(e.getActionCommand().equals("investors")){
-
+			// remove all the items on the main panel in order to create a new panel that will hold the investors table
 			mainPanel.removeAll();
 
+			//create a new investors panel to hold the investors table
 			JPanel investors = getInvestors();
 			investors.validate();
 			investors.setVisible(true);
 			investors.repaint();
 			mainPanel.add(investors);
 
-			panel1.setVisible(false);
+			outputPanel.setVisible(false);
 			reportContent = simulation.allInvestors();
 
 
 		}else if(e.getActionCommand().equals("transactions")) {
-
+			// remove all the items on the main panel in order to create a new panel that will hold the transactions table
 			mainPanel.removeAll();
 
+			//create a new transaction panel to hold the transaxtion table
 			JPanel transaction = getAllTransactions();
 			transaction.validate();
 			transaction.setVisible(true);
 			transaction.repaint();
+			this.saveDocsFile.setEnabled(false);
+			this.savePDFFile.setEnabled(false);
 			mainPanel.add(transaction);
 
 			reportContent = simulation.allTransactions();
 
 
 		}else if(e.getActionCommand().equals("savePDF")) {
+			
+			//create a file choose, to allow the user to set the path in where the save the PDF file
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setDialogTitle("Specify a file to save");   
 
 			int userSelection = fileChooser.showSaveDialog(this);
 
+			//checks the path where the user will save the PDF file
 			if (userSelection == JFileChooser.APPROVE_OPTION) {
 				File fileToSave = fileChooser.getSelectedFile();
 				System.out.println("Save as file: " + fileToSave.getAbsolutePath());
@@ -543,32 +749,51 @@ public class GUI extends JFrame implements ActionListener{
 			}
 
 		}else if(e.getActionCommand().equals("textFile")) {
+			//create a file choose, to allow the user to set the path in where the save the Text file
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setDialogTitle("Specify a file to save");   
 
 			int userSelection = fileChooser.showSaveDialog(this);
 
+			//checks the path where the user will save the Text file
 			if (userSelection == JFileChooser.APPROVE_OPTION) {
 				File fileToSave = fileChooser.getSelectedFile();
 				System.out.println("Save as file: " + fileToSave.getAbsolutePath());
 				simulation.generateTxtReport(reportContent, fileToSave.getAbsolutePath());
 			}
-			
+
 		}else if(e.getActionCommand().equals("saveDoc")) {
+			//create a file choose, to allow the user to set the path in where the save the Docx file
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setDialogTitle("Specify a file to save");   
 
 			int userSelection = fileChooser.showSaveDialog(this);
 
+			//checks the path where the user will save the Docx file
 			if (userSelection == JFileChooser.APPROVE_OPTION) {
 				File fileToSave = fileChooser.getSelectedFile();
 				System.out.println("Save as file: " + fileToSave.getAbsolutePath());
 				simulation.generateDocxReport(reportContent, fileToSave.getAbsolutePath());
 			}
-			
+
 		}
 		else if(e.getActionCommand().equals("rerun")) {
-			simulation.restart();
+			//variable to check if the rerun button is pressed
+			boolean shouldReRun = showParametersPane();
+			
+			//check is the answer is true, if it is the button will restart the simulation
+			if (shouldReRun) {
+				simulationFinished(false);
+				this.consoleText.setText("Restarting application...");
+				
+				//Thread to create a new simulation
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						simulation.restart();
+					}
+				});
+			}
+
 		}
 
 		this.revalidate();

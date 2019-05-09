@@ -15,7 +15,13 @@ import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.Share;
 import com.stockmarket.StockMarketSimulator.repositories.InvestorRepository;
 import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
+import com.stockmarket.StockMarketSimulator.view.View;
 
+/**
+ * Investor service class, performing operations to Investor entity.
+ * @author Gustavo Lessa
+ *
+ */
 @Service
 public class InvestorService {
 
@@ -31,28 +37,58 @@ public class InvestorService {
 	@Autowired
 	private Data data; 
 
+	@Autowired
+	private View view;
+	
 	/**
 	 * Method to populate the investor list using generator.
 	 */
 	public void populateInvestors() {
+		view.display("Generating investors...");
 		List<Investor> investors = investorGenerator.generateInvestors();
 		data.setInvestors(investors);
 		investorRepository.saveAll(investors);
 	}
 
+	/**
+	 * Method to reset investors.
+	 */
+	public void clearInvestors() {
+		 
+		investorRepository.deleteAll(); // delete all from DB
+		data.setInvestors(new ArrayList<Investor>()); // delete all from memory
+		Investor.lastId = 0; // set lastId as 0
+	}
+
+	/**
+	 * Method to get a random investor
+	 * @return random investor
+	 */
 	public Investor getRandomInvestor() {
 		Random rG = new Random();
 		return data.getInvestors().get(rG.nextInt(data.getInvestors().size()));
 	}
 	
+	/**
+	 * Return list of all investors.
+	 * @return list of investors
+	 */
 	public List<Investor> getAllInvestors() {
 		return data.getInvestors();
 	}
 	
+	/**
+	 * Return Investor, searching by ID.
+	 * @param id
+	 * @return investor
+	 */
 	public Investor getInvestorById(int id) {
-		return data.getInvestors().get(id);
+		return data.getInvestors().get(id-1);
 	}
 	
+	/**
+	 * Update all investors, using the whole list of investors in the system.
+	 */
 	public void updateInvestors() {
 		investorRepository.saveAll(data.getInvestors());
 	}
@@ -75,17 +111,6 @@ public class InvestorService {
 
 	// ----------- SHARES ---------------------
 
-//	/**
-//	 * Method to add a share to an investor's wallet.
-//	 * @param investor
-//	 * @param share
-//	 * @return
-//	 */
-//	public boolean addShare(Investor investor, Share share) {
-//		addCompanyId(investor, share.getCompanyId());
-//		return investor.getWallet().getShares().add(share);
-//	}
-
 	/**
 	 * Method to get the list of shares an investor has.
 	 * @param investor
@@ -104,7 +129,11 @@ public class InvestorService {
 		return investor.getWallet().getShares().size();
 	}
 
-
+	/**
+	 * Method for an investor to buy a share.
+	 * @param investor
+	 * @param share
+	 */
 	public void buyShare(Investor investor, Share share) {
 		investor.setBudget(data.round(investor.getBudget()-share.getPrice(),2));// decrement budget by share price
 		investor.getWallet().getShares().add(share);
@@ -168,6 +197,11 @@ public class InvestorService {
 		return remaining;
 	}
 	
+	/**
+	 * Method to return a list of desirable company IDs for an investor, not considered if share is not affordable or not available.
+	 * @param investor
+	 * @return list of desirable companies ID.
+	 */
 	public List<Integer> getDesirableCompaniesForInvestor(Investor investor) {
 		List<Integer> desirableCompanyIds = new ArrayList<>();
 
@@ -186,6 +220,10 @@ public class InvestorService {
 		return desirableCompanyIds;
 	}
 	
+	/**
+	 * Method to retrieve an investor with highest budget.
+	 * @return Investor with highest budget
+	 */
 	public Investor getHighestBudget() {
 		Investor investor = data.getInvestors().get(0);
 		for(int x = 1; x < data.getInvestors().size(); x++) {
@@ -195,13 +233,6 @@ public class InvestorService {
 			}
 		}
 		return investor;
-	}
-	
-	public void clearInvestorTable() {
-		 
-		investorRepository.deleteAll();
-		data.setInvestors(null);
-		Investor.lastId = 0;
 	}
 	
 

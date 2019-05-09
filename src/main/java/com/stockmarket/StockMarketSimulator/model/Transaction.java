@@ -28,6 +28,10 @@ public class Transaction {
 		this.date = null;
 	}
 	
+	public static void resetId() {
+		lastId = 0;
+	}
+	
 	
 	public void getTransactionDetails() {
 		System.out.println("----------TRANSATION----------");
