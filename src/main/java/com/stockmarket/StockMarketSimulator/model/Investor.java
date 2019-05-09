@@ -58,6 +58,7 @@ public class Investor {
 	 */
 	public void setNumberOfCompaniesInvestedIn(int numberOfCompaniesInvestedIn) {
 		this.numberOfCompaniesInvestedIn = numberOfCompaniesInvestedIn;
+
 	}
 
 	/**
@@ -205,7 +206,7 @@ public class Investor {
 			this.wallet = wallet;
 			return this;
 		}
-		
+
 		/**
 		 * 
 		 * @param totalNumberOfSharesBought the totalNumberOfSharesBought to set

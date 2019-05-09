@@ -87,8 +87,14 @@ public class Company {
 		for(int x = 0; x < numberOfShares; x++) 
 			shares.add(new Share(this.id, this.sharePrice)); // create the chosen number of shares
 	}
-	
-	
+
+	/**
+	 * @return the initialSharePrice
+	 */
+	public double getInitialSharePrice() {
+		return initialSharePrice;
+	}
+
 
 	/**
 	 * @return the initialShares
@@ -102,13 +108,6 @@ public class Company {
 	 */
 	public double getInitialCapital() {
 		return initialCapital;
-	}
-
-	/**
-	 * @return the initialSharePrice
-	 */
-	public double getInitialSharePrice() {
-		return initialSharePrice;
 	}
 
 	/**
@@ -225,9 +224,10 @@ public class Company {
 		this.sharesSold++;
 	}
 	
+
 	/**
 	 *
-	 * @param amount the amount to increas the total capital
+	 * @param amount the amount to increase the total capital
 	 */
 	public void incrementCapital(double amount) {
 	    BigDecimal bd = new BigDecimal(this.capital+amount);

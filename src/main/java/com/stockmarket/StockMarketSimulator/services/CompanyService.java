@@ -36,6 +36,7 @@ public class CompanyService {
 	 */
 	public void populateCompanies() {
 		view.display("Generating companies...");
+
 		List<Company> companies = companyGenerator.generateCompanies(); //create a list with all the new companies
 		
 		data.setCompanies(companies); //set the simulations list with the newly generated list
@@ -93,11 +94,12 @@ public class CompanyService {
 				company = current; //sets a company with an available share
 			}
 			if(company != null && current.getSharePrice() < company.getSharePrice() && !current.getShares().isEmpty()) { //a double check to see if the price is the lowest
-				company = current; //sets a comapny with the lowest share
+				company = current; //sets a company with the lowest share
 			}
 		}
-		
+
 		return company; //returns the company after all the checks
+
 	}
 	
 	
@@ -203,7 +205,7 @@ public class CompanyService {
 			c.setSharePrice(data.round((newPrice),2));
 		}
 	}
-	
+
 	/**
 	 * This method clears all the company details in the simulation and database to enable a rerun of the simulation
 	 */
@@ -212,7 +214,6 @@ public class CompanyService {
 		companyRepository.deleteAll(); //remove the companies from the database
 		data.setCompanies(null); //set the simulation list to be empty
 		Company.lastId = 0; //set the last company ID back to 0
-
 	}
 	
 

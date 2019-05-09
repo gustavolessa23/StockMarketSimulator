@@ -13,6 +13,7 @@ import com.stockmarket.StockMarketSimulator.model.Data;
 import com.stockmarket.StockMarketSimulator.model.Investor;
 import com.stockmarket.StockMarketSimulator.model.Share;
 import com.stockmarket.StockMarketSimulator.model.Transaction;
+import com.stockmarket.StockMarketSimulator.repositories.ReportRepository;
 import com.stockmarket.StockMarketSimulator.view.View;
 
 @Service
@@ -26,6 +27,9 @@ public class TransactionService {
 
 	@Autowired 
 	private CompanyService companyService;
+	
+	@Autowired
+	private ReportRepository reportRepository;
 	
 	@Autowired
 	private View view;
@@ -85,8 +89,9 @@ public class TransactionService {
 	}
 	
 	public void clearTransactions() {
-		data.setTransactions(new ArrayList<Transaction>());
+		//reportRepository.deleteAll(); 
 		Transaction.resetId();
+		data.setTransactions(new ArrayList<>());
 	}
 
 }

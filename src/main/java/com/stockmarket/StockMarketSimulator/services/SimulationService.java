@@ -1,5 +1,6 @@
 package com.stockmarket.StockMarketSimulator.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -28,11 +29,9 @@ public class SimulationService {
 	
 	@Autowired
 	private AsyncService asyncService; 
-		
-	private TransactionService transactionService;
 	
-//	@Autowired
-//	private MenuService menuService;
+	@Autowired
+	private TransactionService transactionService;
 	
 	@Autowired
 	private TradingDay td;
@@ -54,18 +53,19 @@ public class SimulationService {
 		
 
 		view.display("Starting simulation...");
+		
 		companyService.clearCompanyTable();
 		investorService.clearInvestors();
 		
+		
 		generateObjects();
-	
-//		companyService.populateCompanies();
-//		investorService.populateInvestors();
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 		
 		companyService.updateCompanies();
 		investorService.updateInvestors();
+		
+		
 		if(td.isSimulationFinished()) { 
 			
 			gui.setButtonsActive(true);			
@@ -74,13 +74,16 @@ public class SimulationService {
 
 			
 		}
+		
 	}
 	
 	public void restart() {
 		
 		td.setSimulationFinished(false);
+		
+		companyService.clearCompanyTable();
+		investorService.clearInvestors();
 		transactionService.clearTransactions();
-
 		
 		start();
 	}
@@ -93,7 +96,7 @@ public class SimulationService {
 
 		Future<String> futureResult =  asyncService.genComapanies();
 		Future<String> futureResult2 = asyncService.genInvestors();
-		
+
 		try {
 			String result = futureResult.get();
 			String result2 = futureResult.get();

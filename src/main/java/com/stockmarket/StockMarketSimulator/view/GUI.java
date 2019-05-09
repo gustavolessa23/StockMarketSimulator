@@ -649,7 +649,7 @@ public class GUI extends JFrame implements ActionListener{
 			this.savePDFFile.setEnabled(false);
 			mainPanel.add(transaction);
 
-			reportContent = simulation.allTransactions();
+			
 
 
 		}else if(e.getActionCommand().equals("savePDF")) {
