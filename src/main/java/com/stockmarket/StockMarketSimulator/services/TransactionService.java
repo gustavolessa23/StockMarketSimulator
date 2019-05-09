@@ -77,15 +77,16 @@ public class TransactionService {
 	}
 
 	/**
-	 * This method checks if the 10th transaction has occurred and makes the necessary changes to the prices of the comapnies
-	 * @param transaction
+	 * This method checks if the 10th transaction has occurred and makes the necessary changes to the prices of the companies
+	 * @param transaction The transaction to check
 	 */
 	public void afterTenTransactionsVerification(Transaction transaction) {
-		if(transaction.getTransactionId()%10==0) { //checks after every 10 transactions
+		if(transaction.getTransactionId()%10==0) { //checks if its the 10th transaction
 			
 			List<Company> companies = new ArrayList<>();
+			
 			for(int i = 0;i<data.getCompanies().size();i++) {
-				Company company = data.getCompanies().get(i);
+				Company company = data.getCompanies().get(i); //get a company from the simulation list
 				if(company.getHasSoldShare()==false && !company.getShares().isEmpty()){ //check if company has sold share AND still has shares to sell
 					companyService.decreasePrice(company); //decrease the price if company has not sold share
 					companies.add(company);
@@ -98,12 +99,18 @@ public class TransactionService {
 		}
 	}
 	
+	/**
+	 * This method returns the simulations transaction lists
+	 * @return the transaction list
+	 */
 	public List<Transaction> getAllTransactions(){
 		return data.getTransactions();
 	}
 	
-	public void clearTransactions() {
-		//reportRepository.deleteAll(); 
+	/**
+	 * This method creates a new simulation transaction list and resets the id of the transaction objects
+	 */
+	public void clearTransactions() { 
 		Transaction.resetId();
 		data.setTransactions(new ArrayList<>());
 	}
