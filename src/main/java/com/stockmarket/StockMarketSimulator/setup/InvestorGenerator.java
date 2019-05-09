@@ -28,7 +28,7 @@ public class InvestorGenerator {
 	private Random rG = new Random();
 
 	/**
-	 * Generates investors with random values and adds them to the investorList
+	 * Generates investors with random values and adds them to the simulations investorList
 	 */	
 	public List<Investor> generateInvestors() {
 

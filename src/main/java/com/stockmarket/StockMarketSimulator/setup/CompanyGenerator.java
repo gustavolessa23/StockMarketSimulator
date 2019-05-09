@@ -31,7 +31,7 @@ public class CompanyGenerator {
 
 
 	/**
-	 * Generates companies with random values and adds them to the companyList
+	 * Generates companies with random values and adds them to the simulations companyList
 	 */
 	public List<Company> generateCompanies() {
 		
