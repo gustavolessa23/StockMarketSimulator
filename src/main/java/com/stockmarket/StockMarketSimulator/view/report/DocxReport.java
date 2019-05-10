@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
@@ -13,17 +12,33 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class responsible for saving a DOCX file.
+ * @author Gustavo Lessa
+ *
+ */
 @Component
 public class DocxReport extends ReportFile {
 	
-	public DocxReport() {
+	/**
+	 * Constructor required by SpringBoot.
+	 */
+	private DocxReport() {
 		super();
 	}
 	
+	/**
+	 * Creates a new DocxReport, passing a path and a content.
+	 * @param path
+	 * @param content
+	 */
 	public DocxReport(String path, String content) {
 		super(path, content);
 	}
 	
+	/**
+	 * Generate DOCX file.
+	 */
 	@Override
 	public void generate() {
 		XWPFDocument document = new XWPFDocument();
@@ -54,6 +69,7 @@ public class DocxReport extends ReportFile {
 		try {
 			FileOutputStream out = new FileOutputStream(new File(this.path));
 			document.write(out);
+			out.flush();
 			out.close();
 			document.close();
 

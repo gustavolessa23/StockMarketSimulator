@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -25,18 +27,22 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.stockmarket.StockMarketSimulator.services.AsyncService;
 import com.stockmarket.StockMarketSimulator.services.CompanyService;
 import com.stockmarket.StockMarketSimulator.services.InvestorService;
 import com.stockmarket.StockMarketSimulator.services.SimulationService;
 import com.stockmarket.StockMarketSimulator.services.TransactionService;
 import com.stockmarket.StockMarketSimulator.setup.CompanyGenerator;
 import com.stockmarket.StockMarketSimulator.setup.InvestorGenerator;
+import com.stockmarket.StockMarketSimulator.view.report.ReportType;
 
 
 @SpringBootApplication
@@ -86,6 +92,9 @@ public class GUI extends JFrame implements ActionListener{
 	private TransactionService transactionService;
 
 	private JTextArea consoleText;
+
+	@Autowired
+	private AsyncService asyncService;
 
 
 
@@ -137,20 +146,22 @@ public class GUI extends JFrame implements ActionListener{
 		// create panel for loading message
 		loadingPanel = new JPanel();
 		loadingPanel.setLayout(new BorderLayout());
-		loadingPanel.setBounds(3, 5, 550, 500);
+		loadingPanel.setBounds(3, 5, 550, 550);
+
 		loadingLabel = new JLabel("RUNNING SIMULATION, PLEASE WAIT...");
 		loadingLabel.setFont(loadingLabel.getFont().deriveFont(25.0f));
 		loadingLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		loadingLabel.setVerticalAlignment(SwingConstants.CENTER);
 		loadingPanel.add(loadingLabel, BorderLayout.NORTH);
-		
-		consoleText = new JTextArea(26,24);
+
+		consoleText = new JTextArea(24,30);
+
 		consoleText.setEditable(false);
 		JScrollPane scroll = new JScrollPane(consoleText);
 		consoleText.setVisible(false);
 		loadingPanel.add(scroll, BorderLayout.CENTER);
 
-		
+
 		loadingPanel.setVisible(true);
 		loadingPanel.validate();
 
@@ -158,7 +169,8 @@ public class GUI extends JFrame implements ActionListener{
 		outputPanel = new JPanel();
 		outputPanel.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
 		outputPanel.validate();
-		outputPanel.setBounds(3, 5, 550, 500);
+
+		outputPanel.setBounds(3, 5, 550, 550);
 
 
 		// create text area
@@ -296,7 +308,7 @@ public class GUI extends JFrame implements ActionListener{
 
 
 	}
-	
+
 	public void setConsoleText(String s) {
 		consoleText.setVisible(true);
 		consoleText.append("\n"+s);
@@ -308,7 +320,7 @@ public class GUI extends JFrame implements ActionListener{
 		if(state) {
 			this.mainPanel.add(this.outputPanel);
 			setButtonsActive(true);
-			fullReport.doClick();
+			displayFullReport();
 		} else {
 			this.mainPanel.add(this.loadingPanel);
 			setButtonsActive(false);
@@ -318,8 +330,8 @@ public class GUI extends JFrame implements ActionListener{
 		this.repaint();
 		return true;
 	}
-	
-	public boolean showParametersPane() {
+
+	private boolean showParametersPane() {
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(2,3));
@@ -327,33 +339,33 @@ public class GUI extends JFrame implements ActionListener{
 		JSlider compSlider = new JSlider(1, 200, 100);
 		JLabel compValue = new JLabel("100");
 		compSlider.addChangeListener(new ChangeListener() {
-	        @Override
-	        public void stateChanged(ChangeEvent ce) {
-	            compValue.setText(String.valueOf(((JSlider) ce.getSource()).getValue()));
-	        }
-	    });
+			@Override
+			public void stateChanged(ChangeEvent ce) {
+				compValue.setText(String.valueOf(((JSlider) ce.getSource()).getValue()));
+			}
+		});
 		panel.add(compLabel);
 		panel.add(compSlider);
 		panel.add(compValue);
-		
-		
-		
+
+
+
 		JLabel invLabel = new JLabel("Investors");
 		JSlider invSlider = new JSlider(1, 200, 100);
 		JLabel invValue = new JLabel("100");
 		invSlider.addChangeListener(new ChangeListener() {
-	        @Override
-	        public void stateChanged(ChangeEvent ce) {
-	            invValue.setText(String.valueOf(((JSlider) ce.getSource()).getValue()));
-	        }
-	    });
+			@Override
+			public void stateChanged(ChangeEvent ce) {
+				invValue.setText(String.valueOf(((JSlider) ce.getSource()).getValue()));
+			}
+		});
 
 		panel.add(invLabel);
 		panel.add(invSlider);
 		panel.add(invValue);
-		
+
 		int response = JOptionPane.showConfirmDialog(null, panel,"Choose simulation parameters",JOptionPane.OK_OPTION);
-		
+
 		if(response == 0) {
 			try {
 				CompanyGenerator.numberOfCompanies = Integer.parseInt(compValue.getText());
@@ -365,10 +377,10 @@ public class GUI extends JFrame implements ActionListener{
 		} else {
 			return false;
 		}
-			
+
 	}
 
-	public void setButtonsActive(boolean state) {
+	private void setButtonsActive(boolean state) {
 		for(JButton button : buttonsList) {
 			button.setEnabled(state);
 		}
@@ -376,108 +388,197 @@ public class GUI extends JFrame implements ActionListener{
 	/**
 	 * This method is responsible to return all the companies and all the details into a JTable
 	 */
-	public JPanel getCompanies() {
+	private JPanel getCompanies() {
 
-		JPanel panel =new JPanel();
-		panel.setBorder(BorderFactory.createTitledBorder("Companies"));	
-		panel.setBounds(5, 5, 550, 450);
-		panel.validate();
-		panel.repaint();
-		panel.setVisible(true);
+		JPanel companiesPanel =new JPanel();
+		companiesPanel.setBorder(BorderFactory.createTitledBorder("Companies"));	
+		companiesPanel.setBounds(5, 5, 550, 450);
+		companiesPanel.validate();
+		companiesPanel.repaint();
+		companiesPanel.setVisible(true);
 
-		DefaultTableModel model = new DefaultTableModel() {
+		Object[][] data = getCompaniesData();
+		Object[] columns = {"ID",
+				"Name",
+				"Capital (€)",
+				"Initial Shares",
+				"Shares Sold",
+				"Initial Share Price (€)",
+				"Final Share Price (€)"
+		};
+
+
+		DefaultTableModel companiesModel = new DefaultTableModel(data, columns) {
 			public boolean isCellEditable(int row, int column){
 				return false;
+			}
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				case 1:
+					return String.class;
+				case 2:
+					return Double.class;
+				case 3:
+					return Integer.class;
+				case 4:
+					return Integer.class;
+				case 5:
+					return Integer.class;
+				case 6:
+					return Double.class;
+				case 7:
+					return Double.class;
+				default:
+					return String.class;
+				}
 			}
 
 		};
 
-		model.addColumn("ID");
-		model.addColumn("Name");
-		model.addColumn("Capital");
-		model.addColumn("Initial Shares");
-		model.addColumn("Shares Sold");
-		model.addColumn("Initial Share Price");
-		model.addColumn("Final Share Price");
 
-		JTable table = new JTable(model);
-		table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.getColumnModel().getColumn(2).setPreferredWidth(95);
-		table.setPreferredScrollableViewportSize(new Dimension(500, 350));
-		JScrollPane scrollPane = new JScrollPane(table);
-		panel.add(scrollPane);
 
-		TableRowSorter<DefaultTableModel> sort = new TableRowSorter<DefaultTableModel>(model);
-		table.setRowSorter(sort);
+		JTable companiesTable = new JTable(companiesModel);
+		companiesTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+		companiesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		companiesTable.getColumnModel().getColumn(2).setPreferredWidth(95);
+		companiesTable.setPreferredScrollableViewportSize(new Dimension(500, 350));
+		companiesTable.setAutoCreateRowSorter(true);
+		setCellsAlignment(companiesTable, SwingConstants.CENTER);
 
-		for(int i = 0; i < companyService.getAllCompanies().size(); i++) {
 
-			((DefaultTableModel)table.getModel()).addRow(new Object[] {
+		JScrollPane scrollPane = new JScrollPane(companiesTable);
+		companiesPanel.add(scrollPane);
 
-					companyService.getAllCompanies().get(i).getId(),
-					companyService.getAllCompanies().get(i).getName(),
-					companyService.getAllCompanies().get(i).getCapital(),
-					companyService.getAllCompanies().get(i).getInitialShares(),
-					companyService.getAllCompanies().get(i).getSharesSold(),
-					companyService.getAllCompanies().get(i).getInitialSharePrice(),
-					companyService.getAllCompanies().get(i).getSharePrice()
 
-			});
-
-		}
-		return panel;
+		return companiesPanel;
 
 	}
 
-	public JPanel getInvestors() {
+	private Object[][] getTransactionsData(){
 
-		JPanel panel4 = new JPanel();
-		panel4.setBorder(BorderFactory.createTitledBorder("Investors"));	
-		panel4.setBounds(5, 5, 550, 450);
-		panel4.validate();
-		panel4.setVisible(true);
-		panel4.repaint();
 
-		DefaultTableModel model1 = new DefaultTableModel() {
+		Object[][] toReturn = new Object[transactionService.getAllTransactions().size()][6];
+
+		for(int i = 0; i < transactionService.getAllTransactions().size(); i++) {
+			Object[] row = {
+
+					new Integer(transactionService.getAllTransactions().get(i).getTransactionId()),
+					new Integer(transactionService.getAllTransactions().get(i).getInvestor().getId()),
+					new Integer(transactionService.getAllTransactions().get(i).getCompany().getId()),
+					transactionService.getAllTransactions().get(i).getDate().toString(),
+			};
+			toReturn[i] = row;
+
+		};	
+
+		return toReturn;
+	}
+
+	private Object[][] getCompaniesData(){
+
+
+		Object[][] toReturn = new Object[companyService.getAllCompanies().size()][6];
+
+		for(int i = 0; i < companyService.getAllCompanies().size(); i++) {
+			Object[] row = {
+					new Integer(companyService.getAllCompanies().get(i).getId()),
+					companyService.getAllCompanies().get(i).getName(),
+					new Double(companyService.getAllCompanies().get(i).getCapital()),
+					new Integer(companyService.getAllCompanies().get(i).getInitialShares()),
+					new Integer(companyService.getAllCompanies().get(i).getSharesSold()),
+					new Double(companyService.getAllCompanies().get(i).getInitialSharePrice()),
+					new Double(companyService.getAllCompanies().get(i).getSharePrice())
+			};
+			toReturn[i] = row;
+
+		};	
+
+		return toReturn;
+	}
+
+
+	private Object[][] getInvestorsData(){
+
+		Object[][] toReturn = new Object[investorService.getAllInvestors().size()][6];
+
+		for(int i = 0; i < investorService.getAllInvestors().size(); i++) {
+			Object[] row = {
+					new Integer(investorService.getAllInvestors().get(i).getId()),
+					investorService.getAllInvestors().get(i).getName(),
+					new Double(investorService.getAllInvestors().get(i).getInitialBudget()),
+					new Double(investorService.getAllInvestors().get(i).getBudget()),
+					new Integer(investorService.getAllInvestors().get(i).getNumberOfCompaniesInvestedIn()),
+					new Integer(investorService.getAllInvestors().get(i).getTotalNumberOfSharesBought())
+			};
+			toReturn[i] = row;
+
+		};	
+
+		return toReturn;
+	}
+
+	private JPanel getInvestors() {
+
+
+		JPanel investorsPanel = new JPanel();
+		investorsPanel.setBorder(BorderFactory.createTitledBorder("Investors"));	
+		investorsPanel.setBounds(5, 5, 550, 450);
+		investorsPanel.validate();
+		investorsPanel.setVisible(true);
+		investorsPanel.repaint();
+
+		Object[][] data = getInvestorsData();
+		Object[] columns = {"ID",
+				"Name",
+				"Initial Budget (€)",
+				"Final Budget (€)",
+				"Companies Invested In",
+		"Shares Bought"};
+
+		DefaultTableModel investorsModel = new DefaultTableModel(data, columns) {
 			public boolean isCellEditable(int row, int column){
 				return false;
+			}
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				case 1:
+					return String.class;
+				case 2:
+					return Double.class;
+				case 3:
+					return Double.class;
+				case 4:
+					return Integer.class;
+				case 5:
+					return Integer.class;
+				default:
+					return String.class;
+				}
 			}
 
 		};
 
-		model1.addColumn("ID");
-		model1.addColumn("Name");
-		model1.addColumn("Initial Budget");
-		model1.addColumn("Final Budget");
-		model1.addColumn("Companies Invested In");
-		model1.addColumn("Shares Bought");
+		JTable investorsTable = new JTable(investorsModel);
 
-		JTable table1 = new JTable(model1);
+		investorsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+		investorsTable.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+		investorsTable.getColumnModel().getColumn(2).setPreferredWidth(95);
+		investorsTable.setPreferredScrollableViewportSize(new Dimension(500, 350));
+		setCellsAlignment(investorsTable, SwingConstants.CENTER);
 
-		table1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-		table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table1.getColumnModel().getColumn(2).setPreferredWidth(95);
-		table1.setPreferredScrollableViewportSize(new Dimension(500, 350));
-		JScrollPane scrollPane = new JScrollPane(table1);
-		panel4.add(scrollPane);
+		JScrollPane scrollPane = new JScrollPane(investorsTable);
+		investorsPanel.add(scrollPane);
 
-		TableRowSorter<DefaultTableModel> sort = new TableRowSorter<DefaultTableModel>(model1);
-		table1.setRowSorter(sort);
+		investorsTable.setAutoCreateRowSorter(true);
 
-		for(int i = 0; i < investorService.getAllInvestors().size(); i++) {
 
-			((DefaultTableModel)table1.getModel()).addRow(new Object[] {
-
-					investorService.getAllInvestors().get(i).getId(),
-					investorService.getAllInvestors().get(i).getName(),
-					investorService.getAllInvestors().get(i).getInitialBudget(),
-					investorService.getAllInvestors().get(i).getBudget(),
-					investorService.getAllInvestors().get(i).getNumberOfCompaniesInvestedIn(),
-					investorService.getAllInvestors().get(i).getTotalNumberOfSharesBought()
-			});
-		}
-		return panel4;
+		return investorsPanel;
 
 	}
 
@@ -485,55 +586,81 @@ public class GUI extends JFrame implements ActionListener{
 	 * This method is responsible to create a transaction table, and returns all the transactions made by the simulation.
 	 * @return
 	 */
-	public JPanel getAllTransactions() {
+	private JPanel getAllTransactions() {
 
-		JPanel panel =new JPanel();
-		panel.setBorder(BorderFactory.createTitledBorder("Transactions"));	
-		panel.setBounds(5, 5, 450, 450);
-		panel.validate();
-		panel.repaint();
-		panel.setVisible(true);
+		JPanel transactionsPanel =new JPanel();
+		transactionsPanel.setBorder(BorderFactory.createTitledBorder("Transactions"));	
+		transactionsPanel.setBounds(5, 5, 550, 500);
+		transactionsPanel.validate();
+		transactionsPanel.repaint();
+		transactionsPanel.setVisible(true);
 
-		DefaultTableModel model = new DefaultTableModel() {
+		Object[][] data = getTransactionsData();
+		Object[] columns = {
+				"Transaction ID",
+				"Investor ID",
+				"Company ID",
+				"Date"
+		};
+
+		DefaultTableModel transactionsModel = new DefaultTableModel(data, columns) {
 			public boolean isCellEditable(int row, int column){
 				return false;
+			}
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				case 1:
+					return Integer.class;
+				case 2:
+					return Integer.class;
+				default:
+					return String.class;
+				}
 			}
 
 		};
 
-		model.addColumn("Transaction ID");
-		model.addColumn("Investor ID");
-		model.addColumn("Company ID");
-		model.addColumn("Date");
+		JTable transactionsTable = new JTable(transactionsModel);
+		transactionsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+		transactionsTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+		//		transactionsTable.getColumnModel().getColumn(2).setPreferredWidth(95);
+		//		transactionsTable.getColumnModel().getColumn(1).
+		transactionsTable.setPreferredScrollableViewportSize(new Dimension(400, 350));
+		transactionsTable.setAutoCreateRowSorter(true);
+
+		setCellsAlignment(transactionsTable, SwingConstants.CENTER);
+
+		JScrollPane scrollPane = new JScrollPane(transactionsTable);
+		transactionsPanel.add(scrollPane);
 
 
-		JTable table = new JTable(model);
-		table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.getColumnModel().getColumn(2).setPreferredWidth(95);
-		table.setPreferredScrollableViewportSize(new Dimension(400, 350));
-		JScrollPane scrollPane = new JScrollPane(table);
-		panel.add(scrollPane);
+		return transactionsPanel;
 
+	}
 
-		TableRowSorter<DefaultTableModel> sort = new TableRowSorter<DefaultTableModel>(model);
-		table.setRowSorter(sort);
-		for(int i = 0; i < transactionService.getAllTransactions().size(); i++) {
+	/**
+	 * Sets the alignment of all cells of a JTable to the desired SwingConstants option.
+	 * @param table JTable
+	 * @param alignment SwingConstant enum.
+	 */
+	private static void setCellsAlignment(JTable table, int alignment){
+		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer(); // create renderer
+		renderer.setHorizontalAlignment(alignment); // set alignment
 
-			((DefaultTableModel)table.getModel()).addRow(new Object[] {
-					transactionService.getAllTransactions().get(i).getTransactionId(),
-					transactionService.getAllTransactions().get(i).getInvestor().getId(),
-					transactionService.getAllTransactions().get(i).getCompany().getId(),
-					transactionService.getAllTransactions().get(i).getDate().toString(),
-			});
+		TableModel tableModel = table.getModel(); // get JTable's model
 
+		for (int columnIndex = 0; columnIndex < tableModel.getColumnCount(); columnIndex++){ // for each column
+			table.getColumnModel().getColumn(columnIndex).setCellRenderer(renderer); // set the cell renderer
 		}
-		return panel;
+	}
 
-	}
-	public void start() {
-		new GUI();
-	}
+
+	//	public void start() {
+	//		new GUI();
+	//	}
 
 
 	@Override
@@ -543,166 +670,89 @@ public class GUI extends JFrame implements ActionListener{
 		this.savePDFFile.setEnabled(true);
 
 		if(e.getActionCommand().equals("companiesHighestCapital")){
-			mainPanel.removeAll();
-			mainPanel.add(outputPanel);
-			outputPanel.setVisible(true);
-			reportContent = simulation.highestCapital();
-			text.setText(simulation.highestCapital());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.highestCapital());
 
 
 		}else if(e.getActionCommand().equals("companiesLowestCapital")) {
-			mainPanel.removeAll();
-			mainPanel.add(outputPanel);
-			outputPanel.setVisible(true);
-			reportContent = simulation.lowestCapital();
-			text.setText(simulation.lowestCapital());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.lowestCapital());
+
 
 		}else if(e.getActionCommand().equals("investorsWithTheHighestNumberOfShares")) {
-			mainPanel.removeAll();
-			mainPanel.add(outputPanel);
-			outputPanel.setVisible(true);
-			reportContent = simulation.highestNumberOfShares();
-			text.setText(simulation.highestNumberOfShares());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.highestNumberOfShares());
 
 
 		}else if(e.getActionCommand().equals("investorsThatHaveInvestedInTheMostCompanies")) {
-			mainPanel.removeAll();
-			mainPanel.add(outputPanel);
-			outputPanel.setVisible(true);
-			reportContent = simulation.highestNumberOfCompanies();
-			text.setText(simulation.highestNumberOfCompanies());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.highestNumberOfCompanies());
 
 
 		}else if(e.getActionCommand().equals("investorsWithTheLowestNumberOfShares")) {
-			mainPanel.removeAll();
-			mainPanel.add(outputPanel);
-			outputPanel.setVisible(true);
-			reportContent = simulation.lowestNumberOfShares();
-			text.setText(simulation.lowestNumberOfShares());
-			text.setCaretPosition(0);
-	
+
+			setContentAndText(simulation.lowestNumberOfShares());
+
+
 		}else if(e.getActionCommand().equals("investorsLeastNumberOfCompanies")) {
-			mainPanel.removeAll();
-			mainPanel.add(outputPanel);
-			outputPanel.setVisible(true);
-			reportContent = simulation.lowestNumberOfCompanies();
-			text.setText(simulation.lowestNumberOfCompanies());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.lowestNumberOfCompanies());
 
 
 		}else if(e.getActionCommand().equals("totalNumberOfTransactions")) {
-			mainPanel.removeAll();
-			mainPanel.add(outputPanel);
-			outputPanel.setVisible(true);
-			reportContent = simulation.totalTransactions();
-			text.setText(simulation.totalTransactions());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.totalTransactions());
 
 
 		}else if(e.getActionCommand().equals("fullReport")) {
-			mainPanel.removeAll();
-			mainPanel.add(outputPanel);
-			outputPanel.setVisible(true);
-			reportContent = simulation.fullReport();
-			text.setText(simulation.fullReport());
-			text.setCaretPosition(0);
+
+			displayFullReport();
 
 
 		}else if(e.getActionCommand().equals("companies")) {
-			mainPanel.removeAll();
-			JPanel companies = getCompanies();
-			companies.validate();
-			companies.setVisible(true);
-			companies.repaint();
-			mainPanel.add(companies);
-			outputPanel.setVisible(false);
-			reportContent = simulation.allCompanies();
+			setContentAndPanel(getCompanies(), simulation.allCompanies());
 
 
 		}else if(e.getActionCommand().equals("investors")){
-
-			mainPanel.removeAll();
-
-			JPanel investors = getInvestors();
-			investors.validate();
-			investors.setVisible(true);
-			investors.repaint();
-			mainPanel.add(investors);
-
-			outputPanel.setVisible(false);
-			reportContent = simulation.allInvestors();
+			setContentAndPanel(getInvestors(), simulation.allInvestors());
 
 
 		}else if(e.getActionCommand().equals("transactions")) {
 
-			mainPanel.removeAll();
-
-			JPanel transaction = getAllTransactions();
-			transaction.validate();
-			transaction.setVisible(true);
-			transaction.repaint();
 			this.saveDocsFile.setEnabled(false);
 			this.savePDFFile.setEnabled(false);
-			mainPanel.add(transaction);
 
-			
+
+			setContentAndPanel(getAllTransactions(), simulation.allTransactions());
+
 
 
 		}else if(e.getActionCommand().equals("savePDF")) {
-			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setDialogTitle("Specify a file to save");   
-
-			int userSelection = fileChooser.showSaveDialog(this);
-
-			if (userSelection == JFileChooser.APPROVE_OPTION) {
-				File fileToSave = fileChooser.getSelectedFile();
-				System.out.println("Save as file: " + fileToSave.getAbsolutePath());
-				simulation.generatePdfReport(reportContent, fileToSave.getAbsolutePath());
-			}
+			saveFile(ReportType.PDF);
 
 		}else if(e.getActionCommand().equals("textFile")) {
-			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setDialogTitle("Specify a file to save");   
-
-			int userSelection = fileChooser.showSaveDialog(this);
-
-			if (userSelection == JFileChooser.APPROVE_OPTION) {
-				File fileToSave = fileChooser.getSelectedFile();
-				System.out.println("Save as file: " + fileToSave.getAbsolutePath());
-				simulation.generateTxtReport(reportContent, fileToSave.getAbsolutePath());
-			}
+			saveFile(ReportType.TXT);
 
 		}else if(e.getActionCommand().equals("saveDoc")) {
-			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setDialogTitle("Specify a file to save");   
-
-			int userSelection = fileChooser.showSaveDialog(this);
-
-			if (userSelection == JFileChooser.APPROVE_OPTION) {
-				File fileToSave = fileChooser.getSelectedFile();
-				System.out.println("Save as file: " + fileToSave.getAbsolutePath());
-				simulation.generateDocxReport(reportContent, fileToSave.getAbsolutePath());
-			}
-
+			saveFile(ReportType.DOCX);
 		}
 		else if(e.getActionCommand().equals("rerun")) {
 			boolean shouldReRun = showParametersPane();
-			
+
 			if (shouldReRun) {
 				simulationFinished(false);
-				this.consoleText.setText("Restarting application...");
-				
+
+				this.consoleText.setText("Running simulation on the background...");
+				this.consoleText.append("\nPlease wait...");
+
+
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						simulation.restart();
 					}
 				});
-			}
 
+			}
 		}
 
 		this.revalidate();
@@ -710,4 +760,56 @@ public class GUI extends JFrame implements ActionListener{
 
 	}
 
+
+	private void setContentAndPanel(JPanel panel, String content) {
+		mainPanel.removeAll();
+		JPanel companies = panel;
+		companies.validate();
+		companies.setVisible(true);
+		companies.repaint();
+		mainPanel.add(companies);
+		reportContent = content;
+	}
+
+	private void setContentAndText(String content) {
+		showOutputPanel();
+		reportContent = content;
+		text.setText(content);
+		text.setCaretPosition(0);
+	}
+
+	private void showOutputPanel() {
+		mainPanel.removeAll();
+		mainPanel.add(outputPanel);
+		outputPanel.setVisible(true);
+	}
+
+	private void saveFile(ReportType type) {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Choose filename and folder");   
+
+		int userSelection = fileChooser.showSaveDialog(this);
+
+		if (userSelection == JFileChooser.APPROVE_OPTION) {
+			File fileToSave = fileChooser.getSelectedFile();
+			System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+
+			if(type == ReportType.PDF) {
+				simulation.generatePdfReport(reportContent, fileToSave.getAbsolutePath());
+			} else if(type == ReportType.DOCX) {
+				simulation.generateDocxReport(reportContent, fileToSave.getAbsolutePath());
+			} else if(type == ReportType.TXT) {
+				simulation.generateTxtReport(reportContent, fileToSave.getAbsolutePath());
+			}
+		}
+	}
+
+	private void displayFullReport() {
+		showOutputPanel();
+		reportContent = simulation.fullReport();
+		text.setText(simulation.fullReport());
+		text.setCaretPosition(0);
+	}
+
 }
+

@@ -24,8 +24,16 @@ public class TxtReport extends ReportFile {
 
 	@Override
 	public void generate() throws IOException {
+
+
+//	    BufferedWriter writer = new BufferedWriter(new FileWriter(new File(this.path)));
+//	    writer.write(this.content);
+//	     
+//	    writer.close();
+
 		PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(this.path)));
-		List<String> text = this.convertContentToList();
+		
+		List<String> text = convertContentToList();	
 		
 		for(int x = 0; x < text.size(); x++) {
 			writer.print(text.get(x));
@@ -34,11 +42,8 @@ public class TxtReport extends ReportFile {
 		
 		writer.flush();
 		writer.close();
-//	    BufferedWriter writer = new BufferedWriter(new FileWriter(new File(this.path)));
-//	    writer.write(this.content);
-//	     
-//	    writer.close();
-	
+		
+
 	}
 
 }
