@@ -347,7 +347,6 @@ public class GUI extends JFrame implements ActionListener{
 		panel.add(compLabel);
 		panel.add(compSlider);
 		panel.add(compValue);
-
 		JLabel invLabel = new JLabel("Investors");
 		//creates a investor slider to check how mane investors the user wants to generate in the new simulation
 		JSlider invSlider = new JSlider(1, 200, 100);
