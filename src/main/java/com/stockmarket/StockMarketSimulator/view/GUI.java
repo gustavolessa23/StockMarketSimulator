@@ -735,11 +735,11 @@ public class GUI extends JFrame implements ActionListener{
 			boolean shouldReRun = showParametersPane();
 
 			if (shouldReRun) {
-				simulationFinished(false);
+				
+				//simulationFinished(false);
 
 				this.consoleText.setText("Running simulation on the background...");
 				this.consoleText.append("\nPlease wait...");
-
 
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {

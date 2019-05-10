@@ -74,9 +74,11 @@ public class SimulationService {
 	public void restart() {
 
 		td.setSimulationFinished(false);
+		//gui.simulationFinished(false);
 		transactionService.clearTransactions();
 
 		start();
+
 	}
 
 
