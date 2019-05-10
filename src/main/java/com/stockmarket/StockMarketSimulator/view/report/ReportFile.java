@@ -1,6 +1,8 @@
 package com.stockmarket.StockMarketSimulator.view.report;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class ReportFile {
 	
@@ -29,6 +31,11 @@ public abstract class ReportFile {
 	}
 	public String getContenth() {
 		return this.content;
+	}
+	
+	public List<String> convertContentToList(){
+		
+		return Arrays.asList(this.content.split("\\r?\\n"));
 	}
 
 }

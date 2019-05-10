@@ -1,5 +1,6 @@
 package com.stockmarket.StockMarketSimulator.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,7 +213,7 @@ public class CompanyService {
 	public void clearCompanyTable() {
 		
 		companyRepository.deleteAll(); //remove the companies from the database
-		data.setCompanies(null); //set the simulation list to be empty
+		data.setCompanies(new ArrayList<Company>()); //set the simulation list to be empty
 		Company.lastId = 0; //set the last company ID back to 0
 	}
 	

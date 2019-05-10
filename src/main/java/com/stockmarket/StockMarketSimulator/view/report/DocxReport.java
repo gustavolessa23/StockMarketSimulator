@@ -67,9 +67,5 @@ public class DocxReport extends ReportFile {
 
 	}
 	
-	private List<String> convertContentToList(){
-		
-		return Arrays.asList(this.content.split("\\r?\\n"));
-	}
 
 }

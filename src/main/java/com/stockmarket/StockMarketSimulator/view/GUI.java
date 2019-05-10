@@ -137,14 +137,14 @@ public class GUI extends JFrame implements ActionListener{
 		// create panel for loading message
 		loadingPanel = new JPanel();
 		loadingPanel.setLayout(new BorderLayout());
-		loadingPanel.setBounds(3, 5, 550, 450);
+		loadingPanel.setBounds(3, 5, 550, 500);
 		loadingLabel = new JLabel("RUNNING SIMULATION, PLEASE WAIT...");
 		loadingLabel.setFont(loadingLabel.getFont().deriveFont(25.0f));
 		loadingLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		loadingLabel.setVerticalAlignment(SwingConstants.CENTER);
 		loadingPanel.add(loadingLabel, BorderLayout.NORTH);
 		
-		consoleText = new JTextArea(20,24);
+		consoleText = new JTextArea(26,24);
 		consoleText.setEditable(false);
 		JScrollPane scroll = new JScrollPane(consoleText);
 		consoleText.setVisible(false);
@@ -158,7 +158,7 @@ public class GUI extends JFrame implements ActionListener{
 		outputPanel = new JPanel();
 		outputPanel.setBorder(BorderFactory.createTitledBorder("Simulation Report"));
 		outputPanel.validate();
-		outputPanel.setBounds(3, 5, 550, 450);
+		outputPanel.setBounds(3, 5, 550, 500);
 
 
 		// create text area
@@ -174,7 +174,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel2.setBorder(BorderFactory.createTitledBorder("Companies"));
 		panel2.validate();
 		panel2.setVisible(true);
-		panel2.setBounds(630, 5, 260, 135);
+		panel2.setBounds(630, 5, 250, 135);
 		this.add(panel2);
 
 		// create button for highest capital
@@ -204,7 +204,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel3.setBorder(BorderFactory.createTitledBorder("Investors"));
 		panel3.validate();
-		panel3.setBounds(630, 150, 260, 195);
+		panel3.setBounds(630, 150, 250, 195);
 		this.add(panel3);
 
 		// create button for highest number of shares
@@ -248,7 +248,7 @@ public class GUI extends JFrame implements ActionListener{
 		panel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel4.setBorder(BorderFactory.createTitledBorder("Simulation"));
 		panel4.validate();
-		panel4.setBounds(630, 350, 260, 165);
+		panel4.setBounds(630, 350, 250, 165);
 		this.add(panel4);
 
 		// create button for full report

@@ -83,7 +83,7 @@ public class InvestorService {
 	 * @return investor
 	 */
 	public Investor getInvestorById(int id) {
-		return data.getInvestors().get(id);
+		return data.getInvestors().get(id-1);
 	}
 	
 	/**

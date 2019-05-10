@@ -75,7 +75,7 @@ public class TransactionService {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * This method checks if the 10th transaction has occurred and makes the necessary changes to the prices of the companies
 	 * @param transaction The transaction to check

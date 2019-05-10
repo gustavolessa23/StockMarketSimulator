@@ -63,15 +63,11 @@ public class SimulationService {
 		generateObjects(); //async method to generate the companies and investors
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
-		
-		companyService.updateCompanies(); //update the repositories and lists
-		investorService.updateInvestors();
-		
-		
+
 		if(td.isSimulationFinished()) { 
-			
-			gui.setButtonsActive(true);	//allow the buttons to be active
-			
+			companyService.updateCompanies(); //update the repositories and lists
+			investorService.updateInvestors();
+			gui.simulationFinished(true);	//allow the buttons to be active
 			reportService.saveReportToDb(); //save reports to database
 
 			
@@ -85,8 +81,8 @@ public class SimulationService {
 		
 		td.setSimulationFinished(false); //set the buttons to be inactive
 		
-		companyService.clearCompanyTable(); //clear all the necessary tables and databases
-		investorService.clearInvestors();
+		//companyService.clearCompanyTable(); //clear all the necessary tables and databases
+		//investorService.clearInvestors();
 		transactionService.clearTransactions();
 		
 		start(); //start the simulation again
