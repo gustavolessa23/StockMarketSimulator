@@ -13,9 +13,6 @@ import com.stockmarket.StockMarketSimulator.view.report.ReportFileSingletonFacto
 import com.stockmarket.StockMarketSimulator.view.report.ReportFile;
 import com.stockmarket.StockMarketSimulator.view.report.ReportType;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Class to handle the Report generation and persistence.
  * @author Gustavo Lessa (https://github.com/gustavolessa23/)

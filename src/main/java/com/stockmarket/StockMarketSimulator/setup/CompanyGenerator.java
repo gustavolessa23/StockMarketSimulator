@@ -22,9 +22,6 @@ public class CompanyGenerator {
 
 	@Autowired
 	private SampleData sd; //Object that holds random names and other data
-
-	@Autowired
-	private  Data data;
 	
 	private Random rG = new Random();
 
@@ -53,8 +50,6 @@ public class CompanyGenerator {
 					setSharePrice(randomPrice).
 					build(); //use company builder to assign values
 
-			
-			//randomCompany.getCompanyDetails(); //Prints out the companies details after being generated
 			companies.add(randomCompany); 
 		}
 
