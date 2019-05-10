@@ -54,6 +54,7 @@ public class DocxReport extends ReportFile {
 		try {
 			FileOutputStream out = new FileOutputStream(new File(this.path));
 			document.write(out);
+			out.flush();
 			out.close();
 			document.close();
 
@@ -67,9 +68,5 @@ public class DocxReport extends ReportFile {
 
 	}
 	
-	private List<String> convertContentToList(){
-		
-		return Arrays.asList(this.content.split("\\r?\\n"));
-	}
 
 }

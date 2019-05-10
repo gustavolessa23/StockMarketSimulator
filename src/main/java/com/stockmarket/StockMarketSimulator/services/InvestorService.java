@@ -135,10 +135,10 @@ public class InvestorService {
 	 * @param share
 	 */
 	public void buyShare(Investor investor, Share share) {
-		investor.setBudget(data.round(investor.getBudget()-share.getPrice(),2));// decrement budget by share price
-		investor.getWallet().getShares().add(share);
-		addCompanyId(investor, share.getCompanyId());
-		investor.incrementSharesBought();;		
+		investor.setBudget(Data.round(investor.getBudget()-share.getPrice(),2));// decrement budget by share price
+		investor.getWallet().getShares().add(share); // add share to wallet
+		addCompanyId(investor, share.getCompanyId()); // add companyId to the map
+		investor.incrementSharesBought();;	// increment investor's share counter
 	}
 
 	/**
@@ -148,10 +148,11 @@ public class InvestorService {
 	 * @return
 	 */
 	private void addCompanyId(Investor investor, int companyId) {
-		// set the value for 1 or increment existing value
+		// set the value for key = companyId to 1 or increment existing value.
 		investor.getWallet().getCompaniesShares().merge(companyId, 1, Integer::sum);  // add
 		
-		investor.setNumberOfCompaniesInvestedIn(investor.getWallet().getCompaniesShares().size());
+		// update the instance variable of this investor.
+		investor.setNumberOfCompaniesInvestedIn(getAmountOfCompaniesInvestedIn(investor));
 	}
 
 	/**
@@ -160,13 +161,14 @@ public class InvestorService {
 	 * @return
 	 */
 	public List<Integer> getCompaniesIds(Investor investor) {
-		List<Integer> companyIds = new ArrayList<>();
+		List<Integer> companyIds = new ArrayList<>(); // create new list
 
+		// for each entry of the map, add the key (id) to the list.
 		investor.getWallet().getCompaniesShares().forEach((key, value) -> {
-			companyIds.add(key);
+			companyIds.add(key); 
 		});
 
-		return companyIds;
+		return companyIds; // return list
 	}
 
 	/**
@@ -175,6 +177,7 @@ public class InvestorService {
 	 * @return
 	 */
 	public int getAmountOfCompaniesInvestedIn(Investor investor) {
+		// the the map size (key is companyId).
 		return investor.getWallet().getCompaniesShares().size();
 	}
 
@@ -185,15 +188,18 @@ public class InvestorService {
 	 * @return
 	 */
 	public List<Integer> getRemainingCompaniesIds(Investor investor, int numberOfCompanies) throws InvestorHasInvestedInAllCompaniesException{
+		// create a list
 		List<Integer> remaining = new ArrayList<>();
+		// if investor has shares from all companies, throw exception.
 		if (investor.getWallet().getCompaniesShares().size() == numberOfCompanies) {
 			throw new InvestorHasInvestedInAllCompaniesException("Investor "+investor.getId()+" has invested in all companies!");
-		} else {
-			for (int x = 1; x <= numberOfCompanies; x++) {
+		} else { 
+			for (int x = 1; x <= numberOfCompanies; x++) { // for each company
+				// if the investor doens't have this company in his wallet, add company to list
 				if (!investor.getWallet().getCompaniesShares().containsKey(x)) remaining.add(x);
 			}	
 		}
-
+		// return list
 		return remaining;
 	}
 	
@@ -206,17 +212,20 @@ public class InvestorService {
 		List<Integer> desirableCompanyIds = new ArrayList<>();
 
 		try {
-			//get the list of company IDs the investor has no shares of
+			//get the list of company IDs the investor has no shares of.
 			desirableCompanyIds = getRemainingCompaniesIds(investor, data.getCompanies().size());
-		} catch (InvestorHasInvestedInAllCompaniesException e) {
+		} catch (InvestorHasInvestedInAllCompaniesException e) { // if investor invested in all companies:
+			
 			desirableCompanyIds = getCompaniesIds(investor);
 		}
 		
+		//remove all companies with no shares left
 		desirableCompanyIds.removeIf(id -> companyService.getCompanyFromId(id).getShares().size() == 0);
-		
+		// remove all companies that investor can't afford
 		desirableCompanyIds.removeIf(id -> companyService.getCompanyFromId(id).getSharePrice() > investor.getBudget());
-
+		// shuffle the list 
 		Collections.shuffle(desirableCompanyIds);
+		// return it
 		return desirableCompanyIds;
 	}
 	
