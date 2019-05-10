@@ -30,7 +30,7 @@ public class View {
 	 */
 	public void display(String string) {
 		gui.setConsoleText(string);
-	//	System.out.println(string);
+		System.out.println(string);
 	}
 	
 

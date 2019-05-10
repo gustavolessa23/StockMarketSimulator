@@ -47,7 +47,7 @@
     project="StockMarketSimulator" 
     file="/StockMarketSimulator/src/main/java/com/stockmarket/StockMarketSimulator/services/SimulationService.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="322" width="162" x="767" y="18"/>    
+    <position height="322" width="162" x="730" y="3"/>    
     <display autosize="false" stereotype="true" package="false" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="false" package="true" protected="false" private="false" static="true"/>      
