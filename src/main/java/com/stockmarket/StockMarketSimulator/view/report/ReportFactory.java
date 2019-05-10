@@ -4,8 +4,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ReportFactory {
+	
+	private static ReportFactory instance;
+	
+	private ReportFactory() {
+		
+	}
 
-	public static ReportFile create(ReportType type, String path, String content) {
+	public ReportFile create(ReportType type, String path, String content) {
 		
 		if(type == ReportType.DOCX) {
 			return new DocxReport(path, content);
@@ -17,6 +23,13 @@ public class ReportFactory {
 			return null;
 		}
 		
+	}
+	
+	public static ReportFactory getInstance() {
+		if(instance == null) {
+			instance = new ReportFactory();
+		}
+		return instance;
 	}
 	
 }

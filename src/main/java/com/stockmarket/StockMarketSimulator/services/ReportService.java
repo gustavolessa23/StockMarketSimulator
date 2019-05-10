@@ -57,7 +57,7 @@ public class ReportService {
 	 */
 	public void generatePdfReport(String content, String path) {
 		// retrieve a ReportFile for PDF, passing content and path, using the Factory Pattern, and correcting the extension if needed.
-		ReportFile file = ReportFactory.create(ReportType.PDF, (path.endsWith(".pdf") ? path : path+".pdf"), content);
+		ReportFile file = ReportFactory.getInstance().create(ReportType.PDF, (path.endsWith(".pdf") ? path : path+".pdf"), content);
 		try {
 			file.generate(); // generate file
 		} catch (FileNotFoundException e) {
@@ -75,7 +75,7 @@ public class ReportService {
 	 */
 	public void generateDocxReport(String content, String path) {
 		// retrieve a ReportFile for DOCX, passing content and path, using the Factory Pattern, and correcting the extension if needed.
-		ReportFile file = ReportFactory.create(ReportType.DOCX, (path.endsWith(".doc") || path.endsWith(".docx") ? path : path+".docx"), content);
+		ReportFile file = ReportFactory.getInstance().create(ReportType.DOCX, (path.endsWith(".doc") || path.endsWith(".docx") ? path : path+".docx"), content);
 		try {
 			file.generate();
 		} catch (FileNotFoundException e) {
@@ -93,7 +93,7 @@ public class ReportService {
 	public void generateTxtReport(String content, String path) {
 		
 		// retrieve a ReportFile for TXT, passing content and path, using the Factory Pattern, and correcting the extension if needed.
-		ReportFile file = ReportFactory.create(ReportType.TXT, (path.endsWith(".txt") ? path : path+".txt"), content);
+		ReportFile file = ReportFactory.getInstance().create(ReportType.TXT, (path.endsWith(".txt") ? path : path+".txt"), content);
 		try {
 			file.generate();
 		} catch (FileNotFoundException e) {
