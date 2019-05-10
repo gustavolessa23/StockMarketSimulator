@@ -52,7 +52,10 @@ public class View {
 	}
 
 
-
+	/**
+	 * Method used to display an error message
+	 * @param string
+	 */
 	public void displayError(String string) {
 		System.err.println(string);
 	}
