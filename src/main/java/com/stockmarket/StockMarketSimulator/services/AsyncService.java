@@ -11,40 +11,47 @@ import org.springframework.stereotype.Service;
 @Service
 public class AsyncService{
 
-@Autowired
-private SimulationService simulationService;
-	
+	@Autowired
+	private SimulationService simulationService;
+
 	@Autowired
 	private CompanyService companyService; 
-	
+
 	@Autowired
 	private InvestorService investorService;
-	
-	
+
+
 	@Async 
 	public Future<String> genComapanies () {
 		companyService.populateCompanies();
 		return null;	
 	}
-	
+
 	@Async
 	public Future<String> genInvestors () {	
 		investorService.populateInvestors();
 		return null;	
 	}
-	
+
 	@Async
 	public Future<String> restartThread(){
 		simulationService.restart();
 		return null;
 	}
 
-		
-    
-	
 
-	
-	
-	
+	@Async
+	public Future<String> asyncSaveInvestors () {	
+		investorService.updateInvestors();
+		return null;	
+	}
+
+	@Async
+	public Future<String> asyncSaveCompanies () {	
+		companyService.updateCompanies();
+		return null;	
+	}
+
+
 
 }

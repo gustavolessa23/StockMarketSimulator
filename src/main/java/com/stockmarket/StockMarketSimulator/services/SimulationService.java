@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.model.Company;
@@ -32,9 +33,6 @@ public class SimulationService {
 	@Autowired
 	private TransactionService transactionService;
 
-	//	@Autowired
-	//	private MenuService menuService;
-
 	@Autowired
 	private TradingDay td;
 
@@ -59,25 +57,24 @@ public class SimulationService {
 
 		generateObjects();
 
-		//		companyService.populateCompanies();
-		//		investorService.populateInvestors();
-
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 
 		if(td.isSimulationFinished()) { 
+			gui.simulationFinished(true);	
+
 			companyService.updateCompanies();
 			investorService.updateInvestors();
-			gui.simulationFinished(true);			
+		
 			reportService.saveReportToDb();			
 		}
-
+	
 	}
+
 
 	public void restart() {
 
 		td.setSimulationFinished(false);
 		transactionService.clearTransactions();
-
 
 		start();
 	}
@@ -93,7 +90,7 @@ public class SimulationService {
 
 		try {
 			String result = futureResult.get();
-			String result2 = futureResult.get();
+			String result2 = futureResult2.get();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {

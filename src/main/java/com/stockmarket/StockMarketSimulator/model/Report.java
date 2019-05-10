@@ -27,6 +27,4 @@ public class Report {
 	int highestCompanies;
 	int lowestCompanies;
 	long numberOfTransactions;
-	
-
 }

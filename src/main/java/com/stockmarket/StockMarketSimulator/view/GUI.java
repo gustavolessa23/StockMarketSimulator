@@ -328,7 +328,7 @@ public class GUI extends JFrame implements ActionListener{
 		return true;
 	}
 
-	public boolean showParametersPane() {
+	private boolean showParametersPane() {
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(2,3));
@@ -377,7 +377,7 @@ public class GUI extends JFrame implements ActionListener{
 
 	}
 
-	public void setButtonsActive(boolean state) {
+	private void setButtonsActive(boolean state) {
 		for(JButton button : buttonsList) {
 			button.setEnabled(state);
 		}
@@ -385,7 +385,7 @@ public class GUI extends JFrame implements ActionListener{
 	/**
 	 * This method is responsible to return all the companies and all the details into a JTable
 	 */
-	public JPanel getCompanies() {
+	private JPanel getCompanies() {
 
 		JPanel companiesPanel =new JPanel();
 		companiesPanel.setBorder(BorderFactory.createTitledBorder("Companies"));	
@@ -445,7 +445,7 @@ public class GUI extends JFrame implements ActionListener{
 		companiesTable.setAutoCreateRowSorter(true);
 		setCellsAlignment(companiesTable, SwingConstants.CENTER);
 
-		
+
 		JScrollPane scrollPane = new JScrollPane(companiesTable);
 		companiesPanel.add(scrollPane);
 
@@ -454,7 +454,7 @@ public class GUI extends JFrame implements ActionListener{
 
 	}
 
-	public Object[][] getTransactionsData(){
+	private Object[][] getTransactionsData(){
 
 
 		Object[][] toReturn = new Object[transactionService.getAllTransactions().size()][6];
@@ -474,7 +474,7 @@ public class GUI extends JFrame implements ActionListener{
 		return toReturn;
 	}
 
-	public Object[][] getCompaniesData(){
+	private Object[][] getCompaniesData(){
 
 
 		Object[][] toReturn = new Object[companyService.getAllCompanies().size()][6];
@@ -497,7 +497,7 @@ public class GUI extends JFrame implements ActionListener{
 	}
 
 
-	public Object[][] getInvestorsData(){
+	private Object[][] getInvestorsData(){
 
 		Object[][] toReturn = new Object[investorService.getAllInvestors().size()][6];
 
@@ -517,7 +517,7 @@ public class GUI extends JFrame implements ActionListener{
 		return toReturn;
 	}
 
-	public JPanel getInvestors() {
+	private JPanel getInvestors() {
 
 
 		JPanel investorsPanel = new JPanel();
@@ -568,7 +568,7 @@ public class GUI extends JFrame implements ActionListener{
 		investorsTable.getColumnModel().getColumn(2).setPreferredWidth(95);
 		investorsTable.setPreferredScrollableViewportSize(new Dimension(500, 350));
 		setCellsAlignment(investorsTable, SwingConstants.CENTER);
-		
+
 		JScrollPane scrollPane = new JScrollPane(investorsTable);
 		investorsPanel.add(scrollPane);
 
@@ -583,7 +583,7 @@ public class GUI extends JFrame implements ActionListener{
 	 * This method is responsible to create a transaction table, and returns all the transactions made by the simulation.
 	 * @return
 	 */
-	public JPanel getAllTransactions() {
+	private JPanel getAllTransactions() {
 
 		JPanel transactionsPanel =new JPanel();
 		transactionsPanel.setBorder(BorderFactory.createTitledBorder("Transactions"));	
@@ -623,13 +623,13 @@ public class GUI extends JFrame implements ActionListener{
 		JTable transactionsTable = new JTable(transactionsModel);
 		transactionsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 		transactionsTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-//		transactionsTable.getColumnModel().getColumn(2).setPreferredWidth(95);
-//		transactionsTable.getColumnModel().getColumn(1).
+		//		transactionsTable.getColumnModel().getColumn(2).setPreferredWidth(95);
+		//		transactionsTable.getColumnModel().getColumn(1).
 		transactionsTable.setPreferredScrollableViewportSize(new Dimension(400, 350));
 		transactionsTable.setAutoCreateRowSorter(true);
-		
+
 		setCellsAlignment(transactionsTable, SwingConstants.CENTER);
-		
+
 		JScrollPane scrollPane = new JScrollPane(transactionsTable);
 		transactionsPanel.add(scrollPane);
 
@@ -637,27 +637,27 @@ public class GUI extends JFrame implements ActionListener{
 		return transactionsPanel;
 
 	}
-	
+
 	/**
 	 * Sets the alignment of all cells of a JTable to the desired SwingConstants option.
 	 * @param table JTable
 	 * @param alignment SwingConstant enum.
 	 */
-    public static void setCellsAlignment(JTable table, int alignment){
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer(); // create renderer
-        renderer.setHorizontalAlignment(alignment); // set alignment
+	private static void setCellsAlignment(JTable table, int alignment){
+		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer(); // create renderer
+		renderer.setHorizontalAlignment(alignment); // set alignment
 
-        TableModel tableModel = table.getModel(); // get JTable's model
+		TableModel tableModel = table.getModel(); // get JTable's model
 
-        for (int columnIndex = 0; columnIndex < tableModel.getColumnCount(); columnIndex++){ // for each column
-            table.getColumnModel().getColumn(columnIndex).setCellRenderer(renderer); // set the cell renderer
-        }
-    }
-	
-    
-//	public void start() {
-//		new GUI();
-//	}
+		for (int columnIndex = 0; columnIndex < tableModel.getColumnCount(); columnIndex++){ // for each column
+			table.getColumnModel().getColumn(columnIndex).setCellRenderer(renderer); // set the cell renderer
+		}
+	}
+
+
+	//	public void start() {
+	//		new GUI();
+	//	}
 
 
 	@Override
@@ -667,94 +667,59 @@ public class GUI extends JFrame implements ActionListener{
 		this.savePDFFile.setEnabled(true);
 
 		if(e.getActionCommand().equals("companiesHighestCapital")){
-			showOutputPanel();
-			reportContent = simulation.highestCapital();
-			text.setText(simulation.highestCapital());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.highestCapital());
 
 
 		}else if(e.getActionCommand().equals("companiesLowestCapital")) {
-			showOutputPanel();
-			reportContent = simulation.lowestCapital();
-			text.setText(simulation.lowestCapital());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.lowestCapital());
+
 
 		}else if(e.getActionCommand().equals("investorsWithTheHighestNumberOfShares")) {
-			showOutputPanel();
-			reportContent = simulation.highestNumberOfShares();
-			text.setText(simulation.highestNumberOfShares());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.highestNumberOfShares());
 
 
 		}else if(e.getActionCommand().equals("investorsThatHaveInvestedInTheMostCompanies")) {
-			showOutputPanel();
-			reportContent = simulation.highestNumberOfCompanies();
-			text.setText(simulation.highestNumberOfCompanies());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.highestNumberOfCompanies());
 
 
 		}else if(e.getActionCommand().equals("investorsWithTheLowestNumberOfShares")) {
-			showOutputPanel();
-			reportContent = simulation.lowestNumberOfShares();
-			text.setText(simulation.lowestNumberOfShares());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.lowestNumberOfShares());
+
 
 		}else if(e.getActionCommand().equals("investorsLeastNumberOfCompanies")) {
-			showOutputPanel();
-			reportContent = simulation.lowestNumberOfCompanies();
-			text.setText(simulation.lowestNumberOfCompanies());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.lowestNumberOfCompanies());
 
 
 		}else if(e.getActionCommand().equals("totalNumberOfTransactions")) {
-			showOutputPanel();
-			reportContent = simulation.totalTransactions();
-			text.setText(simulation.totalTransactions());
-			text.setCaretPosition(0);
+
+			setContentAndText(simulation.totalTransactions());
 
 
 		}else if(e.getActionCommand().equals("fullReport")) {
+
 			displayFullReport();
 
 
 		}else if(e.getActionCommand().equals("companies")) {
-			mainPanel.removeAll();
-			JPanel companies = getCompanies();
-			companies.validate();
-			companies.setVisible(true);
-			companies.repaint();
-			mainPanel.add(companies);
-			outputPanel.setVisible(false);
-			reportContent = simulation.allCompanies();
+			setContentAndPanel(getCompanies(), simulation.allCompanies());
 
 
 		}else if(e.getActionCommand().equals("investors")){
-
-			mainPanel.removeAll();
-
-			JPanel investors = getInvestors();
-			investors.validate();
-			investors.setVisible(true);
-			investors.repaint();
-			mainPanel.add(investors);
-
-			outputPanel.setVisible(false);
-			reportContent = simulation.allInvestors();
+			setContentAndPanel(getInvestors(), simulation.allInvestors());
 
 
 		}else if(e.getActionCommand().equals("transactions")) {
 
-			mainPanel.removeAll();
-
-			JPanel transaction = getAllTransactions();
-			transaction.validate();
-			transaction.setVisible(true);
-			transaction.repaint();
 			this.saveDocsFile.setEnabled(false);
 			this.savePDFFile.setEnabled(false);
-			mainPanel.add(transaction);
 
-			reportContent = simulation.allTransactions();
+			setContentAndPanel(getAllTransactions(), simulation.allTransactions());
 
 
 		}else if(e.getActionCommand().equals("savePDF")) {
@@ -771,7 +736,9 @@ public class GUI extends JFrame implements ActionListener{
 
 			if (shouldReRun) {
 				simulationFinished(false);
-				this.consoleText.setText("Restarting application...");
+
+				this.consoleText.setText("Running simulation on the background...");
+				this.consoleText.append("\nPlease wait...");
 
 
 				SwingUtilities.invokeLater(new Runnable() {
@@ -781,12 +748,28 @@ public class GUI extends JFrame implements ActionListener{
 				});
 
 			}
-
 		}
 
 		this.revalidate();
 		this.repaint();
 
+	}
+
+	private void setContentAndPanel(JPanel panel, String content) {
+		mainPanel.removeAll();
+		JPanel companies = panel;
+		companies.validate();
+		companies.setVisible(true);
+		companies.repaint();
+		mainPanel.add(companies);
+		reportContent = content;
+	}
+
+	private void setContentAndText(String content) {
+		showOutputPanel();
+		reportContent = content;
+		text.setText(content);
+		text.setCaretPosition(0);
 	}
 
 	private void showOutputPanel() {
