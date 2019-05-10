@@ -5,7 +5,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.model.Company;
@@ -48,33 +47,36 @@ public class SimulationService {
 	@Autowired
 	private GUI gui;
 
-
+	/**
+	 * Starts the initial simulation
+	 */
 	public void start() {
 
 		view.display("Starting simulation...");
-		companyService.clearCompanyTable();
+		companyService.clearCompanyTable(); //ensures that all repositories and lists are cleared
 		investorService.clearInvestors();
 
-		generateObjects();
+		generateObjects(); //async method to generate the companies and investors
 
 		td.trade(data.getCompanies(), data.getInvestors()); //run the trade
 
 		if(td.isSimulationFinished()) { 
-			gui.simulationFinished(true);	
+			gui.simulationFinished(true); //allow the buttons to be active	
 
-			companyService.updateCompanies();
+			companyService.updateCompanies(); //update the repositories and lists
 			investorService.updateInvestors();
 		
-			reportService.saveReportToDb();			
+			reportService.saveReportToDb();	//save reports to database
 		}
 	
 	}
 
-
+	/**
+	 * Restarts the simulation after the initial simulation has run
+	 */
 	public void restart() {
 
 		td.setSimulationFinished(false);
-		//gui.simulationFinished(false);
 		transactionService.clearTransactions();
 
 		start();
@@ -101,7 +103,10 @@ public class SimulationService {
 
 	}
 
-
+	/**
+	 * Displays the transaction list to the user
+	 * @return the list as a string
+	 */
 	public String displayTransaction() {
 		StringBuilder sb = new StringBuilder();
 
@@ -113,6 +118,10 @@ public class SimulationService {
 
 	}
 
+	/**
+	 * Displays the company with the highest capital
+	 * @return the list as a string
+	 */
 	public String highestCapital() {
 		StringBuilder sb = new StringBuilder();
 
@@ -129,6 +138,10 @@ public class SimulationService {
 
 	}
 
+	/**
+	 * Displays the companies with the lowest capital
+	 * @return the list as a string
+	 */
 	public String lowestCapital() {
 		StringBuilder sb = new StringBuilder();
 
@@ -145,6 +158,10 @@ public class SimulationService {
 
 	}
 
+	/**
+	 * Displays the investors with the highest number of shares
+	 * @return the list as a string
+	 */
 	public String highestNumberOfShares() {
 		StringBuilder sb = new StringBuilder();
 
@@ -160,7 +177,11 @@ public class SimulationService {
 		return sb.toString();
 
 	}
-
+	
+	/**
+	 * Displays the investors with the lowest number of shares
+	 * @return the list as a string
+	 */
 	public String lowestNumberOfShares() {
 		StringBuilder sb = new StringBuilder();
 
@@ -177,6 +198,10 @@ public class SimulationService {
 
 	}
 
+	/**
+	 * Displays the investors that have invested in the most amount of companies
+	 * @return the list as a string
+	 */
 	public String highestNumberOfCompanies() {
 		StringBuilder sb = new StringBuilder();
 
@@ -193,6 +218,10 @@ public class SimulationService {
 
 	}
 
+	/**
+	 * Displays the investors that have invested in the  least amount of companies
+	 * @return the list as a string
+	 */
 	public String lowestNumberOfCompanies() {
 		StringBuilder sb = new StringBuilder();
 
@@ -209,6 +238,10 @@ public class SimulationService {
 
 	}
 
+	/**
+	 * Displays the total amount of transactions
+	 * @return the number as a string
+	 */
 	public String totalTransactions() {
 		StringBuilder sb = new StringBuilder();
 
@@ -218,6 +251,10 @@ public class SimulationService {
 
 	}
 
+	/**
+	 * Displays all the companies and their details in a table
+	 * @return the list as a string
+	 */
 	public String allCompanies() {
 		StringBuilder sb = new StringBuilder();
 
@@ -239,7 +276,10 @@ public class SimulationService {
 		return sb.toString();
 	}
 
-
+	/**
+	 * Displays all the investor and their details in a table
+	 * @return the list as a string
+	 */
 	public String allInvestors() {
 		StringBuilder sb = new StringBuilder();
 
@@ -261,6 +301,10 @@ public class SimulationService {
 		return sb.toString();
 	}
 
+	/**
+	 * Displays all the transactions and thier details in a table
+	 * @return the list as a string
+	 */
 	public String allTransactions() {
 		StringBuilder sb = new StringBuilder();
 
@@ -278,7 +322,10 @@ public class SimulationService {
 		return sb.toString();
 	}
 
-
+	/**
+	 * Displays the full report
+	 * @return the report as a string
+	 */
 	public String fullReport() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n----------REPORT----------");
@@ -299,15 +346,29 @@ public class SimulationService {
 		return sb.toString();
 	}
 
-
+	/**
+	 * Generates the PDF report
+	 * @param content the content to full the report
+	 * @param path the path in which to save the report
+	 */
 	public void generatePdfReport(String content, String path) {
 		reportService.generatePdfReport(content, path);
 	}
 
+	/**
+	 * Generates the Word Document report
+	 * @param content the content to full the report
+	 * @param path the path in which to save the report
+	 */
 	public void generateDocxReport(String content, String path) {
 		reportService.generateDocxReport(content, path);
 	}
 
+	/**
+	 * Generates the text file report
+	 * @param content the content to full the report
+	 * @param path the path in which to save the report
+	 */
 	public void generateTxtReport(String content, String path) {
 		reportService.generateTxtReport(content, path);
 	}

@@ -65,14 +65,26 @@ public class Investor {
 		return numberOfCompaniesInvestedIn;
 	}
 
+	/**
+	 * 
+	 * @return the id
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * 
+	 * @param name the name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -105,6 +117,9 @@ public class Investor {
 		this.wallet = wallet;
 	}
 
+	/**
+	 * Prints a formated list of investor details
+	 */
 	public void getInvestorDetails() {
 		DecimalFormat df = new DecimalFormat("#.00");
 
@@ -117,20 +132,25 @@ public class Investor {
 		System.out.println();
 	}
 
-	//	public void buyShare(double sharePrice) {
-	//		budget-=sharePrice; // decrement budget by share price
-	//		totalNumberOfSharesBought +=1;
-	//	}
-
-
+	/**
+	 * Increases the total amount of shares brought
+	 */
 	public void incrementSharesBought() {
 		this.totalNumberOfSharesBought++;
 	}
 
+	/**
+	 * 
+	 * @return the total number of shares brought
+	 */
 	public int getTotalNumberOfSharesBought() {
 		return totalNumberOfSharesBought;
 	}
 
+	/**
+	 * 
+	 * @param totalNumberOfSharesBought the totalNumberOfSharesBought to set 
+	 */
 	public void setTotalNumberOfSharesBought(int totalNumberOfSharesBought) {
 		this.totalNumberOfSharesBought = totalNumberOfSharesBought;
 	}
@@ -178,21 +198,37 @@ public class Investor {
 			return this;
 		}
 
+		/**
+		 * 
+		 * @param totalNumberOfSharesBought the totalNumberOfSharesBought to set
+		 */
 		public InvestorBuilder setTotalNumberOfSharesBought(int totalNumberOfSharesBought) {
 			this.totalNumberOfSharesBought = totalNumberOfSharesBought;
 			return this;
 		}
 
+		/**
+		 * 
+		 * @param initialBudgets the initialBudget to set
+		 */
 		public InvestorBuilder setInitialBudget(double initialBudget) {
 			this.initialBudget = initialBudget;
 			return this;
 		}
 
+		/**
+		 * 
+		 * @param numberOfCompaniesInvestedIn the numberOfComapniesInvestedIn to set
+		 */
 		public InvestorBuilder setNumberOfCompaniesInvestedIn(int numberOfCompaniesInvestedIn) {
 			this.numberOfCompaniesInvestedIn = numberOfCompaniesInvestedIn;
 			return this;
 		}
 
+		/**
+		 * 
+		 * @return a newly initialized investor
+		 */
 		public Investor build() {
 			return new Investor(this);
 		}

@@ -21,6 +21,10 @@ public class Share {
 		return this.companyId;
 	}
 
+	/**
+	 * 
+	 * @return the dateSold
+	 */
 	public Date getDateSold() { 
 		return this.dateSold;
 	}
@@ -31,6 +35,7 @@ public class Share {
 	public double getPrice() {
 		return this.price;
 	}
+	
 	/**
 	 * @param price the price to set
 	 */

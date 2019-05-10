@@ -28,11 +28,16 @@ public class Transaction {
 		this.date = null;
 	}
 	
+	/**
+	 * Resets the Transaction ID
+	 */
 	public static void resetId() {
 		lastId = 0;
 	}
 	
-	
+	/**
+	 * Prints out a formated list of a transaction's details
+	 */
 	public void getTransactionDetails() {
 		System.out.println("----------TRANSATION----------");
 		System.out.println("TRANSACTION ID: \t" + this.getTransactionId());
