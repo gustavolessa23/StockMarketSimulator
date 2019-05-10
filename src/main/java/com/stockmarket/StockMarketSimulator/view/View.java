@@ -30,7 +30,7 @@ public class View {
 	 */
 	public void display(String string) {
 		gui.setConsoleText(string);
-		System.out.println(string);
+	//	System.out.println(string);
 	}
 	
 
@@ -52,7 +52,10 @@ public class View {
 	}
 
 
-
+	/**
+	 * Method used to display an error message
+	 * @param string
+	 */
 	public void displayError(String string) {
 		System.err.println(string);
 	}
