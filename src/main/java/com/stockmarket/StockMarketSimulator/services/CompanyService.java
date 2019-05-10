@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.stockmarket.StockMarketSimulator.exception.CompanyOutOfSharesException;
@@ -50,6 +49,11 @@ public class CompanyService {
 		companyRepository.saveAll(companies);
 	}
 
+	/**
+	 * This method sells for a company and updates all the other necessary values in the simulation
+	 * @param company the company to sell a share for
+	 * @return the soldShare
+	 */
 	public Share sellShare(Company company) {
 		if (company.getShares().isEmpty()) {
 			throw new CompanyOutOfSharesException("Company "+company.getName()+" has no shares left to sell."); // check if it's empty
@@ -70,26 +74,29 @@ public class CompanyService {
 			
 			updateCompanyMap(company);
 			
-			//company.getCompanyDetails();
 			return sold; // return share
 		}
 
 	}
 	
+	/**
+	 * Gets the cheapest available share
+	 * @return a company with the cheapest available share
+	 */
 	public Company getCheapestAvailableShare() {
-		Company company = null;
-		for(int x = 0; x < data.getCompanies().size(); x++) {
+		Company company = null; //placeholder for the company comparison
+		for(int x = 0; x < data.getCompanies().size(); x++) { //get the first company
 			Company current = data.getCompanies().get(x);
 			
 			if(company == null && current.getShares().size() > 0) {
-				company = current;
+				company = current; //sets a company with an available share
 			}
 			if(company != null && current.getSharePrice() < company.getSharePrice() && !current.getShares().isEmpty()) {
-				company = current;
+				company = current; //sets a company with the lowest share
 			}
 		}
 		
-		return company;
+		return company; //returns the company that meets all the checks
 	}
 	
 	
@@ -102,16 +109,25 @@ public class CompanyService {
 		return companyRepository.getOne(id);
 	}
 	
+	/**
+	 * Returns a company from the simulation list using a hash map
+	 * @param id company Id to get
+	 * @return a company object
+	 */
 	public Company getCompanyFromId(int id) {
 		return data.getCompaniesMap().get(id);
 	}
 
+	/**
+	 * This method updates the company has map
+	 * @param companythe company to set in the hash map
+	 */
 	public void updateCompanyMap(Company company) {
 		data.getCompaniesMap().replace(company.getId(), company);
 	}
 	
 	/**
-	 * 
+	 * This method adds a company to the database
 	 * @param company
 	 */
 	public void addCompany(Company company) {
@@ -146,19 +162,25 @@ public class CompanyService {
 		companyRepository.save(company);
 	}
 	
+	/**
+	 * Replaces the companies the database
+	 */
 	public void updateCompanies() {
 		companyRepository.saveAll(data.getCompanies());
 	}
 	
 	/**
-	 * 
-	 * @param id
+	 * Removes a company from the database
+	 * @param id company based on ID to remove
 	 */
 	public void deleteCompany(Company id) {
 		companyRepository.delete(id);
 	}
 	
-	
+	/**
+	 * This method will increase the price of a company after they have sold 10 shares
+	 * @param c a company to increase the price for
+	 */
 	public void increasePrice(Company c) {
 		boolean tenSharesSold = c.getSharesSold()%10==0; //check if 10 shares were sold
 		
@@ -169,6 +191,10 @@ public class CompanyService {
 		}
 	}
 	
+	/**
+	 * This method will decrease the price if a company has not sold a share after 10 transactions were made
+	 * @param c a company to decrease the price for
+	 */
 	public void decreasePrice(Company c) {	
 		double sharePriceRounded = data.round(c.getSharePrice(), 2);
 		if(sharePriceRounded>0.00) {
@@ -177,6 +203,9 @@ public class CompanyService {
 		}
 	}
 	
+	/**
+	 * This method clears all the company details in the simulation and database to enable a rerun of the simulation
+	 */
 	public void clearCompanyTable() {
 		
 		companyRepository.deleteAll();

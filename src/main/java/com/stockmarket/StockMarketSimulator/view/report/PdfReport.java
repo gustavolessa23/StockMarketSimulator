@@ -10,18 +10,33 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * Class responsible for saving a PDF file.
+ * @author Gustavo Lessa
+ *
+ */
 @Component
 public class PdfReport extends ReportFile {
 
-	public PdfReport() {
+	/**
+	 * Constructor required by Spring Boot.
+	 */
+	private PdfReport() {
 		super();
 	}
 	
+	/**
+	 * Constructor to create a new PDF report, passing a path and a content.
+	 * @param path
+	 * @param content
+	 */
 	public PdfReport(String path, String content) {
 		super(path, content);
 	}
 
-	
+	/**
+	 * Generate PDF file.
+	 */
 	@Override
 	public void generate() throws IOException {
 		System.out.println("trying to save at: "+this.path);

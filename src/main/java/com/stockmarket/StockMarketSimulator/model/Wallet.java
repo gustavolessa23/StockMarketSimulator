@@ -16,11 +16,12 @@ public class Wallet {
 	@Getter @Setter
 	private Map<Integer, Integer> companiesShares; // maps companyID->amount of shares. 
 	
-	
+	/**
+	 * Prints out a formated list of a Wallet's details
+	 */
 	public void getWalletDetails() {
 		
 		System.out.println("WALLET DETAILS: \t");
-		//System.out.println("\tNumber of companiesShares invested in: "+this.getAmountOfCompaniesInvestedIn());
 		System.out.println("\tShares: ");
 		for(int i=0;i<this.getShares().size();i++) {
 			System.out.print("\t"+(i+1)+" Company ID: "+this.getShares().get(i).getCompanyId());

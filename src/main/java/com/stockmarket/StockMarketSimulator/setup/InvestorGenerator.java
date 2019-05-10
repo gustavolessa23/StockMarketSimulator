@@ -9,9 +9,6 @@ import com.stockmarket.StockMarketSimulator.model.Investor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 @Component
 public class InvestorGenerator {
 
@@ -45,7 +42,6 @@ public class InvestorGenerator {
 					.setBudget(randomBudget)
 					.build(); //use investor builder to assign values
 
-			//randomInvestor.getInvestorDetails(); //Prints out the investor details (including wallet details) after being generated
 			investors.add(randomInvestor);
 
 		}	

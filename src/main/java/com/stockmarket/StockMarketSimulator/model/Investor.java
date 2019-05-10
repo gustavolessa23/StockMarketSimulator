@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 
 @Entity
 public class Investor {
-	
+
 	@Id
 	private final int id;
 	public static int lastId = 0;
@@ -18,10 +18,9 @@ public class Investor {
 	private double initialBudget;
 	private int totalNumberOfSharesBought;
 	private int numberOfCompaniesInvestedIn;
-	
+
 	@Transient
 	private Wallet wallet;
-
 
 	private Investor(InvestorBuilder builder) {
 		super();
@@ -33,7 +32,7 @@ public class Investor {
 		this.initialBudget = builder.initialBudget;
 		this.numberOfCompaniesInvestedIn = builder.numberOfCompaniesInvestedIn;
 	}
-	
+
 	private Investor() {
 		super();
 		this.id = 0;
@@ -44,14 +43,13 @@ public class Investor {
 		this.initialBudget = 0;
 		this.numberOfCompaniesInvestedIn = 0;
 	}
-	
+
 	/**
 	 * @return the initialBudget
 	 */
 	public double getInitialBudget() {
 		return initialBudget;
 	}
-	
 
 	/**
 	 * @param numberOfCompaniesInvestedIn the numberOfCompaniesInvestedIn to set
@@ -67,18 +65,30 @@ public class Investor {
 		return numberOfCompaniesInvestedIn;
 	}
 
+	/**
+	 * 
+	 * @return the id
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * 
+	 * @param name the name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * @return the budget
 	 */
@@ -106,10 +116,13 @@ public class Investor {
 	public void setWallet(Wallet wallet) {
 		this.wallet = wallet;
 	}
-	
+
+	/**
+	 * Prints a formated list of investor details
+	 */
 	public void getInvestorDetails() {
 		DecimalFormat df = new DecimalFormat("#.00");
-		
+
 		System.out.println("----------INVESTOR----------");
 		System.out.println("INVESTOR ID: \t" + this.getId());
 		System.out.println("INVESTOR NAME: \t" + this.getName());
@@ -118,21 +131,26 @@ public class Investor {
 		this.getWallet().getWalletDetails();
 		System.out.println();
 	}
-	
-//	public void buyShare(double sharePrice) {
-//		budget-=sharePrice; // decrement budget by share price
-//		totalNumberOfSharesBought +=1;
-//	}
-	
 
+	/**
+	 * Increases the total amount of shares brought
+	 */
 	public void incrementSharesBought() {
 		this.totalNumberOfSharesBought++;
 	}
 
+	/**
+	 * 
+	 * @return the total number of shares brought
+	 */
 	public int getTotalNumberOfSharesBought() {
 		return totalNumberOfSharesBought;
 	}
 
+	/**
+	 * 
+	 * @param totalNumberOfSharesBought the totalNumberOfSharesBought to set 
+	 */
 	public void setTotalNumberOfSharesBought(int totalNumberOfSharesBought) {
 		this.totalNumberOfSharesBought = totalNumberOfSharesBought;
 	}
@@ -145,7 +163,7 @@ public class Investor {
 		private double initialBudget;
 		private int numberOfCompaniesInvestedIn;
 
-		
+
 		public InvestorBuilder(String name) {
 			super();
 			this.name = name;
@@ -179,30 +197,40 @@ public class Investor {
 			this.wallet = wallet;
 			return this;
 		}
-		
+
+		/**
+		 * 
+		 * @param totalNumberOfSharesBought the totalNumberOfSharesBought to set
+		 */
 		public InvestorBuilder setTotalNumberOfSharesBought(int totalNumberOfSharesBought) {
 			this.totalNumberOfSharesBought = totalNumberOfSharesBought;
 			return this;
 		}
-		
+
+		/**
+		 * 
+		 * @param initialBudgets the initialBudget to set
+		 */
 		public InvestorBuilder setInitialBudget(double initialBudget) {
 			this.initialBudget = initialBudget;
 			return this;
 		}
-		
+
+		/**
+		 * 
+		 * @param numberOfCompaniesInvestedIn the numberOfComapniesInvestedIn to set
+		 */
 		public InvestorBuilder setNumberOfCompaniesInvestedIn(int numberOfCompaniesInvestedIn) {
 			this.numberOfCompaniesInvestedIn = numberOfCompaniesInvestedIn;
 			return this;
 		}
-		
+
+		/**
+		 * 
+		 * @return a newly initialized investor
+		 */
 		public Investor build() {
 			return new Investor(this);
 		}
-		
-		
-		
 	}
-
-
-	
 }

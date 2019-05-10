@@ -8,11 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
-//import javax.persistence.Entity;
-//import javax.persistence.GeneratedValue;
-//import javax.persistence.Id;
-//import javax.persistence.Transient;
-
 
 @Entity
 public class Company {
@@ -76,7 +71,10 @@ public class Company {
 
 	}
 	
-
+	/**
+	 * Sets the initial public offering for a company (amount of shares and price)
+	 * @param numberOfShares the number of shares a company starts with
+	 */
 	private void ipo(int numberOfShares) {
 	//	shares = new ArrayList<>(); // new list to hold the Share objects created
 		
@@ -107,50 +105,97 @@ public class Company {
 		return initialSharePrice;
 	}
 
+	/**
+	 * @return the company id
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * 
+	 * @return the company name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * 
+	 * @return the list of shares
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * 
+	 * @return the total number of shares available
+	 */
 	public List<Share> getShares() {
 		return shares;
 	}
 	
+	/**
+	 * 
+	 * @return the share price
+	 */
 	public int getNumberOfSharesAvailable() {
 		return shares.size();
 	}
 
+	/**
+	 * 
+	 * @param name the name to set
+	 */
 	public double getSharePrice() {
 		return sharePrice;
 	}
 
+	/**
+	 * 
+	 * @param sharePrice the share price to set
+	 */
 	public void setSharePrice(double sharePrice) {
 		this.sharePrice = sharePrice;
 	}
 	
+	/**
+	 * 
+	 * @param soldShare the sold share if sold
+	 */
 	public void setHasSoldShare(boolean soldShare) {
 		this.hasSoldShare = soldShare;
 	}
 
+	/**
+	 * 
+	 * @return the capital of the company
+	 */
 	public double getCapital() {
 		return capital;
 	}
 
+	/**
+	 * 
+	 * @return the total shares sold by a company
+	 */
 	public int getSharesSold() {
 		return sharesSold;
 	}
 	
+
+	/**
+	 * 
+	 * @return if a company has sold a share
+	 */
 	public boolean getHasSoldShare() {
 		return hasSoldShare;
 	}
 	
+	/**
+	 * Prints a formated list of company details
+	 */
 	public void getCompanyDetails() {
 		DecimalFormat df = new DecimalFormat("#.00");
 		
@@ -165,17 +210,24 @@ public class Company {
 		System.out.println();
 	}
 
-	
+	/**
+	 * Increases the total shares sold
+	 */
 	public void incrementSharesSold() {
 		this.sharesSold++;
 	}
 	
+	/**
+	 *
+	 * @param amount the amount to increase the total capital
+	 */
 	public void incrementCapital(double amount) {
 	    BigDecimal bd = new BigDecimal(this.capital+amount);
 	    bd = bd.setScale(2, RoundingMode.HALF_UP);
 		this.capital = bd.doubleValue();;
 	}
 
+	
 	public static class CompanyBuilder{
 		private String name;
 		private int shares;
@@ -254,22 +306,38 @@ public class Company {
 			this.hasSoldShare = sold;
 			return this;
 		}
-		
+	
+		/**
+		 * 
+		 * @param initialCapital set the initialCapital
+		 */
 		public CompanyBuilder setInitialCapital(double initialCapital) {
 			this.initialCapital = initialCapital;
 			return this;
 		}
 		
+		/**
+		 * 
+		 * @param initialSharePrice set the initialSharePrice
+		 */
 		public CompanyBuilder setInitialInitialSharePrice(double initialSharePrice) {
 			this.initialSharePrice = initialSharePrice;
 			return this;
 		}
 		
+		/**
+		 * 
+		 * @param initialShares set the total initialShares
+		 */
 		public CompanyBuilder setInitialShares(int initialShares) {
 			this.initialShares = initialShares;
 			return this;
 		}
 		
+		/**
+		 * 
+		 * @return a newly initialized company
+		 */
 		public Company build() {
 			return new Company(this);
 		}
